@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/cipher.php';
 
 // Data Storage File Path for standalone JSON persistence if MySQL is offline
 $dataFile = __DIR__ . '/data_store.json';
@@ -491,6 +492,7 @@ switch ($endpoint) {
 
             $newCreator = [
                 'id' => $newId,
+                'encrypted_id' => encryptId($newId),
                 'user_id' => $newId + 10,
                 'name' => $name,
                 'username' => $username,
@@ -524,7 +526,7 @@ switch ($endpoint) {
 
             jsonResponse(['status' => 'success', 'message' => 'Creator profile added successfully', 'data' => $newCreator]);
         } elseif ($requestMethod === 'PUT') {
-            $id = intval($body['id'] ?? 0);
+            $id = decryptId($body['id'] ?? 0);
             if ($id <= 0) {
                 jsonResponse(['status' => 'error', 'message' => 'Valid influencer ID is required'], 400);
             }
@@ -575,6 +577,7 @@ switch ($endpoint) {
                         if (isset($body['bio'])) $inf['bio'] = trim($body['bio']);
                         if (isset($body['name'])) $inf['name'] = trim($body['name']);
                         if (isset($body['city'])) $inf['city'] = trim($body['city']);
+                        $inf['encrypted_id'] = encryptId($inf['id']);
                         $updatedCreator = $inf;
                         break;
                     }
@@ -584,7 +587,7 @@ switch ($endpoint) {
 
             jsonResponse(['status' => 'success', 'message' => 'Creator profile updated successfully', 'data' => $updatedCreator ?: $body]);
         } elseif ($requestMethod === 'DELETE') {
-            $id = intval($_GET['id'] ?? $body['id'] ?? 0);
+            $id = decryptId($_GET['id'] ?? $body['id'] ?? 0);
             if ($id <= 0) {
                 jsonResponse(['status' => 'error', 'message' => 'Valid influencer ID is required'], 400);
             }
@@ -630,6 +633,7 @@ switch ($endpoint) {
                     $influencers = $stmt->fetchAll();
 
                     foreach ($influencers as &$inf) {
+                        $inf['encrypted_id'] = encryptId($inf['id']);
                         $inf['verified'] = (bool)$inf['verified'];
                         $inf['starting_price'] = floatval($inf['starting_price']);
                         $inf['followers'] = intval($inf['followers']);
@@ -654,6 +658,9 @@ switch ($endpoint) {
 
             $store = getStore();
             $list = $store['influencers'] ?? [];
+            foreach ($list as &$inf) {
+                $inf['encrypted_id'] = encryptId($inf['id'] ?? 0);
+            }
             jsonResponse(['status' => 'success', 'data' => array_values($list)]);
         }
         break;
@@ -755,7 +762,7 @@ switch ($endpoint) {
         break;
 
     case 'influencer':
-        $id = intval($_GET['id'] ?? $body['id'] ?? $body['influencer_id'] ?? 1);
+        $id = decryptId($_GET['id'] ?? $body['id'] ?? $body['influencer_id'] ?? 1);
 
         if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
             if ($db) {
@@ -808,6 +815,7 @@ switch ($endpoint) {
                 $stmt->execute(['id' => $id]);
                 $found = $stmt->fetch();
                 if ($found) {
+                    $found['encrypted_id'] = encryptId($found['id']);
                     $found['verified'] = (bool)$found['verified'];
                     $found['starting_price'] = floatval($found['starting_price']);
                     $found['followers'] = intval($found['followers']);
@@ -828,6 +836,7 @@ switch ($endpoint) {
         $store = getStore();
         foreach ($store['influencers'] as $inf) {
             if ($inf['id'] === $id || $inf['user_id'] === $id) {
+                $inf['encrypted_id'] = encryptId($inf['id']);
                 jsonResponse(['status' => 'success', 'data' => $inf]);
             }
         }
@@ -1262,13 +1271,13 @@ switch ($endpoint) {
         break;
 
     case 'bookings':
-        $userId = intval($_GET['user_id'] ?? $_GET['uid'] ?? $body['user_id'] ?? 0);
+        $userId = decryptId($_GET['user_id'] ?? $_GET['uid'] ?? $body['user_id'] ?? 0);
         $role = trim($_GET['role'] ?? $body['role'] ?? '');
-        $influencerId = intval($_GET['influencer_id'] ?? $_GET['iid'] ?? $body['influencer_id'] ?? 0);
+        $influencerId = decryptId($_GET['influencer_id'] ?? $_GET['iid'] ?? $body['influencer_id'] ?? 0);
 
         if ($requestMethod === 'POST') {
             $bookingDate = $body['date'] ?? $body['booking_date'] ?? date('Y-m-d');
-            $targetInfId = intval($body['influencer_id'] ?? $influencerId ?: 1);
+            $targetInfId = decryptId($body['influencer_id'] ?? $influencerId ?: 1);
 
             // 1. Authentication Check
             if ($userId <= 0) {
@@ -1426,8 +1435,8 @@ switch ($endpoint) {
                 if ($requestMethod === 'POST') {
                     $stmt = $db->prepare("INSERT INTO bookings (user_id, influencer_id, campaign_name, business_name, promotion_type, description, booking_date, budget, status) VALUES (:uid, :iid, :cname, :bname, :ptype, :desc, :bdate, :budget, 'pending')");
                     $stmt->execute([
-                        'uid' => $body['user_id'] ?? $userId,
-                        'iid' => $body['influencer_id'] ?? 1,
+                        'uid' => decryptId($body['user_id'] ?? $userId),
+                        'iid' => decryptId($body['influencer_id'] ?? 1),
                         'cname' => $body['campaign_name'] ?? 'New Campaign',
                         'bname' => $body['business_name'] ?? 'My Business',
                         'ptype' => $body['promotion_type'] ?? 'Instagram Reel',
@@ -1435,10 +1444,10 @@ switch ($endpoint) {
                         'bdate' => $body['date'] ?? date('Y-m-d'),
                         'budget' => floatval($body['budget'] ?? 0)
                     ]);
-                    $newId = $db->lastInsertId();
-                    jsonResponse(['status' => 'success', 'message' => 'Booking submitted', 'data' => array_merge(['id' => (int)$newId, 'status' => 'pending'], $body)]);
+                    $newId = (int)$db->lastInsertId();
+                    jsonResponse(['status' => 'success', 'message' => 'Booking submitted', 'data' => array_merge(['id' => $newId, 'encrypted_id' => encryptId($newId), 'status' => 'pending'], $body)]);
                 } else if ($requestMethod === 'PUT') {
-                    $bkId = intval($body['id'] ?? 0);
+                    $bkId = decryptId($body['id'] ?? 0);
                     $newStatus = strtolower(trim($body['status'] ?? 'accepted'));
                     if ($newStatus === 'declined') $newStatus = 'rejected';
 
@@ -1494,6 +1503,7 @@ switch ($endpoint) {
                         if ($updatedBk) {
                             $updatedBk['budget'] = floatval($updatedBk['budget']);
                             $updatedBk['date'] = $updatedBk['booking_date'];
+                            $updatedBk['encrypted_id'] = encryptId($updatedBk['id']);
                         }
                     } catch (Exception $e) {}
 
@@ -1506,6 +1516,7 @@ switch ($endpoint) {
                                 if ($newStatus === 'accepted') $b['accepted_at'] = date('Y-m-d H:i:s');
                                 if ($newStatus === 'completed') $b['completed_at'] = date('Y-m-d H:i:s');
                                 if ($newStatus === 'rejected') $b['declined_at'] = date('Y-m-d H:i:s');
+                                $b['encrypted_id'] = encryptId($b['id']);
                                 if (!$updatedBk) $updatedBk = $b;
                                 break;
                             }
@@ -1516,10 +1527,10 @@ switch ($endpoint) {
                     jsonResponse([
                         'status' => 'success', 
                         'message' => 'Booking status updated to ' . strtoupper($newStatus),
-                        'data' => $updatedBk ?: ['id' => $bkId, 'status' => $newStatus]
+                        'data' => $updatedBk ?: ['id' => $bkId, 'encrypted_id' => encryptId($bkId), 'status' => $newStatus]
                     ]);
                 } else if ($requestMethod === 'DELETE') {
-                    $bkId = intval($_GET['id'] ?? $body['id'] ?? 0);
+                    $bkId = decryptId($_GET['id'] ?? $body['id'] ?? 0);
                     if (!$bkId) {
                         jsonResponse(['status' => 'error', 'message' => 'Invalid booking ID.'], 400);
                     }
@@ -1553,6 +1564,7 @@ switch ($endpoint) {
                     }
 
                     foreach ($bks as &$b) {
+                        $b['encrypted_id'] = encryptId($b['id']);
                         $b['budget'] = floatval($b['budget']);
                         $b['date'] = $b['booking_date'] ?? ($b['date'] ?? date('Y-m-d'));
                     }

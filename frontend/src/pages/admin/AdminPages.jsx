@@ -8,8 +8,9 @@ import {
   Plus, Check, X, Download, Bell, Settings, Filter, ArrowUpRight, BarChart3,
   CalendarDays, PieChart, CheckCircle2, AlertTriangle, FileText, Globe, Search,
   DollarSign, Eye, Activity, Sliders, User, MessageSquare, Clock, RefreshCw, CheckSquare,
-  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload
+  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload, Key, Lock
 } from 'lucide-react';
+import { encryptId, decryptId } from '../../utils/cryptoId';
 
 /* -------------------------------------------------------------------------- */
 /* 1. ADMIN DASHBOARD OVERVIEW                                                */
@@ -676,7 +677,16 @@ export function InfluencerMgmt() {
                               <span>{inf.name}</span>
                               {inf.verified && <ShieldCheck size={14} color="#10B981" title="Verified Creator" />}
                             </div>
-                            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{inf.username}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{inf.username}</span>
+                              <span 
+                                className="badge" 
+                                style={{ fontSize: '0.66rem', padding: '1px 5px', background: 'rgba(99, 102, 241, 0.15)', color: '#818CF8', border: '1px solid rgba(99, 102, 241, 0.3)', fontFamily: 'monospace' }}
+                                title={`Encrypted Secure ID: ${encryptId(inf.id)}`}
+                              >
+                                #{inf.id} ({encryptId(inf.id)})
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -698,7 +708,7 @@ export function InfluencerMgmt() {
                       </td>
                       <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                          <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '4px 8px', fontSize: '0.76rem' }} title="View Public Profile">
+                          <Link to={`/influencer/${encryptId(inf.id)}`} className="btn btn-secondary btn-sm" style={{ padding: '4px 8px', fontSize: '0.76rem' }} title="View Public Profile with Encrypted URL">
                             <Eye size={12} /> Profile
                           </Link>
                           <button 

@@ -4,6 +4,7 @@ import { useData } from '../../context/DataContext';
 import {
   Search, TrendingUp, ShieldCheck, Star, Users, ArrowRight, Award, Zap, Heart, CheckCircle2, ChevronRight, Play, Sparkles, Filter, CheckCircle
 } from 'lucide-react';
+import { encryptId } from '../../utils/cryptoId';
 
 export default function Home() {
   const { categories, influencers, reviewsList, siteSettings } = useData();
@@ -294,14 +295,14 @@ export default function Home() {
 
                 <div className="influencer-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <Link
-                    to={`/influencer/${inf.id}`}
+                    to={`/influencer/${encryptId(inf.id)}`}
                     className="btn btn-secondary btn-sm"
                     style={{ fontSize: '0.82rem', padding: '8px 10px', textAlign: 'center', justifyContent: 'center' }}
                   >
                     Profile
                   </Link>
                   <Link
-                    to={`/book-influencer/${inf.id}`}
+                    to={`/book/${encryptId(inf.id)}`}
                     className="btn btn-primary btn-sm"
                     style={{ fontSize: '0.82rem', padding: '8px 10px', textAlign: 'center', justifyContent: 'center' }}
                   >

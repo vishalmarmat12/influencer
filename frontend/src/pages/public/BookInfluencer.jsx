@@ -28,10 +28,12 @@ import {
   ExternalLink 
 } from 'lucide-react';
 import { InstagramIcon, YoutubeIcon } from '../../components/common/SocialIcons';
+import { encryptId, decryptId, matchesEntityId } from '../../utils/cryptoId';
 
 export default function BookInfluencer() {
   const { id, influencerId } = useParams();
   const targetId = id || influencerId;
+  const numericTargetId = decryptId(targetId);
   const navigate = useNavigate();
   
   const { influencers, createBooking, checkDateAvailability, loading: dataLoading } = useData();
@@ -78,7 +80,7 @@ export default function BookInfluencer() {
 
       // Check in DataContext first
       const existing = (influencers || []).find(
-        (inf) => String(inf.id) === String(targetId) || String(inf.user_id) === String(targetId)
+        (inf) => matchesEntityId(inf, targetId) || Number(inf.id) === numericTargetId || Number(inf.user_id) === numericTargetId
       );
 
       if (existing) {
@@ -96,7 +98,7 @@ export default function BookInfluencer() {
 
       // If not in context yet, fetch via API
       try {
-        const res = await api.getInfluencerDetail(targetId);
+        const res = await api.getInfluencerDetail(numericTargetId || targetId);
         if (isMounted) {
           if (res && res.data) {
             setInfluencer(res.data);

@@ -11,6 +11,7 @@ import {
   Filter, Eye, Sliders, Settings, Users, Image, Globe, ArrowDownRight, CheckSquare,
   Camera, Phone, Mail, MapPin
 } from 'lucide-react';
+import { encryptId } from '../../utils/cryptoId';
 import ChatBox from '../../components/chat/ChatBox';
 
 /* -------------------------------------------------------------------------- */
@@ -534,7 +535,7 @@ export function UserFavorites() {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: 'auto' }}>
-                <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }}>View Profile</Link>
+                <Link to={`/influencer/${encryptId(inf.id)}`} className="btn btn-secondary btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }}>View Profile</Link>
                 <button className="btn btn-danger btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => toggleFavorite(inf.id)}>Remove</button>
               </div>
             </div>

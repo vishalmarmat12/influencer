@@ -5,6 +5,7 @@ import {
   Search, Filter, Star, ShieldCheck, MapPin, SlidersHorizontal,
   Zap, Clock, ThumbsUp, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
+import { encryptId } from '../../utils/cryptoId';
 
 export default function Explore() {
   const { influencers, categories } = useData();
@@ -526,7 +527,7 @@ export default function Explore() {
 
                         <div style={{ display: 'flex', gap: '0.3rem' }}>
                           <Link
-                            to={`/influencer/${inf.id}`}
+                            to={`/influencer/${encryptId(inf.id)}`}
                             style={{
                               padding: '0.4rem 0.6rem',
                               background: 'var(--bg-pill)',
@@ -541,14 +542,14 @@ export default function Explore() {
                             View
                           </Link>
                           <Link
-                            to={`/book-influencer/${inf.id}`}
+                            to={`/book/${encryptId(inf.id)}`}
                             style={{
                               padding: '0.4rem 0.65rem',
                               background: 'var(--primary)',
                               color: '#fff',
                               borderRadius: 'var(--radius-sm)',
                               fontSize: '0.75rem',
-                              fontWeight: 700,
+                              fontWeight: 600,
                               textDecoration: 'none',
                               whiteSpace: 'nowrap'
                             }}

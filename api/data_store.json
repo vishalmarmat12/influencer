@@ -1,23 +1,159 @@
 {
     "users": [
-        {"id": 1, "name": "System Admin", "company": "InfluencerConnect HQ", "email": "admin@influencer.com", "role": "Administrator", "phone": "+91 98765 00001", "status": "Active", "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", "img": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", "created_at": "2026-01-01"},
-        {"id": 2, "name": "Rohan Sharma", "company": "TechGear Inc", "email": "user@demo.com", "role": "Brand Account", "phone": "+91 98765 43210", "status": "Active", "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150", "img": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150", "created_at": "2026-02-10"},
-        {"id": 3, "name": "Ananya Roy", "company": "Luxe Fashion Co.", "email": "ananya@luxefashion.com", "role": "Agency", "phone": "+91 98765 11223", "status": "Active", "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150", "img": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150", "created_at": "2026-03-15"},
-        {"id": 4, "name": "Vikram Seth", "company": "FitLife Supplements", "email": "vikram@fitlife.com", "role": "Brand Account", "phone": "+91 98765 33445", "status": "Active", "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150", "img": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150", "created_at": "2026-04-02"},
-        {"id": 5, "name": "Pooja Malhotra", "company": "TravelWise Agency", "email": "pooja@travelwise.com", "role": "Agency", "phone": "+91 98765 55667", "status": "Active", "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", "img": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", "created_at": "2026-05-18"},
-        {"id": 6, "name": "Karan Singhania", "company": "Gourmet Bites Cafe", "email": "contact@gourmetbites.com", "role": "Business", "phone": "+91 98765 77889", "status": "Active", "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150", "img": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150", "created_at": "2026-06-20"}
+        {
+            "id": 1,
+            "name": "System Admin",
+            "company": "InfluencerConnect HQ",
+            "email": "admin@influencer.com",
+            "role": "Administrator",
+            "phone": "+91 98765 00001",
+            "status": "Active",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=150",
+            "img": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=150",
+            "created_at": "2026-01-01"
+        },
+        {
+            "id": 2,
+            "name": "Rohan Sharma",
+            "company": "TechGear Inc",
+            "email": "user@demo.com",
+            "role": "Brand Account",
+            "phone": "+91 98765 43210",
+            "status": "Active",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1507003211169-0a1dd7228f2d?w=150",
+            "img": "https:\/\/images.unsplash.com\/photo-1507003211169-0a1dd7228f2d?w=150",
+            "created_at": "2026-02-10"
+        },
+        {
+            "id": 3,
+            "name": "Ananya Roy",
+            "company": "Luxe Fashion Co.",
+            "email": "ananya@luxefashion.com",
+            "role": "Agency",
+            "phone": "+91 98765 11223",
+            "status": "Active",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1494790108377-be9c29b29330?w=150",
+            "img": "https:\/\/images.unsplash.com\/photo-1494790108377-be9c29b29330?w=150",
+            "created_at": "2026-03-15"
+        },
+        {
+            "id": 4,
+            "name": "Vikram Seth",
+            "company": "FitLife Supplements",
+            "email": "vikram@fitlife.com",
+            "role": "Brand Account",
+            "phone": "+91 98765 33445",
+            "status": "Active",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1500648767791-00dcc994a43e?w=150",
+            "img": "https:\/\/images.unsplash.com\/photo-1500648767791-00dcc994a43e?w=150",
+            "created_at": "2026-04-02"
+        },
+        {
+            "id": 5,
+            "name": "Pooja Malhotra",
+            "company": "TravelWise Agency",
+            "email": "pooja@travelwise.com",
+            "role": "Agency",
+            "phone": "+91 98765 55667",
+            "status": "Active",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=150",
+            "img": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=150",
+            "created_at": "2026-05-18"
+        },
+        {
+            "id": 6,
+            "name": "Karan Singhania",
+            "company": "Gourmet Bites Cafe",
+            "email": "contact@gourmetbites.com",
+            "role": "Business",
+            "phone": "+91 98765 77889",
+            "status": "Active",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1519085360753-af0119f7cbe7?w=150",
+            "img": "https:\/\/images.unsplash.com\/photo-1519085360753-af0119f7cbe7?w=150",
+            "created_at": "2026-06-20"
+        }
     ],
     "categories": [
-        {"id": 1, "name": "Fashion", "slug": "fashion", "icon": "Shirt", "description": "Style, outfits, and fashion trends", "status": "active"},
-        {"id": 2, "name": "Food", "slug": "food", "icon": "Utensils", "description": "Culinary arts, food reviews, and recipes", "status": "active"},
-        {"id": 3, "name": "Tech", "slug": "tech", "icon": "Cpu", "description": "Gadgets, software, and tech reviews", "status": "active"},
-        {"id": 4, "name": "Fitness", "slug": "fitness", "icon": "Dumbbell", "description": "Workouts, nutrition, and wellness", "status": "active"},
-        {"id": 5, "name": "Travel", "slug": "travel", "icon": "Compass", "description": "Destinations, vlogs, and travel guides", "status": "active"},
-        {"id": 6, "name": "Beauty", "slug": "beauty", "icon": "Sparkles", "description": "Makeup, skincare, and cosmetics", "status": "active"},
-        {"id": 7, "name": "Gaming", "slug": "gaming", "icon": "Gamepad2", "description": "Esports, game reviews, and live streams", "status": "active"},
-        {"id": 8, "name": "Education", "slug": "education", "icon": "BookOpen", "description": "Tutorials, career guidance, and courses", "status": "active"},
-        {"id": 9, "name": "Lifestyle", "slug": "lifestyle", "icon": "Heart", "description": "Daily life, personal vlogs, and inspiration", "status": "active"},
-        {"id": 10, "name": "Automobile", "slug": "automobile", "icon": "Car", "description": "Cars, bikes, and automotive reviews", "status": "active"}
+        {
+            "id": 1,
+            "name": "Fashion",
+            "slug": "fashion",
+            "icon": "Shirt",
+            "description": "Style, outfits, and fashion trends",
+            "status": "active"
+        },
+        {
+            "id": 2,
+            "name": "Food",
+            "slug": "food",
+            "icon": "Utensils",
+            "description": "Culinary arts, food reviews, and recipes",
+            "status": "active"
+        },
+        {
+            "id": 3,
+            "name": "Tech",
+            "slug": "tech",
+            "icon": "Cpu",
+            "description": "Gadgets, software, and tech reviews",
+            "status": "active"
+        },
+        {
+            "id": 4,
+            "name": "Fitness",
+            "slug": "fitness",
+            "icon": "Dumbbell",
+            "description": "Workouts, nutrition, and wellness",
+            "status": "active"
+        },
+        {
+            "id": 5,
+            "name": "Travel",
+            "slug": "travel",
+            "icon": "Compass",
+            "description": "Destinations, vlogs, and travel guides",
+            "status": "active"
+        },
+        {
+            "id": 6,
+            "name": "Beauty",
+            "slug": "beauty",
+            "icon": "Sparkles",
+            "description": "Makeup, skincare, and cosmetics",
+            "status": "active"
+        },
+        {
+            "id": 7,
+            "name": "Gaming",
+            "slug": "gaming",
+            "icon": "Gamepad2",
+            "description": "Esports, game reviews, and live streams",
+            "status": "active"
+        },
+        {
+            "id": 8,
+            "name": "Education",
+            "slug": "education",
+            "icon": "BookOpen",
+            "description": "Tutorials, career guidance, and courses",
+            "status": "active"
+        },
+        {
+            "id": 9,
+            "name": "Lifestyle",
+            "slug": "lifestyle",
+            "icon": "Heart",
+            "description": "Daily life, personal vlogs, and inspiration",
+            "status": "active"
+        },
+        {
+            "id": 10,
+            "name": "Automobile",
+            "slug": "automobile",
+            "icon": "Car",
+            "description": "Cars, bikes, and automotive reviews",
+            "status": "active"
+        }
     ],
     "influencers": [
         {
@@ -32,25 +168,39 @@
             "state": "Maharashtra",
             "country": "India",
             "languages": "English, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1494790108377-be9c29b29330?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1441986300917-64674bd600d8?w=800",
             "category": "Fashion",
             "content_style": "Aesthetic & Chic",
             "followers": 450000,
             "starting_price": 8000,
             "verified": true,
-            "rating": 4.90,
+            "rating": 4.9,
             "views_count": 14500,
             "services": [
-                {"type": "Instagram Reel", "price": 25000, "desc": "30-60 second branded reel with customized hashtag & link"},
-                {"type": "Instagram Story", "price": 8000, "desc": "24-hr story post with swipe-up link"}
+                {
+                    "type": "Instagram Reel",
+                    "price": 25000,
+                    "desc": "30-60 second branded reel with customized hashtag & link"
+                },
+                {
+                    "type": "Instagram Story",
+                    "price": 8000,
+                    "desc": "24-hr story post with swipe-up link"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500"
+                "https:\/\/images.unsplash.com\/photo-1483985988355-763728e1935b?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "450K", "url": "https://instagram.com/aanya_styles"},
-                "youtube": {"subscribers": "180K", "url": "https://youtube.com/aanyavlogs"}
+                "instagram": {
+                    "followers": "450K",
+                    "url": "https:\/\/instagram.com\/aanya_styles"
+                },
+                "youtube": {
+                    "subscribers": "180K",
+                    "url": "https:\/\/youtube.com\/aanyavlogs"
+                }
             }
         },
         {
@@ -65,8 +215,8 @@
             "state": "Karnataka",
             "country": "India",
             "languages": "English, Kannada, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1500648767791-00dcc994a43e?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1518770660439-4636190af475?w=800",
             "category": "Tech",
             "content_style": "In-Depth Hardware Reviews",
             "followers": 620000,
@@ -75,15 +225,29 @@
             "rating": 4.85,
             "views_count": 28900,
             "services": [
-                {"type": "Dedicated Video", "price": 65000, "desc": "8-10 min in-depth review on YouTube"},
-                {"type": "YouTube Shorts", "price": 20000, "desc": "60-sec unboxing highlight"}
+                {
+                    "type": "Dedicated Video",
+                    "price": 65000,
+                    "desc": "8-10 min in-depth review on YouTube"
+                },
+                {
+                    "type": "YouTube Shorts",
+                    "price": 20000,
+                    "desc": "60-sec unboxing highlight"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=500"
+                "https:\/\/images.unsplash.com\/photo-1526738549149-8e07eca6c147?w=500"
             ],
             "socials": {
-                "youtube": {"subscribers": "620K", "url": "https://youtube.com/kabirtechzone"},
-                "twitter": {"followers": "95K", "url": "https://twitter.com/kabir_tech"}
+                "youtube": {
+                    "subscribers": "620K",
+                    "url": "https:\/\/youtube.com\/kabirtechzone"
+                },
+                "twitter": {
+                    "followers": "95K",
+                    "url": "https:\/\/twitter.com\/kabir_tech"
+                }
             }
         },
         {
@@ -98,8 +262,8 @@
             "state": "Delhi",
             "country": "India",
             "languages": "English, Hindi, Punjabi",
-            "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1519085360753-af0119f7cbe7?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1517838277536-f5f99be501cd?w=800",
             "category": "Fitness",
             "content_style": "Energetic Bodybuilding",
             "followers": 310000,
@@ -108,14 +272,25 @@
             "rating": 4.95,
             "views_count": 19200,
             "services": [
-                {"type": "Instagram Reel", "price": 30000, "desc": "Workout routine featuring activewear or supplement placement"},
-                {"type": "Transformation Post", "price": 15000, "desc": "Feed post with nutrition tip"}
+                {
+                    "type": "Instagram Reel",
+                    "price": 30000,
+                    "desc": "Workout routine featuring activewear or supplement placement"
+                },
+                {
+                    "type": "Transformation Post",
+                    "price": 15000,
+                    "desc": "Feed post with nutrition tip"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500"
+                "https:\/\/images.unsplash.com\/photo-1534438327276-14e5300c3a48?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "310K", "url": "https://instagram.com/siddharth_fit"}
+                "instagram": {
+                    "followers": "310K",
+                    "url": "https:\/\/instagram.com\/siddharth_fit"
+                }
             }
         },
         {
@@ -130,8 +305,8 @@
             "state": "Rajasthan",
             "country": "India",
             "languages": "English, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1517841905240-472988babdf9?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1504674900247-0877df9cc836?w=800",
             "category": "Food",
             "content_style": "Cinematic Culinary Vlogs",
             "followers": 220000,
@@ -140,14 +315,25 @@
             "rating": 4.75,
             "views_count": 12100,
             "services": [
-                {"type": "Restaurant Visit Reel", "price": 15000, "desc": "On-site video review of menu highlights"},
-                {"type": "Food Story", "price": 6000, "desc": "2x story coverage"}
+                {
+                    "type": "Restaurant Visit Reel",
+                    "price": 15000,
+                    "desc": "On-site video review of menu highlights"
+                },
+                {
+                    "type": "Food Story",
+                    "price": 6000,
+                    "desc": "2x story coverage"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500"
+                "https:\/\/images.unsplash.com\/photo-1555396273-367ea4eb4db5?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "220K", "url": "https://instagram.com/priya_bites"}
+                "instagram": {
+                    "followers": "220K",
+                    "url": "https:\/\/instagram.com\/priya_bites"
+                }
             }
         },
         {
@@ -162,8 +348,8 @@
             "state": "Goa",
             "country": "India",
             "languages": "English, Hindi, Konkani",
-            "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1506794778202-cad84cf45f1d?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1488646953014-85cb44e25828?w=800",
             "category": "Travel",
             "content_style": "Cinematic Drone & Vlogs",
             "followers": 540000,
@@ -172,14 +358,25 @@
             "rating": 4.92,
             "views_count": 31000,
             "services": [
-                {"type": "Resort Vlog & Reel", "price": 45000, "desc": "Dedicated travel vlog + 2x Instagram reels"},
-                {"type": "Travel Story", "price": 10000, "desc": "Location tag story"}
+                {
+                    "type": "Resort Vlog & Reel",
+                    "price": 45000,
+                    "desc": "Dedicated travel vlog + 2x Instagram reels"
+                },
+                {
+                    "type": "Travel Story",
+                    "price": 10000,
+                    "desc": "Location tag story"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500"
+                "https:\/\/images.unsplash.com\/photo-1507525428034-b723cf961d3e?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "540K", "url": "https://instagram.com/rohan_travels"}
+                "instagram": {
+                    "followers": "540K",
+                    "url": "https:\/\/instagram.com\/rohan_travels"
+                }
             }
         },
         {
@@ -194,8 +391,8 @@
             "state": "Maharashtra",
             "country": "India",
             "languages": "English, Hindi, Marathi",
-            "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1522337360788-8b13dee7a37e?w=800",
             "category": "Beauty",
             "content_style": "Glam & Dermat Reviews",
             "followers": 380000,
@@ -204,14 +401,25 @@
             "rating": 4.88,
             "views_count": 24100,
             "services": [
-                {"type": "Skincare Tutorial Reel", "price": 22000, "desc": "Step-by-step skincare routine featuring brand product"},
-                {"type": "Product Review", "price": 12000, "desc": "Detailed swipeable post"}
+                {
+                    "type": "Skincare Tutorial Reel",
+                    "price": 22000,
+                    "desc": "Step-by-step skincare routine featuring brand product"
+                },
+                {
+                    "type": "Product Review",
+                    "price": 12000,
+                    "desc": "Detailed swipeable post"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500"
+                "https:\/\/images.unsplash.com\/photo-1522337360788-8b13dee7a37e?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "380K", "url": "https://instagram.com/ananya_beauty"}
+                "instagram": {
+                    "followers": "380K",
+                    "url": "https:\/\/instagram.com\/ananya_beauty"
+                }
             }
         },
         {
@@ -226,24 +434,35 @@
             "state": "Telangana",
             "country": "India",
             "languages": "English, Telugu, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1539571696357-5a69c17a67c6?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1542751371-adc38448a05e?w=800",
             "category": "Gaming",
             "content_style": "Esports & Live Streams",
             "followers": 790000,
             "starting_price": 30000,
             "verified": true,
-            "rating": 4.90,
+            "rating": 4.9,
             "views_count": 48000,
             "services": [
-                {"type": "Livestream Brand Collab", "price": 50000, "desc": "2-hour livestream dedicated brand integration"},
-                {"type": "Gaming Highlight Reel", "price": 25000, "desc": "Sponsored gameplay clip"}
+                {
+                    "type": "Livestream Brand Collab",
+                    "price": 50000,
+                    "desc": "2-hour livestream dedicated brand integration"
+                },
+                {
+                    "type": "Gaming Highlight Reel",
+                    "price": 25000,
+                    "desc": "Sponsored gameplay clip"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500"
+                "https:\/\/images.unsplash.com\/photo-1542751371-adc38448a05e?w=500"
             ],
             "socials": {
-                "youtube": {"subscribers": "790K", "url": "https://youtube.com/vikramgaminglive"}
+                "youtube": {
+                    "subscribers": "790K",
+                    "url": "https:\/\/youtube.com\/vikramgaminglive"
+                }
             }
         },
         {
@@ -258,8 +477,8 @@
             "state": "Maharashtra",
             "country": "India",
             "languages": "English, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1524504388940-b1c1722653e1?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1516321318423-f06f85e504b3?w=800",
             "category": "Education",
             "content_style": "Step-by-step Tech Guides",
             "followers": 190000,
@@ -268,14 +487,25 @@
             "rating": 4.96,
             "views_count": 16800,
             "services": [
-                {"type": "Course Spotlight Reel", "price": 18000, "desc": "60-sec educational breakdown post"},
-                {"type": "Carousel Guide", "price": 10000, "desc": "5-slide resource summary"}
+                {
+                    "type": "Course Spotlight Reel",
+                    "price": 18000,
+                    "desc": "60-sec educational breakdown post"
+                },
+                {
+                    "type": "Carousel Guide",
+                    "price": 10000,
+                    "desc": "5-slide resource summary"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500"
+                "https:\/\/images.unsplash.com\/photo-1516321318423-f06f85e504b3?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "190K", "url": "https://instagram.com/neha_educates"}
+                "instagram": {
+                    "followers": "190K",
+                    "url": "https:\/\/instagram.com\/neha_educates"
+                }
             }
         },
         {
@@ -290,8 +520,8 @@
             "state": "Tamil Nadu",
             "country": "India",
             "languages": "English, Tamil, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1522075469751-3a6694fb2f61?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1503376780353-7e6692767b70?w=800",
             "category": "Automobile",
             "content_style": "High-Octane Track Reviews",
             "followers": 410000,
@@ -300,14 +530,25 @@
             "rating": 4.87,
             "views_count": 29500,
             "services": [
-                {"type": "Track Test Drive Video", "price": 40000, "desc": "High-octane car/bike test drive review video"},
-                {"type": "Automotive Feature Post", "price": 18000, "desc": "Studio photo integration"}
+                {
+                    "type": "Track Test Drive Video",
+                    "price": 40000,
+                    "desc": "High-octane car\/bike test drive review video"
+                },
+                {
+                    "type": "Automotive Feature Post",
+                    "price": 18000,
+                    "desc": "Studio photo integration"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500"
+                "https:\/\/images.unsplash.com\/photo-1503376780353-7e6692767b70?w=500"
             ],
             "socials": {
-                "youtube": {"subscribers": "410K", "url": "https://youtube.com/arjundrives"}
+                "youtube": {
+                    "subscribers": "410K",
+                    "url": "https:\/\/youtube.com\/arjundrives"
+                }
             }
         },
         {
@@ -322,24 +563,35 @@
             "state": "West Bengal",
             "country": "India",
             "languages": "English, Bengali, Hindi",
-            "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300",
-            "cover_image": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800",
+            "avatar": "https:\/\/images.unsplash.com\/photo-1517841905240-472988babdf9?w=300",
+            "cover_image": "https:\/\/images.unsplash.com\/photo-1493663284031-b7e3aefcae8e?w=800",
             "category": "Lifestyle",
             "content_style": "Warm & Cozy Minimalist",
             "followers": 290000,
             "starting_price": 14000,
             "verified": false,
-            "rating": 4.80,
+            "rating": 4.8,
             "views_count": 18200,
             "services": [
-                {"type": "Room Decor Story Series", "price": 16000, "desc": "3x Instagram stories highlighting home decor"},
-                {"type": "Lifestyle Vlog Integration", "price": 20000, "desc": "Organic placement in weekly vlog"}
+                {
+                    "type": "Room Decor Story Series",
+                    "price": 16000,
+                    "desc": "3x Instagram stories highlighting home decor"
+                },
+                {
+                    "type": "Lifestyle Vlog Integration",
+                    "price": 20000,
+                    "desc": "Organic placement in weekly vlog"
+                }
             ],
             "portfolio": [
-                "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500"
+                "https:\/\/images.unsplash.com\/photo-1493663284031-b7e3aefcae8e?w=500"
             ],
             "socials": {
-                "instagram": {"followers": "290K", "url": "https://instagram.com/ishita_vlogs"}
+                "instagram": {
+                    "followers": "290K",
+                    "url": "https:\/\/instagram.com\/ishita_vlogs"
+                }
             }
         }
     ],
@@ -489,11 +741,11 @@
         "contact_address": "Tech Park Tower B, Suite 402, Bangalore, India",
         "office_hours": "Mon - Sat: 9:00 AM - 7:00 PM IST",
         "commission_fee": 10,
-        "hero_badge": "⚡ India's #1 Verified Creator Marketplace",
+        "hero_badge": "\u26a1 India's #1 Verified Creator Marketplace",
         "hero_title": "Connect & Book Top Influencers for Your Brand Campaigns",
         "hero_subtitle": "Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.",
-        "hero_image_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80",
-        "about_story_image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
+        "hero_image_url": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80",
+        "about_story_image": "https:\/\/images.unsplash.com\/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
         "cta_title": "Are You a Creator or Influencer?",
         "cta_subtitle": "Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.",
         "footer_about": "The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.",
