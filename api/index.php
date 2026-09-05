@@ -492,7 +492,6 @@ switch ($endpoint) {
 
             $newCreator = [
                 'id' => $newId,
-                'encrypted_id' => encryptId($newId),
                 'user_id' => $newId + 10,
                 'name' => $name,
                 'username' => $username,
@@ -526,7 +525,7 @@ switch ($endpoint) {
 
             jsonResponse(['status' => 'success', 'message' => 'Creator profile added successfully', 'data' => $newCreator]);
         } elseif ($requestMethod === 'PUT') {
-            $id = decryptId($body['id'] ?? 0);
+            $id = intval($body['id'] ?? 0);
             if ($id <= 0) {
                 jsonResponse(['status' => 'error', 'message' => 'Valid influencer ID is required'], 400);
             }
@@ -577,7 +576,6 @@ switch ($endpoint) {
                         if (isset($body['bio'])) $inf['bio'] = trim($body['bio']);
                         if (isset($body['name'])) $inf['name'] = trim($body['name']);
                         if (isset($body['city'])) $inf['city'] = trim($body['city']);
-                        $inf['encrypted_id'] = encryptId($inf['id']);
                         $updatedCreator = $inf;
                         break;
                     }
@@ -587,7 +585,7 @@ switch ($endpoint) {
 
             jsonResponse(['status' => 'success', 'message' => 'Creator profile updated successfully', 'data' => $updatedCreator ?: $body]);
         } elseif ($requestMethod === 'DELETE') {
-            $id = decryptId($_GET['id'] ?? $body['id'] ?? 0);
+            $id = intval($_GET['id'] ?? $body['id'] ?? 0);
             if ($id <= 0) {
                 jsonResponse(['status' => 'error', 'message' => 'Valid influencer ID is required'], 400);
             }
@@ -633,7 +631,6 @@ switch ($endpoint) {
                     $influencers = $stmt->fetchAll();
 
                     foreach ($influencers as &$inf) {
-                        $inf['encrypted_id'] = encryptId($inf['id']);
                         $inf['verified'] = (bool)$inf['verified'];
                         $inf['starting_price'] = floatval($inf['starting_price']);
                         $inf['followers'] = intval($inf['followers']);
@@ -658,9 +655,6 @@ switch ($endpoint) {
 
             $store = getStore();
             $list = $store['influencers'] ?? [];
-            foreach ($list as &$inf) {
-                $inf['encrypted_id'] = encryptId($inf['id'] ?? 0);
-            }
             jsonResponse(['status' => 'success', 'data' => array_values($list)]);
         }
         break;
@@ -762,7 +756,7 @@ switch ($endpoint) {
         break;
 
     case 'influencer':
-        $id = decryptId($_GET['id'] ?? $body['id'] ?? $body['influencer_id'] ?? 1);
+        $id = intval($_GET['id'] ?? $body['id'] ?? $body['influencer_id'] ?? 1);
 
         if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
             if ($db) {
@@ -815,7 +809,6 @@ switch ($endpoint) {
                 $stmt->execute(['id' => $id]);
                 $found = $stmt->fetch();
                 if ($found) {
-                    $found['encrypted_id'] = encryptId($found['id']);
                     $found['verified'] = (bool)$found['verified'];
                     $found['starting_price'] = floatval($found['starting_price']);
                     $found['followers'] = intval($found['followers']);
@@ -836,7 +829,6 @@ switch ($endpoint) {
         $store = getStore();
         foreach ($store['influencers'] as $inf) {
             if ($inf['id'] === $id || $inf['user_id'] === $id) {
-                $inf['encrypted_id'] = encryptId($inf['id']);
                 jsonResponse(['status' => 'success', 'data' => $inf]);
             }
         }
@@ -1246,6 +1238,183 @@ switch ($endpoint) {
                 ]
             ]
         ]);
+    case 'reports':
+        $timeframe = trim($_GET['timeframe'] ?? $_GET['period'] ?? 'all');
+        $statusFilter = trim($_GET['status'] ?? 'all');
+        $searchQuery = strtolower(trim($_GET['search'] ?? ''));
+
+        // Fetch all bookings
+        $allBookings = [];
+        if ($db) {
+            try {
+                $stmt = $db->query("SELECT b.*, u.name AS user_name, u.email AS user_email, COALESCE(p.name, b.influencer_name) AS influencer_name, p.category AS influencer_category FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id ORDER BY b.id DESC");
+                $allBookings = $stmt->fetchAll();
+            } catch (Exception $e) {}
+        }
+
+        if (empty($allBookings)) {
+            $store = getStore();
+            $allBookings = $store['bookings'] ?? [];
+        }
+
+        // Fetch commission rate from site settings
+        $commissionFeePercent = 10;
+        if ($db) {
+            try {
+                $stStmt = $db->query("SELECT setting_value FROM site_settings WHERE setting_key = 'commission_fee' LIMIT 1");
+                $val = $stStmt->fetchColumn();
+                if ($val !== false && is_numeric($val)) $commissionFeePercent = floatval($val);
+            } catch (Exception $e) {}
+        } else {
+            $store = getStore();
+            if (isset($store['site_settings']['commission_fee'])) {
+                $commissionFeePercent = floatval($store['site_settings']['commission_fee']);
+            }
+        }
+
+        // Date timeframe filter calculation
+        $today = new DateTime();
+        $cutoffStr = '2000-01-01';
+        if ($timeframe === '7days' || $timeframe === 'Week') {
+            $cutoffStr = (clone $today)->modify('-7 days')->format('Y-m-d');
+        } else if ($timeframe === '30days' || $timeframe === 'Month') {
+            $cutoffStr = (clone $today)->modify('-30 days')->format('Y-m-d');
+        } else if ($timeframe === '90days' || $timeframe === 'Quarter') {
+            $cutoffStr = (clone $today)->modify('-90 days')->format('Y-m-d');
+        } else if ($timeframe === 'year' || $timeframe === 'Year') {
+            $cutoffStr = date('Y-01-01');
+        }
+
+        $totalGMV = 0;
+        $escrowHeld = 0;
+        $escrowReleased = 0;
+        $escrowRefunded = 0;
+        $filteredDealsCount = 0;
+        $monthlyMap = [];
+        $categoryMap = [];
+        $creatorMap = [];
+        $brandMap = [];
+        $ledger = [];
+
+        foreach ($allBookings as $b) {
+            $id = intval($b['id']);
+            $budget = floatval($b['budget'] ?? 0);
+            $status = strtolower(trim($b['status'] ?? 'pending'));
+            $date = $b['booking_date'] ?? ($b['date'] ?? date('Y-m-d'));
+            $cName = $b['influencer_name'] ?? 'Creator';
+            $bName = $b['business_name'] ?? 'Brand Client';
+            $cat = $b['influencer_category'] ?? ($b['promotion_type'] ?? 'General');
+
+            // Timeframe check
+            if (strtotime($date) < strtotime($cutoffStr)) {
+                continue;
+            }
+
+            // Status filter check
+            if ($statusFilter !== 'all' && $status !== $statusFilter) {
+                continue;
+            }
+
+            // Search filter
+            if (!empty($searchQuery)) {
+                $match = str_contains(strtolower($cName), $searchQuery) ||
+                         str_contains(strtolower($bName), $searchQuery) ||
+                         str_contains(strtolower($b['campaign_name'] ?? ''), $searchQuery) ||
+                         str_contains((string)$id, $searchQuery);
+                if (!$match) continue;
+            }
+
+            $filteredDealsCount++;
+            $fee = round($budget * ($commissionFeePercent / 100), 2);
+            $net = round($budget - $fee, 2);
+
+            $totalGMV += $budget;
+            if ($status === 'accepted') {
+                $escrowHeld += $budget;
+            } else if ($status === 'completed') {
+                $escrowReleased += $budget;
+            } else if ($status === 'rejected' || $status === 'cancelled') {
+                $escrowRefunded += $budget;
+            }
+
+            $monthKey = date('M Y', strtotime($date));
+            if (!isset($monthlyMap[$monthKey])) {
+                $monthlyMap[$monthKey] = ['month' => $monthKey, 'gmv' => 0, 'commission' => 0, 'released' => 0, 'deals' => 0];
+            }
+            $monthlyMap[$monthKey]['gmv'] += $budget;
+            $monthlyMap[$monthKey]['deals']++;
+            if ($status === 'accepted' || $status === 'completed') {
+                $monthlyMap[$monthKey]['commission'] += $fee;
+                if ($status === 'completed') $monthlyMap[$monthKey]['released'] += $net;
+            }
+
+            if (!isset($categoryMap[$cat])) {
+                $categoryMap[$cat] = ['category' => $cat, 'volume' => 0, 'count' => 0];
+            }
+            $categoryMap[$cat]['volume'] += $budget;
+            $categoryMap[$cat]['count']++;
+
+            if (!isset($creatorMap[$cName])) {
+                $creatorMap[$cName] = ['name' => $cName, 'total_earned' => 0, 'deals' => 0, 'category' => $cat];
+            }
+            if ($status === 'completed' || $status === 'accepted') {
+                $creatorMap[$cName]['total_earned'] += $net;
+            }
+            $creatorMap[$cName]['deals']++;
+
+            if (!isset($brandMap[$bName])) {
+                $brandMap[$bName] = ['name' => $bName, 'total_spent' => 0, 'campaigns' => 0];
+            }
+            $brandMap[$bName]['total_spent'] += $budget;
+            $brandMap[$bName]['campaigns']++;
+
+            $ledger[] = [
+                'id' => $id,
+                'encrypted_id' => encryptId($id),
+                'campaign_name' => $b['campaign_name'] ?? 'Campaign',
+                'business_name' => $bName,
+                'influencer_name' => $cName,
+                'budget' => $budget,
+                'platform_fee' => $fee,
+                'creator_net' => $net,
+                'status' => $status,
+                'date' => $date,
+                'accepted_at' => $b['accepted_at'] ?? null,
+                'completed_at' => $b['completed_at'] ?? null,
+                'settlement_status' => ($status === 'completed') ? 'Disbursed' : (($status === 'accepted') ? 'In Escrow' : (($status === 'rejected') ? 'Refunded' : 'Pending Approval'))
+            ];
+        }
+
+        $platformCommission = round(($escrowHeld + $escrowReleased) * ($commissionFeePercent / 100), 2);
+        $creatorDisbursed = round($escrowReleased * ((100 - $commissionFeePercent) / 100), 2);
+        $avgDealSize = ($filteredDealsCount > 0) ? round($totalGMV / $filteredDealsCount, 2) : 0;
+
+        uasort($creatorMap, function($a, $b) { return $b['total_earned'] <=> $a['total_earned']; });
+        uasort($brandMap, function($a, $b) { return $b['total_spent'] <=> $a['total_spent']; });
+
+        jsonResponse([
+            'status' => 'success',
+            'timeframe' => $timeframe,
+            'status_filter' => $statusFilter,
+            'generated_at' => date('Y-m-d H:i:s'),
+            'metrics' => [
+                'total_gmv' => $totalGMV,
+                'platform_commission' => $platformCommission,
+                'commission_rate_percent' => $commissionFeePercent,
+                'escrow_held' => $escrowHeld,
+                'escrow_released' => $escrowReleased,
+                'creator_disbursed' => $creatorDisbursed,
+                'escrow_refunded' => $escrowRefunded,
+                'total_deals_count' => $filteredDealsCount,
+                'avg_deal_size' => $avgDealSize,
+                'settlement_rate_percent' => ($totalGMV > 0) ? round(($escrowReleased / $totalGMV) * 100, 1) : 0
+            ],
+            'monthly_trend' => array_values($monthlyMap),
+            'category_breakdown' => array_values($categoryMap),
+            'top_creators' => array_slice(array_values($creatorMap), 0, 6),
+            'top_brands' => array_slice(array_values($brandMap), 0, 6),
+            'ledger' => $ledger
+        ]);
         break;
 
     case 'profile_views':
@@ -1271,13 +1440,13 @@ switch ($endpoint) {
         break;
 
     case 'bookings':
-        $userId = decryptId($_GET['user_id'] ?? $_GET['uid'] ?? $body['user_id'] ?? 0);
+        $userId = intval($_GET['user_id'] ?? $_GET['uid'] ?? $body['user_id'] ?? 0);
         $role = trim($_GET['role'] ?? $body['role'] ?? '');
-        $influencerId = decryptId($_GET['influencer_id'] ?? $_GET['iid'] ?? $body['influencer_id'] ?? 0);
+        $influencerId = intval($_GET['influencer_id'] ?? $_GET['iid'] ?? $body['influencer_id'] ?? 0);
 
         if ($requestMethod === 'POST') {
             $bookingDate = $body['date'] ?? $body['booking_date'] ?? date('Y-m-d');
-            $targetInfId = decryptId($body['influencer_id'] ?? $influencerId ?: 1);
+            $targetInfId = intval($body['influencer_id'] ?? $influencerId ?: 1);
 
             // 1. Authentication Check
             if ($userId <= 0) {
@@ -1435,8 +1604,8 @@ switch ($endpoint) {
                 if ($requestMethod === 'POST') {
                     $stmt = $db->prepare("INSERT INTO bookings (user_id, influencer_id, campaign_name, business_name, promotion_type, description, booking_date, budget, status) VALUES (:uid, :iid, :cname, :bname, :ptype, :desc, :bdate, :budget, 'pending')");
                     $stmt->execute([
-                        'uid' => decryptId($body['user_id'] ?? $userId),
-                        'iid' => decryptId($body['influencer_id'] ?? 1),
+                        'uid' => $body['user_id'] ?? $userId,
+                        'iid' => $body['influencer_id'] ?? 1,
                         'cname' => $body['campaign_name'] ?? 'New Campaign',
                         'bname' => $body['business_name'] ?? 'My Business',
                         'ptype' => $body['promotion_type'] ?? 'Instagram Reel',
@@ -1444,10 +1613,10 @@ switch ($endpoint) {
                         'bdate' => $body['date'] ?? date('Y-m-d'),
                         'budget' => floatval($body['budget'] ?? 0)
                     ]);
-                    $newId = (int)$db->lastInsertId();
-                    jsonResponse(['status' => 'success', 'message' => 'Booking submitted', 'data' => array_merge(['id' => $newId, 'encrypted_id' => encryptId($newId), 'status' => 'pending'], $body)]);
+                    $newId = $db->lastInsertId();
+                    jsonResponse(['status' => 'success', 'message' => 'Booking submitted', 'data' => array_merge(['id' => (int)$newId, 'status' => 'pending'], $body)]);
                 } else if ($requestMethod === 'PUT') {
-                    $bkId = decryptId($body['id'] ?? 0);
+                    $bkId = intval($body['id'] ?? 0);
                     $newStatus = strtolower(trim($body['status'] ?? 'accepted'));
                     if ($newStatus === 'declined') $newStatus = 'rejected';
 
@@ -1503,7 +1672,6 @@ switch ($endpoint) {
                         if ($updatedBk) {
                             $updatedBk['budget'] = floatval($updatedBk['budget']);
                             $updatedBk['date'] = $updatedBk['booking_date'];
-                            $updatedBk['encrypted_id'] = encryptId($updatedBk['id']);
                         }
                     } catch (Exception $e) {}
 
@@ -1516,7 +1684,6 @@ switch ($endpoint) {
                                 if ($newStatus === 'accepted') $b['accepted_at'] = date('Y-m-d H:i:s');
                                 if ($newStatus === 'completed') $b['completed_at'] = date('Y-m-d H:i:s');
                                 if ($newStatus === 'rejected') $b['declined_at'] = date('Y-m-d H:i:s');
-                                $b['encrypted_id'] = encryptId($b['id']);
                                 if (!$updatedBk) $updatedBk = $b;
                                 break;
                             }
@@ -1527,10 +1694,10 @@ switch ($endpoint) {
                     jsonResponse([
                         'status' => 'success', 
                         'message' => 'Booking status updated to ' . strtoupper($newStatus),
-                        'data' => $updatedBk ?: ['id' => $bkId, 'encrypted_id' => encryptId($bkId), 'status' => $newStatus]
+                        'data' => $updatedBk ?: ['id' => $bkId, 'status' => $newStatus]
                     ]);
                 } else if ($requestMethod === 'DELETE') {
-                    $bkId = decryptId($_GET['id'] ?? $body['id'] ?? 0);
+                    $bkId = intval($_GET['id'] ?? $body['id'] ?? 0);
                     if (!$bkId) {
                         jsonResponse(['status' => 'error', 'message' => 'Invalid booking ID.'], 400);
                     }
@@ -1564,7 +1731,6 @@ switch ($endpoint) {
                     }
 
                     foreach ($bks as &$b) {
-                        $b['encrypted_id'] = encryptId($b['id']);
                         $b['budget'] = floatval($b['budget']);
                         $b['date'] = $b['booking_date'] ?? ($b['date'] ?? date('Y-m-d'));
                     }

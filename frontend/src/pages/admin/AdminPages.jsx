@@ -3,14 +3,13 @@ import { useData } from '../../context/DataContext';
 import { Link } from 'react-router-dom';
 import Pagination from '../../components/common/Pagination';
 import apiService from '../../api/apiService';
-import { 
-  Users, Sparkles, FolderTree, CalendarCheck, ShieldCheck, Trash2, Edit, 
+import {
+  Users, Sparkles, FolderTree, CalendarCheck, ShieldCheck, Trash2, Edit,
   Plus, Check, X, Download, Bell, Settings, Filter, ArrowUpRight, BarChart3,
   CalendarDays, PieChart, CheckCircle2, AlertTriangle, FileText, Globe, Search,
   DollarSign, Eye, Activity, Sliders, User, MessageSquare, Clock, RefreshCw, CheckSquare,
-  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload, Key, Lock
+  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload
 } from 'lucide-react';
-import { encryptId, decryptId } from '../../utils/cryptoId';
 
 /* -------------------------------------------------------------------------- */
 /* 1. ADMIN DASHBOARD OVERVIEW                                                */
@@ -74,7 +73,7 @@ export function AdminDashboard() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* ADMIN HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
@@ -93,7 +92,7 @@ export function AdminDashboard() {
 
       {/* 1. TOP 5 KPI STAT CARDS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
-        
+
         {/* Card 1: Total Creators */}
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #F97316', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
@@ -168,7 +167,7 @@ export function AdminDashboard() {
 
       {/* 2. PLATFORM VOLUME CHART + CATEGORY SHARE DONUT */}
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '18px' }}>
-        
+
         {/* Platform Booking Volume Curve */}
         <div className="glass-panel" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -296,7 +295,7 @@ export function AdminDashboard() {
 
       {/* 4. RECENT APPOINTMENTS TABLE + SYSTEM ACTIVITY FEED */}
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '18px' }}>
-        
+
         {/* Recent Appointments Table */}
         <div className="glass-panel" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
@@ -337,8 +336,8 @@ export function AdminDashboard() {
               </tbody>
             </table>
           </div>
-          
-          <Pagination 
+
+          <Pagination
             currentPage={currentPage}
             totalItems={(bookings || []).length}
             itemsPerPage={itemsPerPage}
@@ -513,7 +512,7 @@ export function InfluencerMgmt() {
     const matchesCat = filterCat ? (i.category || '').toLowerCase() === filterCat.toLowerCase() : true;
     const q = searchTerm.toLowerCase();
     const matchesSearch = !q || (
-      (i.name || '').toLowerCase().includes(q) || 
+      (i.name || '').toLowerCase().includes(q) ||
       (i.username || '').toLowerCase().includes(q) ||
       (i.city || '').toLowerCase().includes(q) ||
       (i.category || '').toLowerCase().includes(q)
@@ -526,16 +525,16 @@ export function InfluencerMgmt() {
   // Dynamic KPI Stats Computations
   const totalCreatorsCount = creatorList.length;
   const verifiedCount = creatorList.filter(i => i.verified).length;
-  const avgStartingPrice = totalCreatorsCount > 0 
-    ? Math.round(creatorList.reduce((sum, i) => sum + (Number(i.starting_price) || 0), 0) / totalCreatorsCount) 
+  const avgStartingPrice = totalCreatorsCount > 0
+    ? Math.round(creatorList.reduce((sum, i) => sum + (Number(i.starting_price) || 0), 0) / totalCreatorsCount)
     : 0;
-  const avgFollowersK = totalCreatorsCount > 0 
-    ? Math.round(creatorList.reduce((sum, i) => sum + (Number(i.followers) || 0), 0) / totalCreatorsCount / 1000) 
+  const avgFollowersK = totalCreatorsCount > 0
+    ? Math.round(creatorList.reduce((sum, i) => sum + (Number(i.followers) || 0), 0) / totalCreatorsCount / 1000)
     : 0;
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* TOAST NOTIFICATION */}
       {toastMsg && (
         <div style={{
@@ -557,9 +556,9 @@ export function InfluencerMgmt() {
           animation: 'fadeIn 0.25s ease'
         }}>
           {toastMsg.text}
-          <button 
-            type="button" 
-            onClick={() => setToastMsg(null)} 
+          <button
+            type="button"
+            onClick={() => setToastMsg(null)}
             style={{ background: 'none', border: 'none', color: '#FFF', cursor: 'pointer', padding: '0 4px', fontSize: '1rem' }}
           >
             ✕
@@ -604,8 +603,8 @@ export function InfluencerMgmt() {
       <div className="glass-panel" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 'min(100%, 240px)', background: 'var(--bg-input)', padding: '8px 14px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <Search size={16} color="var(--text-dim)" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search creator by name, username, city, or niche..."
             value={searchTerm}
             onChange={(e) => {
@@ -619,10 +618,10 @@ export function InfluencerMgmt() {
           )}
         </div>
 
-        <select 
-          className="form-select" 
-          style={{ width: 'min(100%, 200px)', height: '38px', fontSize: '0.86rem' }} 
-          value={filterCat} 
+        <select
+          className="form-select"
+          style={{ width: 'min(100%, 200px)', height: '38px', fontSize: '0.86rem' }}
+          value={filterCat}
           onChange={(e) => {
             setFilterCat(e.target.value);
             setCurrentPage(1);
@@ -659,7 +658,7 @@ export function InfluencerMgmt() {
                 </tr>
               ) : (
                 paginatedCreators.map(inf => {
-                  const followersFormatted = Number(inf.followers || 0) >= 1000000 
+                  const followersFormatted = Number(inf.followers || 0) >= 1000000
                     ? `${(Number(inf.followers) / 1000000).toFixed(1)}M`
                     : `${(Number(inf.followers) / 1000).toFixed(0)}K`;
 
@@ -667,26 +666,17 @@ export function InfluencerMgmt() {
                     <tr key={inf.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <img 
-                            src={inf.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} 
-                            alt={inf.name} 
-                            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0 }} 
+                          <img
+                            src={inf.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                            alt={inf.name}
+                            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0 }}
                           />
                           <div>
                             <div style={{ color: 'var(--text-main)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <span>{inf.name}</span>
                               {inf.verified && <ShieldCheck size={14} color="#10B981" title="Verified Creator" />}
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{inf.username}</span>
-                              <span 
-                                className="badge" 
-                                style={{ fontSize: '0.66rem', padding: '1px 5px', background: 'rgba(99, 102, 241, 0.15)', color: '#818CF8', border: '1px solid rgba(99, 102, 241, 0.3)', fontFamily: 'monospace' }}
-                                title={`Encrypted Secure ID: ${encryptId(inf.id)}`}
-                              >
-                                #{inf.id} ({encryptId(inf.id)})
-                              </span>
-                            </div>
+                            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{inf.username}</span>
                           </div>
                         </div>
                       </td>
@@ -697,7 +687,7 @@ export function InfluencerMgmt() {
                       <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>{followersFormatted}</td>
                       <td style={{ padding: '12px 14px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>₹{Number(inf.starting_price || 0).toLocaleString()}</td>
                       <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
-                        <button 
+                        <button
                           onClick={() => handleToggleVerify(inf)}
                           className={`btn btn-sm ${inf.verified ? 'badge-green' : 'btn-secondary'}`}
                           style={{ border: 'none', cursor: 'pointer', padding: '5px 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
@@ -708,19 +698,19 @@ export function InfluencerMgmt() {
                       </td>
                       <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                          <Link to={`/influencer/${encryptId(inf.id)}`} className="btn btn-secondary btn-sm" style={{ padding: '4px 8px', fontSize: '0.76rem' }} title="View Public Profile with Encrypted URL">
+                          <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '4px 8px', fontSize: '0.76rem' }} title="View Public Profile">
                             <Eye size={12} /> Profile
                           </Link>
-                          <button 
-                            className="btn btn-secondary btn-sm" 
+                          <button
+                            className="btn btn-secondary btn-sm"
                             style={{ padding: '4px 8px', fontSize: '0.76rem' }}
                             onClick={() => setEditingCreator(inf)}
                             title="Edit Creator Details"
                           >
                             <Edit size={12} />
                           </button>
-                          <button 
-                            className="btn btn-secondary btn-sm" 
+                          <button
+                            className="btn btn-secondary btn-sm"
                             style={{ padding: '4px 8px', fontSize: '0.76rem', color: '#EF4444' }}
                             onClick={() => handleDelete(inf)}
                             title="Delete Creator"
@@ -737,7 +727,7 @@ export function InfluencerMgmt() {
           </table>
         </div>
 
-        <Pagination 
+        <Pagination
           currentPage={currentPage}
           totalItems={filtered.length}
           itemsPerPage={itemsPerPage}
@@ -763,8 +753,8 @@ export function InfluencerMgmt() {
               <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Plus size={18} color="var(--primary)" /> Add New Verified Creator
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowAddModal(false)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
               >
@@ -773,18 +763,18 @@ export function InfluencerMgmt() {
             </div>
 
             <form onSubmit={handleAddSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              
+
               {/* Avatar File Upload */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'var(--bg-input)', padding: '12px', borderRadius: '12px' }}>
-                <img 
-                  src={newCreator.avatar} 
-                  alt="Avatar Preview" 
-                  style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} 
+                <img
+                  src={newCreator.avatar}
+                  alt="Avatar Preview"
+                  style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }}
                 />
                 <div style={{ flex: 1 }}>
                   <label className="form-label" style={{ fontSize: '0.8rem', marginBottom: '4px' }}>Creator Avatar Image</label>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={(e) => handleAvatarFileChange(e, false)}
                     className="form-input"
@@ -797,10 +787,10 @@ export function InfluencerMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Full Name *</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="text"
+                    className="form-input"
+                    required
                     placeholder="e.g. Riya Sen"
                     value={newCreator.name}
                     onChange={(e) => setNewCreator({ ...newCreator, name: e.target.value })}
@@ -808,10 +798,10 @@ export function InfluencerMgmt() {
                 </div>
                 <div>
                   <label className="form-label">Username handle *</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="text"
+                    className="form-input"
+                    required
                     placeholder="e.g. @riya_fashion"
                     value={newCreator.username}
                     onChange={(e) => setNewCreator({ ...newCreator, username: e.target.value })}
@@ -822,8 +812,8 @@ export function InfluencerMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Niche Category</label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     value={newCreator.category}
                     onChange={(e) => setNewCreator({ ...newCreator, category: e.target.value })}
                   >
@@ -834,9 +824,9 @@ export function InfluencerMgmt() {
                 </div>
                 <div>
                   <label className="form-label">City</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     placeholder="e.g. Mumbai, Bengaluru"
                     value={newCreator.city}
                     onChange={(e) => setNewCreator({ ...newCreator, city: e.target.value })}
@@ -847,10 +837,10 @@ export function InfluencerMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Starting Price (₹) *</label>
-                  <input 
-                    type="number" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="number"
+                    className="form-input"
+                    required
                     min="1000"
                     placeholder="e.g. 15000"
                     value={newCreator.starting_price}
@@ -859,10 +849,10 @@ export function InfluencerMgmt() {
                 </div>
                 <div>
                   <label className="form-label">Followers Count *</label>
-                  <input 
-                    type="number" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="number"
+                    className="form-input"
+                    required
                     min="100"
                     placeholder="e.g. 250000"
                     value={newCreator.followers}
@@ -873,8 +863,8 @@ export function InfluencerMgmt() {
 
               <div>
                 <label className="form-label">Creator Bio & Summary</label>
-                <textarea 
-                  className="form-input" 
+                <textarea
+                  className="form-input"
                   rows={2}
                   placeholder="Short description for brand discovery..."
                   value={newCreator.bio}
@@ -883,11 +873,11 @@ export function InfluencerMgmt() {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input 
-                  type="checkbox" 
-                  id="ver_checkbox" 
-                  checked={newCreator.verified} 
-                  onChange={(e) => setNewCreator({ ...newCreator, verified: e.target.checked })} 
+                <input
+                  type="checkbox"
+                  id="ver_checkbox"
+                  checked={newCreator.verified}
+                  onChange={(e) => setNewCreator({ ...newCreator, verified: e.target.checked })}
                   style={{ width: '16px', height: '16px' }}
                 />
                 <label htmlFor="ver_checkbox" style={{ fontSize: '0.86rem', color: 'var(--text-main)', cursor: 'pointer', fontWeight: 600 }}>
@@ -927,8 +917,8 @@ export function InfluencerMgmt() {
               <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Edit size={18} color="var(--primary)" /> Edit Creator: {editingCreator.name}
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setEditingCreator(null)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
               >
@@ -940,18 +930,18 @@ export function InfluencerMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Full Name</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="text"
+                    className="form-input"
+                    required
                     value={editingCreator.name}
                     onChange={(e) => setEditingCreator({ ...editingCreator, name: e.target.value })}
                   />
                 </div>
                 <div>
                   <label className="form-label">Niche Category</label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     value={editingCreator.category}
                     onChange={(e) => setEditingCreator({ ...editingCreator, category: e.target.value })}
                   >
@@ -965,20 +955,20 @@ export function InfluencerMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Starting Price (₹)</label>
-                  <input 
-                    type="number" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="number"
+                    className="form-input"
+                    required
                     value={editingCreator.starting_price}
                     onChange={(e) => setEditingCreator({ ...editingCreator, starting_price: e.target.value })}
                   />
                 </div>
                 <div>
                   <label className="form-label">Followers Count</label>
-                  <input 
-                    type="number" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="number"
+                    className="form-input"
+                    required
                     value={editingCreator.followers}
                     onChange={(e) => setEditingCreator({ ...editingCreator, followers: e.target.value })}
                   />
@@ -987,9 +977,9 @@ export function InfluencerMgmt() {
 
               <div>
                 <label className="form-label">City / Location</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
+                <input
+                  type="text"
+                  className="form-input"
                   value={editingCreator.city || ''}
                   onChange={(e) => setEditingCreator({ ...editingCreator, city: e.target.value })}
                 />
@@ -997,8 +987,8 @@ export function InfluencerMgmt() {
 
               <div>
                 <label className="form-label">Bio</label>
-                <textarea 
-                  className="form-input" 
+                <textarea
+                  className="form-input"
                   rows={3}
                   value={editingCreator.bio || ''}
                   onChange={(e) => setEditingCreator({ ...editingCreator, bio: e.target.value })}
@@ -1119,7 +1109,7 @@ export function UserMgmt() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* TOAST NOTIFICATION */}
       {toastMsg && (
         <div style={{
@@ -1141,9 +1131,9 @@ export function UserMgmt() {
           animation: 'fadeIn 0.25s ease'
         }}>
           {toastMsg.text}
-          <button 
-            type="button" 
-            onClick={() => setToastMsg(null)} 
+          <button
+            type="button"
+            onClick={() => setToastMsg(null)}
             style={{ background: 'none', border: 'none', color: '#FFF', cursor: 'pointer', padding: '0 4px', fontSize: '1rem' }}
           >
             ✕
@@ -1182,8 +1172,8 @@ export function UserMgmt() {
       <div className="glass-panel" style={{ padding: '14px 18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'var(--bg-input)', padding: '8px 14px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <Search size={16} color="var(--text-dim)" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search business by name, company, email, role, or phone..."
             value={searchTerm}
             onChange={(e) => {
@@ -1224,8 +1214,8 @@ export function UserMgmt() {
               ) : (
                 paginatedUsers.map(u => {
                   // Dynamically aggregate user bookings and spent volume
-                  const userBookings = (bookings || []).filter(b => 
-                    b.user_id == u.id || 
+                  const userBookings = (bookings || []).filter(b =>
+                    b.user_id == u.id ||
                     (b.user_email && b.user_email.toLowerCase() === (u.email || '').toLowerCase()) ||
                     (b.business_name && u.company && b.business_name.toLowerCase() === u.company.toLowerCase())
                   );
@@ -1239,10 +1229,10 @@ export function UserMgmt() {
                     <tr key={u.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <img 
-                            src={u.avatar || u.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'} 
-                            alt={u.name} 
-                            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0 }} 
+                          <img
+                            src={u.avatar || u.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
+                            alt={u.name}
+                            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0 }}
                           />
                           <div>
                             <span style={{ color: 'var(--text-main)', fontWeight: 700, display: 'block' }}>{u.name}</span>
@@ -1268,16 +1258,16 @@ export function UserMgmt() {
                       </td>
                       <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                          <button 
-                            className={`btn btn-sm ${userStatus === 'Active' ? 'btn-secondary' : 'btn-primary'}`} 
-                            style={{ padding: '4px 10px', fontSize: '0.76rem', fontWeight: 600 }} 
+                          <button
+                            className={`btn btn-sm ${userStatus === 'Active' ? 'btn-secondary' : 'btn-primary'}`}
+                            style={{ padding: '4px 10px', fontSize: '0.76rem', fontWeight: 600 }}
                             onClick={() => handleToggleStatus(u)}
                             title={userStatus === 'Active' ? 'Suspend Account' : 'Reactivate Account'}
                           >
                             {userStatus === 'Active' ? 'Suspend' : 'Activate'}
                           </button>
-                          <button 
-                            className="btn btn-secondary btn-sm" 
+                          <button
+                            className="btn btn-secondary btn-sm"
                             style={{ padding: '4px 8px', fontSize: '0.76rem', color: '#EF4444' }}
                             onClick={() => handleDelete(u)}
                             title="Delete User"
@@ -1294,7 +1284,7 @@ export function UserMgmt() {
           </table>
         </div>
 
-        <Pagination 
+        <Pagination
           currentPage={currentPage}
           totalItems={filtered.length}
           itemsPerPage={itemsPerPage}
@@ -1320,8 +1310,8 @@ export function UserMgmt() {
               <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Plus size={18} color="var(--primary)" /> Register Business Client Account
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowAddModal(false)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
               >
@@ -1333,10 +1323,10 @@ export function UserMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Contact Name *</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="text"
+                    className="form-input"
+                    required
                     placeholder="e.g. Vikram Sharma"
                     value={newUser.name}
                     onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
@@ -1344,10 +1334,10 @@ export function UserMgmt() {
                 </div>
                 <div>
                   <label className="form-label">Company / Brand *</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    required 
+                  <input
+                    type="text"
+                    className="form-input"
+                    required
                     placeholder="e.g. Acme Corp"
                     value={newUser.company}
                     onChange={(e) => setNewUser({ ...newUser, company: e.target.value })}
@@ -1357,10 +1347,10 @@ export function UserMgmt() {
 
               <div>
                 <label className="form-label">Official Work Email *</label>
-                <input 
-                  type="email" 
-                  className="form-input" 
-                  required 
+                <input
+                  type="email"
+                  className="form-input"
+                  required
                   placeholder="e.g. marketing@acmecorp.com"
                   value={newUser.email}
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
@@ -1370,7 +1360,7 @@ export function UserMgmt() {
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label className="form-label">Account Role</label>
-                  <select 
+                  <select
                     className="form-select"
                     value={newUser.role}
                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
@@ -1382,9 +1372,9 @@ export function UserMgmt() {
                 </div>
                 <div>
                   <label className="form-label">Phone Number</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     value={newUser.phone}
                     onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
                   />
@@ -1514,14 +1504,14 @@ export function CategoryMgmt() {
     }
   };
 
-  const filtered = categories.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filtered = categories.filter(c =>
+    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
@@ -1568,26 +1558,26 @@ export function CategoryMgmt() {
           <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
             <div>
               <label className="form-label" style={{ fontSize: '0.78rem' }}>Category Name</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                placeholder="Category Name (e.g. Travel, Fitness)" 
-                required 
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Category Name (e.g. Travel, Fitness)"
+                required
                 minLength={2}
                 maxLength={50}
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
               <label className="form-label" style={{ fontSize: '0.78rem' }}>Catalog Description</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                placeholder="Short description for explore filters" 
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Short description for explore filters"
                 maxLength={200}
-                value={desc} 
-                onChange={(e) => setDesc(e.target.value)} 
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
               />
             </div>
           </div>
@@ -1610,24 +1600,24 @@ export function CategoryMgmt() {
           <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
             <div>
               <label className="form-label" style={{ fontSize: '0.78rem' }}>Category Name</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                required 
+              <input
+                type="text"
+                className="form-input"
+                required
                 minLength={2}
                 maxLength={50}
-                value={editName} 
-                onChange={(e) => setEditName(e.target.value)} 
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
               />
             </div>
             <div>
               <label className="form-label" style={{ fontSize: '0.78rem' }}>Catalog Description</label>
-              <input 
-                type="text" 
-                className="form-input" 
+              <input
+                type="text"
+                className="form-input"
                 maxLength={200}
-                value={editDesc} 
-                onChange={(e) => setEditDesc(e.target.value)} 
+                value={editDesc}
+                onChange={(e) => setEditDesc(e.target.value)}
               />
             </div>
           </div>
@@ -1660,17 +1650,17 @@ export function CategoryMgmt() {
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="badge badge-green" style={{ fontSize: '0.68rem' }}>ACTIVE</span>
                 <div style={{ display: 'flex', gap: '6px' }}>
-                  <button 
+                  <button
                     onClick={() => startEdit(c)}
-                    className="btn btn-secondary btn-sm" 
+                    className="btn btn-secondary btn-sm"
                     style={{ padding: '4px 8px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}
                     title="Edit Category"
                   >
                     <Edit size={12} /> Edit
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDelete(c)}
-                    className="btn btn-secondary btn-sm" 
+                    className="btn btn-secondary btn-sm"
                     style={{ padding: '4px 8px', fontSize: '0.75rem', color: '#EF4444', display: 'flex', alignItems: 'center', gap: '4px' }}
                     title="Delete Category"
                   >
@@ -1710,12 +1700,12 @@ export function BookingMgmt() {
 
   const handleAction = async (b, newStatus) => {
     setActionLoadingId(b.id);
-    const actionLabel = newStatus === 'accepted' 
-      ? 'Approve Campaign' 
-      : newStatus === 'completed' 
-        ? 'Release Escrow Funds' 
+    const actionLabel = newStatus === 'accepted'
+      ? 'Approve Campaign'
+      : newStatus === 'completed'
+        ? 'Release Escrow Funds'
         : 'Process Refund';
-    
+
     // Quick confirmation for releasing escrow or refunding
     if (newStatus === 'completed') {
       const confirmRelease = window.confirm(`Release escrow funds of ₹${(b.budget || 0).toLocaleString()} to creator "${b.influencer_name}"?`);
@@ -1782,7 +1772,7 @@ export function BookingMgmt() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* TOAST FEEDBACK NOTIFICATION */}
       {toastMsg && (
         <div style={{
@@ -1804,9 +1794,9 @@ export function BookingMgmt() {
           animation: 'fadeIn 0.25s ease'
         }}>
           {toastMsg.text}
-          <button 
+          <button
             type="button"
-            onClick={() => setToastMsg(null)} 
+            onClick={() => setToastMsg(null)}
             style={{ background: 'none', border: 'none', color: '#FFF', cursor: 'pointer', padding: '0 4px', fontSize: '1rem' }}
           >
             ✕
@@ -1874,9 +1864,9 @@ export function BookingMgmt() {
         {/* Search Input */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', minWidth: '240px' }}>
           <Search size={15} color="var(--text-dim)" />
-          <input 
-            type="text" 
-            placeholder="Search campaign, brand, creator..." 
+          <input
+            type="text"
+            placeholder="Search campaign, brand, creator..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -1925,9 +1915,9 @@ export function BookingMgmt() {
                       <td style={{ padding: '12px', color: 'var(--text-main)', fontWeight: 700 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span>{b.campaign_name}</span>
-                          <button 
-                            type="button" 
-                            onClick={() => setSelectedBooking(b)} 
+                          <button
+                            type="button"
+                            onClick={() => setSelectedBooking(b)}
                             style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', padding: 0 }}
                             title="View Campaign Details"
                           >
@@ -1948,18 +1938,18 @@ export function BookingMgmt() {
                         <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
                           {st === 'pending' && (
                             <>
-                              <button 
-                                className="btn btn-primary btn-sm" 
-                                style={{ padding: '5px 12px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 700 }} 
+                              <button
+                                className="btn btn-primary btn-sm"
+                                style={{ padding: '5px 12px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}
                                 onClick={() => handleAction(b, 'accepted')}
                                 disabled={isLoadingThis}
                                 title="Approve Campaign Request"
                               >
                                 {isLoadingThis ? <RefreshCw size={12} className="animate-spin" /> : <Check size={12} />} Approve
                               </button>
-                              <button 
-                                className="btn btn-secondary btn-sm" 
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', color: '#EF4444', fontWeight: 600 }} 
+                              <button
+                                className="btn btn-secondary btn-sm"
+                                style={{ padding: '5px 10px', fontSize: '0.78rem', color: '#EF4444', fontWeight: 600 }}
                                 onClick={() => handleAction(b, 'rejected')}
                                 disabled={isLoadingThis}
                                 title="Reject Request"
@@ -1971,18 +1961,18 @@ export function BookingMgmt() {
 
                           {st === 'accepted' && (
                             <>
-                              <button 
-                                className="btn btn-primary btn-sm" 
-                                style={{ padding: '5px 12px', fontSize: '0.78rem', background: 'linear-gradient(135deg, #10B981, #059669)', border: 'none', color: '#FFF', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 700 }} 
+                              <button
+                                className="btn btn-primary btn-sm"
+                                style={{ padding: '5px 12px', fontSize: '0.78rem', background: 'linear-gradient(135deg, #10B981, #059669)', border: 'none', color: '#FFF', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}
                                 onClick={() => handleAction(b, 'completed')}
                                 disabled={isLoadingThis}
                                 title="Release Escrow Funds to Creator"
                               >
                                 {isLoadingThis ? <RefreshCw size={13} className="animate-spin" /> : <DollarSign size={13} />} Release Escrow
                               </button>
-                              <button 
-                                className="btn btn-secondary btn-sm" 
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', color: '#EF4444', fontWeight: 600 }} 
+                              <button
+                                className="btn btn-secondary btn-sm"
+                                style={{ padding: '5px 10px', fontSize: '0.78rem', color: '#EF4444', fontWeight: 600 }}
                                 onClick={() => handleAction(b, 'rejected')}
                                 disabled={isLoadingThis}
                                 title="Refund Payment to Client"
@@ -2013,7 +2003,7 @@ export function BookingMgmt() {
           </table>
         </div>
 
-        <Pagination 
+        <Pagination
           currentPage={currentPage}
           totalItems={filteredBookings.length}
           itemsPerPage={itemsPerPage}
@@ -2042,8 +2032,8 @@ export function BookingMgmt() {
                   {selectedBooking.campaign_name}
                 </h3>
               </div>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setSelectedBooking(null)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
               >
@@ -2087,7 +2077,7 @@ export function BookingMgmt() {
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               {selectedBooking.status === 'pending' && (
-                <button 
+                <button
                   className="btn btn-primary btn-sm"
                   onClick={() => {
                     handleAction(selectedBooking, 'accepted');
@@ -2098,7 +2088,7 @@ export function BookingMgmt() {
                 </button>
               )}
               {selectedBooking.status === 'accepted' && (
-                <button 
+                <button
                   className="btn btn-primary btn-sm"
                   style={{ background: 'linear-gradient(135deg, #10B981, #059669)', border: 'none' }}
                   onClick={() => {
@@ -2294,7 +2284,7 @@ export function AdminSettingsPage() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
@@ -2303,8 +2293,8 @@ export function AdminSettingsPage() {
             Customize all website images, hero showcase banners, branding logos, contact info, and legal terms in real-time.
           </p>
         </div>
-        <button 
-          type="button" 
+        <button
+          type="button"
           onClick={resetToDefaults}
           className="btn btn-secondary btn-sm"
           style={{ fontSize: '0.82rem', padding: '6px 14px' }}
@@ -2345,7 +2335,7 @@ export function AdminSettingsPage() {
       </div>
 
       <form onSubmit={handleSave}>
-        
+
         {/* TAB 1: BRANDING & LOGO */}
         {activeTab === 'branding' && (
           <div className="glass-panel" style={{ padding: 'clamp(20px, 4vw, 32px)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -2356,14 +2346,14 @@ export function AdminSettingsPage() {
             <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Platform Brand Name</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  required 
-                  minLength={2} 
-                  maxLength={80} 
-                  value={formData.site_name} 
-                  onChange={(e) => handleChange('site_name', e.target.value)} 
+                <input
+                  type="text"
+                  className="form-input"
+                  required
+                  minLength={2}
+                  maxLength={80}
+                  value={formData.site_name}
+                  onChange={(e) => handleChange('site_name', e.target.value)}
                   placeholder="e.g. InfluencerConnect"
                 />
                 <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px', display: 'block' }}>Appears in header, footer, and page title bars.</span>
@@ -2371,11 +2361,11 @@ export function AdminSettingsPage() {
 
               <div className="form-group">
                 <label className="form-label">Site Tagline / Slogan</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={formData.site_tagline} 
-                  onChange={(e) => handleChange('site_tagline', e.target.value)} 
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.site_tagline}
+                  onChange={(e) => handleChange('site_tagline', e.target.value)}
                   placeholder="e.g. India's #1 Verified Creator Marketplace"
                 />
               </div>
@@ -2439,15 +2429,15 @@ export function AdminSettingsPage() {
 
             <div className="form-group">
               <label className="form-label">Platform Service Commission Fee (%)</label>
-              <input 
-                type="number" 
-                min="0" 
-                max="100" 
-                step="0.5" 
-                className="form-input" 
-                required 
-                value={formData.commission_fee} 
-                onChange={(e) => handleChange('commission_fee', e.target.value)} 
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="0.5"
+                className="form-input"
+                required
+                value={formData.commission_fee}
+                onChange={(e) => handleChange('commission_fee', e.target.value)}
                 style={{ maxWidth: '240px' }}
               />
             </div>
@@ -2463,41 +2453,41 @@ export function AdminSettingsPage() {
 
             <div className="form-group">
               <label className="form-label">Hero Feature Pill Tagline</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={formData.hero_badge} 
-                onChange={(e) => handleChange('hero_badge', e.target.value)} 
+              <input
+                type="text"
+                className="form-input"
+                value={formData.hero_badge}
+                onChange={(e) => handleChange('hero_badge', e.target.value)}
                 placeholder="⚡ India's #1 Verified Creator Marketplace"
               />
             </div>
 
             <div className="form-group">
               <label className="form-label">Hero Main Heading (H1)</label>
-              <input 
-                type="text" 
-                className="form-input" 
+              <input
+                type="text"
+                className="form-input"
                 required
-                value={formData.hero_title} 
-                onChange={(e) => handleChange('hero_title', e.target.value)} 
+                value={formData.hero_title}
+                onChange={(e) => handleChange('hero_title', e.target.value)}
                 placeholder="Connect & Book Top Influencers for Your Brand Campaigns"
               />
             </div>
 
             <div className="form-group">
               <label className="form-label">Hero Subtitle Paragraph</label>
-              <textarea 
-                className="form-input" 
-                rows={3} 
-                value={formData.hero_subtitle} 
-                onChange={(e) => handleChange('hero_subtitle', e.target.value)} 
+              <textarea
+                className="form-input"
+                rows={3}
+                value={formData.hero_subtitle}
+                onChange={(e) => handleChange('hero_subtitle', e.target.value)}
                 placeholder="Discover hand-vetted Instagram, YouTube, and multi-channel creators..."
               />
             </div>
 
             {/* DUAL AUTOMATIC FILE UPLOADS: HERO IMAGE & ABOUT US IMAGE */}
             <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              
+
               {/* 1. Hero Right Showcase Image File Upload */}
               <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -2530,9 +2520,9 @@ export function AdminSettingsPage() {
                 {/* Live Preview Box */}
                 {formData.hero_image_url && (
                   <div style={{ marginTop: '4px', borderRadius: '12px', overflow: 'hidden', height: '170px', border: '1px solid var(--border-color)', position: 'relative' }}>
-                    <img 
-                      src={formData.hero_image_url} 
-                      alt="Hero Showcase Preview" 
+                    <img
+                      src={formData.hero_image_url}
+                      alt="Hero Showcase Preview"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900'; }}
                     />
@@ -2575,9 +2565,9 @@ export function AdminSettingsPage() {
                 {/* Live Preview Box */}
                 {formData.about_story_image && (
                   <div style={{ marginTop: '4px', borderRadius: '12px', overflow: 'hidden', height: '170px', border: '1px solid var(--border-color)', position: 'relative' }}>
-                    <img 
-                      src={formData.about_story_image} 
-                      alt="About Story Preview" 
+                    <img
+                      src={formData.about_story_image}
+                      alt="About Story Preview"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800'; }}
                     />
@@ -2603,24 +2593,24 @@ export function AdminSettingsPage() {
             <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Support Email Address</label>
-                <input 
-                  type="email" 
-                  className="form-input" 
-                  required 
-                  value={formData.contact_email} 
-                  onChange={(e) => handleChange('contact_email', e.target.value)} 
+                <input
+                  type="email"
+                  className="form-input"
+                  required
+                  value={formData.contact_email}
+                  onChange={(e) => handleChange('contact_email', e.target.value)}
                   placeholder="support@influencerconnect.com"
                 />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Support Phone Hotline</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  required 
-                  value={formData.contact_phone} 
-                  onChange={(e) => handleChange('contact_phone', e.target.value)} 
+                <input
+                  type="text"
+                  className="form-input"
+                  required
+                  value={formData.contact_phone}
+                  onChange={(e) => handleChange('contact_phone', e.target.value)}
                   placeholder="+91 98765 43210"
                 />
               </div>
@@ -2629,24 +2619,24 @@ export function AdminSettingsPage() {
             <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Headquarters Physical Address</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  required 
-                  value={formData.contact_address} 
-                  onChange={(e) => handleChange('contact_address', e.target.value)} 
+                <input
+                  type="text"
+                  className="form-input"
+                  required
+                  value={formData.contact_address}
+                  onChange={(e) => handleChange('contact_address', e.target.value)}
                   placeholder="Tech Park Tower B, Suite 402, Bangalore, India"
                 />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Business Office Hours</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  required 
-                  value={formData.office_hours} 
-                  onChange={(e) => handleChange('office_hours', e.target.value)} 
+                <input
+                  type="text"
+                  className="form-input"
+                  required
+                  value={formData.office_hours}
+                  onChange={(e) => handleChange('office_hours', e.target.value)}
                   placeholder="Mon - Sat: 9:00 AM - 7:00 PM IST"
                 />
               </div>
@@ -2654,11 +2644,11 @@ export function AdminSettingsPage() {
 
             <div className="form-group">
               <label className="form-label">Footer Brand Bio / Summary</label>
-              <textarea 
-                className="form-input" 
-                rows={3} 
-                value={formData.footer_about} 
-                onChange={(e) => handleChange('footer_about', e.target.value)} 
+              <textarea
+                className="form-input"
+                rows={3}
+                value={formData.footer_about}
+                onChange={(e) => handleChange('footer_about', e.target.value)}
                 placeholder="The premier zero-commission marketplace connecting innovative brands..."
               />
             </div>
@@ -2674,45 +2664,45 @@ export function AdminSettingsPage() {
 
             <div className="form-group">
               <label className="form-label">Bottom CTA Banner Title</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                required 
-                value={formData.cta_title} 
-                onChange={(e) => handleChange('cta_title', e.target.value)} 
+              <input
+                type="text"
+                className="form-input"
+                required
+                value={formData.cta_title}
+                onChange={(e) => handleChange('cta_title', e.target.value)}
                 placeholder="Are You a Creator or Influencer?"
               />
             </div>
 
             <div className="form-group">
               <label className="form-label">Bottom CTA Banner Subtitle</label>
-              <textarea 
-                className="form-input" 
-                rows={2} 
-                value={formData.cta_subtitle} 
-                onChange={(e) => handleChange('cta_subtitle', e.target.value)} 
+              <textarea
+                className="form-input"
+                rows={2}
+                value={formData.cta_subtitle}
+                onChange={(e) => handleChange('cta_subtitle', e.target.value)}
                 placeholder="Monetize your audience with premium brand deals..."
               />
             </div>
 
             <div className="form-group">
               <label className="form-label">Terms of Service Content</label>
-              <textarea 
-                className="form-input" 
-                rows={4} 
-                value={formData.terms_content} 
-                onChange={(e) => handleChange('terms_content', e.target.value)} 
+              <textarea
+                className="form-input"
+                rows={4}
+                value={formData.terms_content}
+                onChange={(e) => handleChange('terms_content', e.target.value)}
                 placeholder="Terms and conditions text..."
               />
             </div>
 
             <div className="form-group">
               <label className="form-label">Privacy Policy Content</label>
-              <textarea 
-                className="form-input" 
-                rows={4} 
-                value={formData.privacy_content} 
-                onChange={(e) => handleChange('privacy_content', e.target.value)} 
+              <textarea
+                className="form-input"
+                rows={4}
+                value={formData.privacy_content}
+                onChange={(e) => handleChange('privacy_content', e.target.value)}
                 placeholder="Privacy policy details..."
               />
             </div>
@@ -2731,4 +2721,575 @@ export function AdminSettingsPage() {
     </div>
   );
 }
+
+/* -------------------------------------------------------------------------- */
+/* 8. DYNAMIC FINANCIAL REPORTS & AUDIT LEDGER (/admin/reports)                */
+/* -------------------------------------------------------------------------- */
+export function AdminReportsPage() {
+  const { siteSettings } = useData();
+  const [reportData, setReportData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [timeframe, setTimeframe] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTx, setSelectedTx] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
+  const fetchReports = async () => {
+    setLoading(true);
+    try {
+      const res = await apiService.getFinancialReports({
+        timeframe,
+        status: statusFilter,
+        search: searchTerm
+      });
+      if (res && res.status === 'success') {
+        setReportData(res);
+      }
+    } catch (err) {
+      console.error('Failed to fetch financial reports:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReports();
+  }, [timeframe, statusFilter]);
+
+  // Debounced search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchReports();
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  const metrics = reportData?.metrics || {
+    total_gmv: 0,
+    platform_commission: 0,
+    commission_rate_percent: 10,
+    escrow_held: 0,
+    escrow_released: 0,
+    creator_disbursed: 0,
+    escrow_refunded: 0,
+    total_deals_count: 0,
+    avg_deal_size: 0,
+    settlement_rate_percent: 0
+  };
+
+  const ledger = reportData?.ledger || [];
+  const monthlyTrend = reportData?.monthly_trend || [];
+  const categoryBreakdown = reportData?.category_breakdown || [];
+  const topCreators = reportData?.top_creators || [];
+  const topBrands = reportData?.top_brands || [];
+
+  const paginatedLedger = ledger.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const exportCSV = () => {
+    const headers = "Transaction_ID,Encrypted_Token,Campaign_Name,Brand_Client,Creator,Deal_Budget,Platform_Fee,Creator_Net,Status,Date,Settlement_Status\n";
+    const rows = ledger.map(item => 
+      `${item.id},"${item.encrypted_id}","${(item.campaign_name || '').replace(/"/g, '""')}","${(item.business_name || '').replace(/"/g, '""')}","${(item.influencer_name || '').replace(/"/g, '""')}",${item.budget},${item.platform_fee},${item.creator_net},${item.status},${item.date},${item.settlement_status}`
+    ).join("\n");
+
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `financial_report_audit_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
+      
+      {/* HEADER SECTION */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+              Financial Reports & Platform Analytics
+            </h1>
+            <span className="badge badge-purple" style={{ fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <ShieldCheck size={13} /> Live API Dynamic
+            </span>
+          </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '4px 0 0 0' }}>
+            Audited financial settlement ledger, platform commission metrics, escrow custody, and category revenue performance.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <button 
+            type="button"
+            className="btn btn-secondary btn-sm" 
+            onClick={fetchReports} 
+            disabled={loading}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            title="Refresh Financial API Data"
+          >
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {loading ? 'Syncing...' : 'Refresh'}
+          </button>
+          <button 
+            type="button"
+            className="btn btn-secondary btn-sm" 
+            onClick={() => window.print()}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            title="Print Financial Statement"
+          >
+            <FileText size={14} /> Print Statement
+          </button>
+          <button 
+            type="button"
+            className="btn btn-primary btn-sm" 
+            onClick={exportCSV} 
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}
+          >
+            <Download size={14} /> Export Audit CSV ({ledger.length})
+          </button>
+        </div>
+      </div>
+
+      {/* TIMEFRAME FILTER BAR */}
+      <div className="glass-panel" style={{ padding: '12px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Time Period:</span>
+          {[
+            { id: 'all', label: 'All Time' },
+            { id: 'year', label: 'This Year' },
+            { id: '90days', label: 'Past 90 Days' },
+            { id: '30days', label: 'Past 30 Days' },
+            { id: '7days', label: 'Past 7 Days' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => {
+                setTimeframe(tab.id);
+                setCurrentPage(1);
+              }}
+              className={`btn btn-sm ${timeframe === tab.id ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.78rem', padding: '5px 12px' }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+          Active Commission Rate: <strong style={{ color: 'var(--primary)' }}>{metrics.commission_rate_percent}%</strong> (Configured in Settings)
+        </div>
+      </div>
+
+      {/* TOP STATS CARDS GRID */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '16px' }}>
+        
+        {/* Card 1: Gross Transaction Volume */}
+        <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '3px solid #6366F1' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Gross Merchandise Value (GMV)</span>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <DollarSign size={18} color="#6366F1" />
+            </div>
+          </div>
+          <strong style={{ fontSize: '1.75rem', color: 'var(--text-main)', fontWeight: 800 }}>
+            ₹{metrics.total_gmv.toLocaleString()}
+          </strong>
+          <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+            Across {metrics.total_deals_count} verified campaign bookings
+          </span>
+        </div>
+
+        {/* Card 2: Net Platform Commission */}
+        <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '3px solid #10B981' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Net Platform Revenue</span>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <TrendingUp size={18} color="#10B981" />
+            </div>
+          </div>
+          <strong style={{ fontSize: '1.75rem', color: 'var(--accent-emerald)', fontWeight: 800 }}>
+            ₹{metrics.platform_commission.toLocaleString()}
+          </strong>
+          <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+            {metrics.commission_rate_percent}% platform fee on held & released deals
+          </span>
+        </div>
+
+        {/* Card 3: Active Escrow in Custody */}
+        <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '3px solid #F59E0B' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Active Escrow In Custody</span>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Clock size={18} color="#F59E0B" />
+            </div>
+          </div>
+          <strong style={{ fontSize: '1.75rem', color: 'var(--accent-amber)', fontWeight: 800 }}>
+            ₹{metrics.escrow_held.toLocaleString()}
+          </strong>
+          <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+            Funds securely locked awaiting campaign deliverable signoff
+          </span>
+        </div>
+
+        {/* Card 4: Disbursed to Creators */}
+        <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '3px solid #EC4899' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Disbursed to Creators</span>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(236, 72, 153, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CheckCircle2 size={18} color="#EC4899" />
+            </div>
+          </div>
+          <strong style={{ fontSize: '1.75rem', color: '#EC4899', fontWeight: 800 }}>
+            ₹{metrics.creator_disbursed.toLocaleString()}
+          </strong>
+          <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+            Net funds released directly to verified creator payouts
+          </span>
+        </div>
+
+      </div>
+
+      {/* ANALYTICS SECTION: REVENUE BREAKDOWN & CATEGORY PERFORMANCE */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))', gap: '18px' }}>
+        
+        {/* Category Performance Breakdown */}
+        <div className="glass-panel" style={{ padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+            <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+              Category Transaction Distribution
+            </h3>
+            <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)' }}>Volume Share</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {categoryBreakdown.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', textAlign: 'center', padding: '20px 0' }}>No category transactions recorded in this period.</p>
+            ) : (
+              categoryBreakdown.map((cat, idx) => {
+                const totalVol = Math.max(1, metrics.total_gmv);
+                const percent = Math.min(100, Math.round((cat.volume / totalVol) * 100));
+                const colors = ['#6366F1', '#EC4899', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6'];
+                const col = colors[idx % colors.length];
+
+                return (
+                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.84rem' }}>
+                      <span style={{ color: 'var(--text-main)', fontWeight: 700 }}>{cat.category} ({cat.count} deals)</span>
+                      <strong style={{ color: 'var(--accent-emerald)' }}>₹{cat.volume.toLocaleString()} ({percent}%)</strong>
+                    </div>
+                    <div style={{ height: '7px', width: '100%', background: 'var(--bg-input)', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div style={{ width: `${percent}%`, height: '100%', background: col, borderRadius: '4px', transition: 'width 0.4s ease' }} />
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Top Earners & Spenders Leaderboard */}
+        <div className="glass-panel" style={{ padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+            <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+              Top Earning Creators & Spenders
+            </h3>
+            <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)' }}>Leaderboard</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            {/* Top Creators */}
+            <div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                Top Creators (Net Payout)
+              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {topCreators.slice(0, 4).map((cr, idx) => (
+                  <div key={idx} style={{ padding: '8px 10px', background: 'var(--bg-input)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--primary)' }}>#{idx + 1}</span>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-main)', fontWeight: 700 }}>{cr.name}</span>
+                    </div>
+                    <strong style={{ fontSize: '0.84rem', color: 'var(--accent-emerald)' }}>₹{cr.total_earned.toLocaleString()}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top Brands */}
+            <div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                Top Brands (Total Spend)
+              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {topBrands.slice(0, 4).map((br, idx) => (
+                  <div key={idx} style={{ padding: '8px 10px', background: 'var(--bg-input)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--accent-amber)' }}>#{idx + 1}</span>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-main)', fontWeight: 700 }}>{br.name}</span>
+                    </div>
+                    <strong style={{ fontSize: '0.84rem', color: 'var(--text-main)' }}>₹{br.total_spent.toLocaleString()}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* AUDIT TRANSACTION LEDGER TABLE */}
+      <div className="glass-panel" style={{ padding: '22px' }}>
+        
+        {/* Table Filter Toolbar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
+          <div>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+              Audited Financial Transaction Ledger
+            </h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.84rem', margin: '2px 0 0 0' }}>
+              Full transaction log with deal amounts, platform commission deductions, and escrow settlements.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {/* Status Filter */}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {[
+                { id: 'all', label: 'All Statuses' },
+                { id: 'accepted', label: 'In Escrow' },
+                { id: 'completed', label: 'Disbursed' },
+                { id: 'rejected', label: 'Refunded' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    setStatusFilter(tab.id);
+                    setCurrentPage(1);
+                  }}
+                  className={`btn btn-sm ${statusFilter === tab.id ? 'btn-primary' : 'btn-secondary'}`}
+                  style={{ fontSize: '0.76rem', padding: '5px 10px' }}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Input */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '5px 10px', minWidth: '220px' }}>
+              <Search size={14} color="var(--text-dim)" />
+              <input 
+                type="text" 
+                placeholder="Search transaction..." 
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', fontSize: '0.82rem', outline: 'none', width: '100%' }}
+              />
+              {searchTerm && (
+                <button type="button" onClick={() => setSearchTerm('')} style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }}>✕</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Responsive Table */}
+        <div className="table-responsive-container">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.86rem' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Tx ID / Token</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Campaign</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Brand Client</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Creator</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Deal Budget</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Fee ({metrics.commission_rate_percent}%)</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Net Creator Payout</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Date</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Settlement Status</th>
+                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Audit Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="10" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    <RefreshCw size={20} className="animate-spin" style={{ margin: '0 auto 8px auto', display: 'block' }} />
+                    Loading financial records from API...
+                  </td>
+                </tr>
+              ) : paginatedLedger.length === 0 ? (
+                <tr>
+                  <td colSpan="10" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    No financial transaction records found matching the filter criteria.
+                  </td>
+                </tr>
+              ) : (
+                paginatedLedger.map(item => (
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <strong style={{ color: 'var(--primary)', fontSize: '0.88rem' }}>#{item.id}</strong>
+                        <span 
+                          style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#818CF8', background: 'rgba(99, 102, 241, 0.12)', padding: '1px 5px', borderRadius: '4px', width: 'fit-content' }}
+                          title={`Encrypted ID: ${item.encrypted_id}`}
+                        >
+                          {item.encrypted_id}
+                        </span>
+                      </div>
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      {item.campaign_name}
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
+                      {item.business_name}
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--primary)', fontWeight: 600, verticalAlign: 'middle' }}>
+                      {item.influencer_name}
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 800, verticalAlign: 'middle' }}>
+                      ₹{item.budget.toLocaleString()}
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      +₹{item.platform_fee.toLocaleString()}
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--accent-amber)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      ₹{item.creator_net.toLocaleString()}
+                    </td>
+                    <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
+                      {item.date}
+                    </td>
+                    <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <span className={`badge ${
+                        item.status === 'completed' ? 'badge-green' : 
+                        item.status === 'accepted' ? 'badge-purple' : 
+                        item.status === 'rejected' ? 'badge-danger' : 'badge-amber'
+                      }`} style={{ fontSize: '0.74rem', padding: '4px 8px' }}>
+                        {item.settlement_status.toUpperCase()}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <button 
+                        type="button" 
+                        className="btn btn-secondary btn-sm" 
+                        onClick={() => setSelectedTx(item)}
+                        style={{ padding: '4px 8px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      >
+                        <Eye size={12} /> Audit Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <Pagination 
+          currentPage={currentPage}
+          totalItems={ledger.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+
+      {/* TRANSACTION AUDIT MODAL */}
+      {selectedTx && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(6px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1200,
+          padding: '20px'
+        }}>
+          <div className="glass-panel animate-fade-in" style={{ maxWidth: '580px', width: '100%', padding: '24px', borderRadius: '18px', background: 'var(--bg-card)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="badge badge-purple">Tx #{selectedTx.id}</span>
+                <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+                  Financial Audit Breakdown
+                </h3>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setSelectedTx(null)} 
+                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '18px' }}>
+              <div>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Encrypted Token ID</span>
+                <span style={{ fontFamily: 'monospace', color: '#818CF8', fontSize: '0.86rem', background: 'rgba(99, 102, 241, 0.15)', padding: '2px 6px', borderRadius: '4px' }}>
+                  {selectedTx.encrypted_id}
+                </span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Settlement Status</span>
+                <strong style={{ color: 'var(--accent-emerald)', fontSize: '0.92rem', textTransform: 'uppercase' }}>
+                  {selectedTx.settlement_status}
+                </strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Campaign Name</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedTx.campaign_name}</strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Brand Client</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedTx.business_name}</strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Influencer Creator</span>
+                <strong style={{ color: 'var(--primary)', fontSize: '0.94rem' }}>{selectedTx.influencer_name}</strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Transaction Date</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedTx.date}</strong>
+              </div>
+            </div>
+
+            {/* Financial Math Box */}
+            <div style={{ background: 'var(--bg-input)', padding: '16px', borderRadius: '12px', marginBottom: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Gross Deal Amount (Escrow Deposit):</span>
+                <strong style={{ color: 'var(--text-main)' }}>₹{selectedTx.budget.toLocaleString()}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Platform Commission ({metrics.commission_rate_percent}%):</span>
+                <strong style={{ color: 'var(--accent-emerald)' }}>-₹{selectedTx.platform_fee.toLocaleString()}</strong>
+              </div>
+              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '0.98rem' }}>
+                <span style={{ color: 'var(--text-main)', fontWeight: 700 }}>Net Disbursable Creator Payout:</span>
+                <strong style={{ color: 'var(--accent-amber)' }}>₹{selectedTx.creator_net.toLocaleString()}</strong>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button 
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() => setSelectedTx(null)}
+              >
+                Close Audit View
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
 

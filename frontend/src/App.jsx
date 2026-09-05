@@ -14,7 +14,7 @@ import { CategoriesPage, HowItWorksPage, AboutUsPage, ContactPage, LegalPage } f
 
 import { LoginPage, RegisterPage, ForgotPasswordPage } from './pages/auth/AuthPages';
 
-import { AdminDashboard, InfluencerMgmt, UserMgmt, CategoryMgmt, BookingMgmt, AdminSettingsPage, AdminAvailabilityMgmt } from './pages/admin/AdminPages';
+import { AdminDashboard, InfluencerMgmt, UserMgmt, CategoryMgmt, BookingMgmt, AdminSettingsPage, AdminAvailabilityMgmt, AdminReportsPage } from './pages/admin/AdminPages';
 import { InfluencerDashboard, InfluencerProfileEdit, InfluencerSocialsPage, InfluencerCharges, InfluencerPortfolioPage, InfluencerAvailability, InfluencerMessagesWorkspace, InfluencerAnalyticsPage, InfluencerRequestsPage } from './pages/influencer/InfluencerPages';
 import { UserDashboard, UserBookingsPage, UserFavorites, UserMessagesWorkspace, UserProfileEdit } from './pages/user/UserPages';
 
@@ -132,7 +132,7 @@ export default function App() {
           <Route path="/admin/categories" element={<CategoryMgmt />} />
           <Route path="/admin/bookings" element={<BookingMgmt />} />
           <Route path="/admin/availability" element={<AdminAvailabilityMgmt />} />
-          <Route path="/admin/reports" element={<BookingMgmt />} />
+          <Route path="/admin/reports" element={<AdminReportsPage />} />
           <Route path="/admin/settings" element={<AdminSettingsPage />} />
         </Route>
 

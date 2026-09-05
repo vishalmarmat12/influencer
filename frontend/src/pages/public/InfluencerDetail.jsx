@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  Star, ShieldCheck, MapPin, Calendar, Heart, Share2, MessageSquare, 
+import {
+  Star, ShieldCheck, MapPin, Calendar, Heart, Share2, MessageSquare,
   DollarSign, CheckCircle2, Award, ExternalLink, X, Image as ImageIcon, Plus, ThumbsUp, MessageCircle, AlertCircle
 } from 'lucide-react';
 import { InstagramIcon, YoutubeIcon } from '../../components/common/SocialIcons';
 import apiService from '../../api/apiService';
-import { encryptId, decryptId, matchesEntityId } from '../../utils/cryptoId';
 
 export default function InfluencerDetail() {
   const { id } = useParams();
@@ -27,10 +26,10 @@ export default function InfluencerDetail() {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewMsg, setReviewMsg] = useState('');
 
-  const influencerId = decryptId(id) || 1;
-  
-  // Find target influencer by matching id, user_id, or encrypted id
-  const matchedInf = (influencers || []).find(i => matchesEntityId(i, id) || Number(i.id) === influencerId || Number(i.user_id) === influencerId);
+  const influencerId = Number(id) || 1;
+
+  // Find target influencer by matching id or user_id
+  const matchedInf = (influencers || []).find(i => Number(i.id) === influencerId || Number(i.user_id) === influencerId);
   const foundInf = matchedInf || (influencers || [])[0] || {};
 
   // Strictly check if logged-in user IS this exact creator profile
@@ -82,7 +81,7 @@ export default function InfluencerDetail() {
   );
 
   const totalReviewsCount = creatorReviews.length;
-  const averageRating = totalReviewsCount > 0 
+  const averageRating = totalReviewsCount > 0
     ? (creatorReviews.reduce((acc, r) => acc + Number(r.rating || 5), 0) / totalReviewsCount).toFixed(1)
     : (inf.rating || 4.9);
 
@@ -116,10 +115,10 @@ export default function InfluencerDetail() {
     : (isSelf && Array.isArray(user?.services) && user.services.length > 0)
       ? user.services
       : [
-          { type: 'Instagram Post', price: startingPrice, desc: 'Branded feed post with caption link' },
-          { type: 'Instagram Reel', price: Math.round(startingPrice * 1.5), desc: '30-60 second dedicated video Reel with tag' },
-          { type: 'YouTube Integration', price: Math.round(startingPrice * 2.5), desc: '60-second video sponsor segment' }
-        ];
+        { type: 'Instagram Post', price: startingPrice, desc: 'Branded feed post with caption link' },
+        { type: 'Instagram Reel', price: Math.round(startingPrice * 1.5), desc: '30-60 second dedicated video Reel with tag' },
+        { type: 'YouTube Integration', price: Math.round(startingPrice * 2.5), desc: '60-second video sponsor segment' }
+      ];
 
   const portfolio = (Array.isArray(inf.portfolio) && inf.portfolio.length > 0)
     ? inf.portfolio
@@ -165,7 +164,7 @@ export default function InfluencerDetail() {
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', minWidth: 0 }}>
-      
+
       {/* COVER IMAGE BANNER */}
       <div className="glass-panel" style={{ height: 'clamp(180px, 25vw, 260px)', position: 'relative', overflow: 'hidden', padding: 0 }}>
         <img src={coverImage} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -187,14 +186,14 @@ export default function InfluencerDetail() {
         </div>
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button 
+          <button
             className="btn btn-secondary btn-sm"
             onClick={() => inf.id && toggleFavorite(inf.id)}
             style={{ color: isFav ? 'var(--accent-pink)' : 'var(--text-main)', padding: '8px 14px' }}
           >
             <Heart size={16} fill={isFav ? 'var(--accent-pink)' : 'none'} /> <span className="hide-on-mobile">{isFav ? 'Saved' : 'Favorite'}</span>
           </button>
-          <button 
+          <button
             className="btn btn-secondary btn-sm"
             onClick={handleChatClick}
             disabled={chatLoading}
@@ -234,7 +233,7 @@ export default function InfluencerDetail() {
 
       {/* CONTENT LAYOUT */}
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
-        
+
         {/* MAIN TABS CONTENT */}
         <div style={{ minWidth: 0 }}>
           {/* TAB BUTTONS */}
@@ -356,8 +355,8 @@ export default function InfluencerDetail() {
                     }
 
                     return (
-                      <div 
-                        key={item.id} 
+                      <div
+                        key={item.id}
                         style={{
                           display: 'flex',
                           justify: 'space-between',
@@ -445,16 +444,16 @@ export default function InfluencerDetail() {
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
                   {portfolio.map((imgUrl, idx) => (
-                    <div 
-                      key={idx} 
-                      className="glass-panel glass-panel-hover" 
+                    <div
+                      key={idx}
+                      className="glass-panel glass-panel-hover"
                       onClick={() => setSelectedImage(typeof imgUrl === 'string' ? imgUrl : (imgUrl.url || imgUrl.thumbnail))}
                       style={{ height: '220px', overflow: 'hidden', padding: 0, cursor: 'pointer', position: 'relative' }}
                     >
-                      <img 
-                        src={typeof imgUrl === 'string' ? imgUrl : (imgUrl.url || imgUrl.thumbnail)} 
-                        alt={`Portfolio item ${idx + 1}`} 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      <img
+                        src={typeof imgUrl === 'string' ? imgUrl : (imgUrl.url || imgUrl.thumbnail)}
+                        alt={`Portfolio item ${idx + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     </div>
                   ))}
@@ -550,12 +549,12 @@ export default function InfluencerDetail() {
                       <label className="form-label" style={{ fontWeight: 600 }}>Rating</label>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', cursor: 'pointer' }}>
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <Star 
-                            key={star} 
-                            size={26} 
-                            fill={star <= reviewRating ? 'var(--accent-amber)' : 'none'} 
+                          <Star
+                            key={star}
+                            size={26}
+                            fill={star <= reviewRating ? 'var(--accent-amber)' : 'none'}
                             color="var(--accent-amber)"
-                            onClick={() => setReviewRating(star)} 
+                            onClick={() => setReviewRating(star)}
                           />
                         ))}
                         <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 700, marginLeft: '8px' }}>
@@ -566,9 +565,9 @@ export default function InfluencerDetail() {
 
                     <div className="form-group" style={{ marginBottom: '16px' }}>
                       <label className="form-label" style={{ fontWeight: 600 }}>Your Campaign Feedback & Review</label>
-                      <textarea 
-                        className="form-textarea" 
-                        rows="3" 
+                      <textarea
+                        className="form-textarea"
+                        rows="3"
                         placeholder="Share your experience regarding campaign delivery, content quality, and engagement results..."
                         value={reviewComment}
                         onChange={(e) => setReviewComment(e.target.value)}
@@ -597,10 +596,10 @@ export default function InfluencerDetail() {
                     <div key={r.id || idx} className="glass-panel animate-fade-in" style={{ padding: '22px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <img 
-                            src={r.user_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} 
-                            alt={r.user_name || 'User'} 
-                            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} 
+                          <img
+                            src={r.user_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                            alt={r.user_name || 'User'}
+                            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
                           />
                           <div>
                             <strong style={{ color: 'var(--text-main)', fontSize: '0.96rem', display: 'block' }}>
@@ -668,21 +667,21 @@ export default function InfluencerDetail() {
 
       {/* FULLSCREEN LIGHTBOX IMAGE MODAL */}
       {selectedImage && (
-        <div 
+        <div
           style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(10px)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
           onClick={() => setSelectedImage(null)}
         >
           <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }} onClick={(e) => e.stopPropagation()}>
-            <button 
+            <button
               onClick={() => setSelectedImage(null)}
               style={{ position: 'absolute', top: '-40px', right: '0', background: 'none', border: 'none', color: '#FFF', cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}
             >
               <X size={20} /> Close Preview
             </button>
-            <img 
-              src={selectedImage} 
-              alt="Portfolio High-Res Lightbox" 
-              style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} 
+            <img
+              src={selectedImage}
+              alt="Portfolio High-Res Lightbox"
+              style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
             />
           </div>
         </div>

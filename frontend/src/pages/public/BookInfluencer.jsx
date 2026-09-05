@@ -3,42 +3,40 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/apiService';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  DollarSign, 
-  Send, 
-  CheckCircle2, 
-  AlertCircle, 
-  Star, 
-  Users, 
-  MapPin, 
-  TrendingUp, 
-  Tag, 
-  Briefcase, 
-  FileText, 
-  Mail, 
-  Phone, 
-  Layers, 
-  ShieldCheck, 
-  Sparkles, 
-  ChevronRight, 
-  Loader2, 
-  ExternalLink 
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  DollarSign,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Star,
+  Users,
+  MapPin,
+  TrendingUp,
+  Tag,
+  Briefcase,
+  FileText,
+  Mail,
+  Phone,
+  Layers,
+  ShieldCheck,
+  Sparkles,
+  ChevronRight,
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 import { InstagramIcon, YoutubeIcon } from '../../components/common/SocialIcons';
-import { encryptId, decryptId, matchesEntityId } from '../../utils/cryptoId';
 
 export default function BookInfluencer() {
   const { id, influencerId } = useParams();
   const targetId = id || influencerId;
-  const numericTargetId = decryptId(targetId);
   const navigate = useNavigate();
-  
+
   const { influencers, createBooking, checkDateAvailability, loading: dataLoading } = useData();
   const { user } = useAuth();
-  
+
   const [influencer, setInfluencer] = useState(null);
   const [loadingInf, setLoadingInf] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -80,7 +78,7 @@ export default function BookInfluencer() {
 
       // Check in DataContext first
       const existing = (influencers || []).find(
-        (inf) => matchesEntityId(inf, targetId) || Number(inf.id) === numericTargetId || Number(inf.user_id) === numericTargetId
+        (inf) => String(inf.id) === String(targetId) || String(inf.user_id) === String(targetId)
       );
 
       if (existing) {
@@ -98,7 +96,7 @@ export default function BookInfluencer() {
 
       // If not in context yet, fetch via API
       try {
-        const res = await api.getInfluencerDetail(numericTargetId || targetId);
+        const res = await api.getInfluencerDetail(targetId);
         if (isMounted) {
           if (res && res.data) {
             setInfluencer(res.data);
@@ -247,9 +245,9 @@ export default function BookInfluencer() {
     <div className="book-influencer-page animate-fade-in">
       {/* 1. TOP HEADER & BREADCRUMBS */}
       <div className="book-influencer-header">
-        <button 
-          type="button" 
-          onClick={() => navigate(-1)} 
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
           className="book-influencer-back-btn"
           aria-label="Go back to previous page"
         >
@@ -272,24 +270,24 @@ export default function BookInfluencer() {
       {/* 2. SUCCESS CONFIRMATION STATE */}
       {submitted ? (
         <div className="glass-panel animate-fade-in" style={{ maxWidth: '780px', margin: '0 auto', padding: '50px 30px', textAlign: 'center' }}>
-          <div style={{ 
-            width: '80px', 
-            height: '80px', 
-            borderRadius: '50%', 
-            background: 'rgba(16, 185, 129, 0.15)', 
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'rgba(16, 185, 129, 0.15)',
             border: '2px solid rgba(16, 185, 129, 0.4)',
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             margin: '0 auto 24px auto'
           }}>
             <CheckCircle2 size={46} color="var(--accent-emerald)" />
           </div>
-          
+
           <h2 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '12px' }}>
             Booking Request Submitted!
           </h2>
-          
+
           <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', maxWidth: '560px', margin: '0 auto 28px auto', lineHeight: 1.6 }}>
             Your campaign proposal for <strong style={{ color: 'var(--text-main)' }}>"{formData.campaign_name}"</strong> has been successfully sent to <strong style={{ color: 'var(--primary)' }}>{influencer?.name}</strong>.
           </p>
@@ -336,20 +334,20 @@ export default function BookInfluencer() {
       ) : (
         /* 3. TWO-COLUMN MAIN LAYOUT */
         <div className="book-influencer-grid">
-          
+
           {/* ============================================================= */}
           {/* LEFT COLUMN: INFLUENCER PROFILE CARD                          */}
           {/* ============================================================= */}
           <aside className="book-influencer-sidebar">
             <div className="glass-panel influencer-profile-card">
-              
+
               {/* Profile Header Image & Avatar */}
               <div className="profile-card-header">
                 <div className="profile-banner-bg" />
                 <div className="profile-avatar-wrapper">
-                  <img 
-                    src={influencer?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80'} 
-                    alt={influencer?.name || 'Influencer'} 
+                  <img
+                    src={influencer?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80'}
+                    alt={influencer?.name || 'Influencer'}
                     className="profile-avatar-img"
                   />
                   {influencer?.verified && (
@@ -424,8 +422,8 @@ export default function BookInfluencer() {
                 )}
 
                 {/* Link to Full Profile */}
-                <Link 
-                  to={`/influencer/${influencer?.id}`} 
+                <Link
+                  to={`/influencer/${influencer?.id}`}
                   className="btn btn-secondary btn-sm"
                   style={{ width: '100%', marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
                 >
@@ -440,7 +438,7 @@ export default function BookInfluencer() {
           {/* ============================================================= */}
           <main className="book-influencer-main">
             <div className="glass-panel booking-form-panel">
-              
+
               <div className="booking-form-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'rgba(99, 102, 241, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
@@ -465,7 +463,7 @@ export default function BookInfluencer() {
               )}
 
               <form onSubmit={handleSubmit} className="booking-actual-form">
-                
+
                 {/* 1. CAMPAIGN & BRAND NAME */}
                 <div className="form-grid-2">
                   <div className="form-group">
@@ -676,7 +674,7 @@ export default function BookInfluencer() {
                       Booking Summary
                     </h4>
                   </div>
-                  
+
                   <div className="booking-summary-grid">
                     <div className="summary-item">
                       <span className="summary-label">Influencer:</span>
@@ -705,8 +703,8 @@ export default function BookInfluencer() {
 
                 {/* 9. SUBMIT BUTTONS */}
                 <div className="booking-form-actions">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="btn btn-secondary"
                     onClick={() => navigate(-1)}
                     disabled={submitting}
@@ -717,9 +715,9 @@ export default function BookInfluencer() {
                     type="submit"
                     className="btn btn-primary"
                     disabled={!availCheck.isAvailable || submitting}
-                    style={{ 
-                      opacity: !availCheck.isAvailable || submitting ? 0.6 : 1, 
-                      cursor: !availCheck.isAvailable || submitting ? 'not-allowed' : 'pointer' 
+                    style={{
+                      opacity: !availCheck.isAvailable || submitting ? 0.6 : 1,
+                      cursor: !availCheck.isAvailable || submitting ? 'not-allowed' : 'pointer'
                     }}
                   >
                     {submitting ? (

@@ -4,7 +4,6 @@ import { useData } from '../../context/DataContext';
 import {
   Search, TrendingUp, ShieldCheck, Star, Users, ArrowRight, Award, Zap, Heart, CheckCircle2, ChevronRight, Play, Sparkles, Filter, CheckCircle
 } from 'lucide-react';
-import { encryptId } from '../../utils/cryptoId';
 
 export default function Home() {
   const { categories, influencers, reviewsList, siteSettings } = useData();
@@ -56,14 +55,14 @@ export default function Home() {
 
       {/* 1. SPLIT HERO SECTION (LEFT ASSETS & RIGHT SHOWCASE IMAGE) */}
       <section className="hero-wrapper-enhanced">
-        
+
         {/* Glowing Ambient Gradient Blobs */}
         <div className="hero-glow-blob-1" />
         <div className="hero-glow-blob-2" />
         <div className="hero-glow-blob-3" />
 
         <div className="hero-split-grid">
-          
+
           {/* LEFT SIDE: ALL ASSETS */}
           <div className="hero-split-left">
             {/* Top Feature Pill */}
@@ -172,11 +171,11 @@ export default function Home() {
           {/* RIGHT SIDE: SHOWCASE IMAGE WITH FLOATING BADGES */}
           <div className="hero-split-right">
             <div className="hero-showcase-box">
-              
+
               {/* Creator Main Showcase Image */}
-              <img 
-                src={siteSettings?.hero_image_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80"} 
-                alt="Top Influencer Campaign" 
+              <img
+                src={siteSettings?.hero_image_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80"}
+                alt="Top Influencer Campaign"
                 className="hero-showcase-img"
               />
 
@@ -295,14 +294,14 @@ export default function Home() {
 
                 <div className="influencer-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <Link
-                    to={`/influencer/${encryptId(inf.id)}`}
+                    to={`/influencer/${inf.id}`}
                     className="btn btn-secondary btn-sm"
                     style={{ fontSize: '0.82rem', padding: '8px 10px', textAlign: 'center', justifyContent: 'center' }}
                   >
                     Profile
                   </Link>
                   <Link
-                    to={`/book/${encryptId(inf.id)}`}
+                    to={`/book-influencer/${inf.id}`}
                     className="btn btn-primary btn-sm"
                     style={{ fontSize: '0.82rem', padding: '8px 10px', textAlign: 'center', justifyContent: 'center' }}
                   >

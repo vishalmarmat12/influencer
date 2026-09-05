@@ -4,14 +4,13 @@ import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import apiService from '../../api/apiService';
 import Pagination from '../../components/common/Pagination';
-import { 
-  CalendarCheck, Heart, MessageSquare, Star, Sparkles, Search, 
+import {
+  CalendarCheck, Heart, MessageSquare, Star, Sparkles, Search,
   CheckCircle2, Plus, ArrowRight, DollarSign, ShieldCheck, User,
   Bell, Send, BarChart3, Clock, Check, X, ThumbsUp, ArrowUpRight,
   Filter, Eye, Sliders, Settings, Users, Image, Globe, ArrowDownRight, CheckSquare,
   Camera, Phone, Mail, MapPin
 } from 'lucide-react';
-import { encryptId } from '../../utils/cryptoId';
 import ChatBox from '../../components/chat/ChatBox';
 
 /* -------------------------------------------------------------------------- */
@@ -45,7 +44,7 @@ export function UserDashboard({ setSelectedInfluencerId }) {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       {/* 1. BRAND / USER HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
@@ -64,7 +63,7 @@ export function UserDashboard({ setSelectedInfluencerId }) {
 
       {/* 2. TOP 5 KPI STAT CARDS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
-        
+
         {/* Card 1: Total Bookings */}
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #6366F1', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
@@ -139,7 +138,7 @@ export function UserDashboard({ setSelectedInfluencerId }) {
 
       {/* 3. CAMPAIGN SPEND ANALYTICS + BUDGET SPLIT DONUT */}
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '18px' }}>
-        
+
         {/* Campaign Spend Chart */}
         <div className="glass-panel" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -263,7 +262,7 @@ export function UserDashboard({ setSelectedInfluencerId }) {
 
       {/* 5. UPCOMING BOOKINGS + SAVED WISHLIST SIDE PANEL */}
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '18px' }}>
-        
+
         {/* Upcoming Bookings */}
         <div className="glass-panel" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
@@ -401,7 +400,7 @@ export function UserBookingsPage() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>My Campaign Appointments ({myBookings.length})</h1>
@@ -451,9 +450,9 @@ export function UserBookingsPage() {
                         <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : 'badge-blue'}`}>{(b.status || 'pending').toUpperCase()}</span>
                       </td>
                       <td style={{ padding: '10px' }}>
-                        <button 
-                          onClick={() => handleDirectChat(b.influencer_id || b.influencer_user_id || 1)} 
-                          className="btn btn-secondary btn-sm" 
+                        <button
+                          onClick={() => handleDirectChat(b.influencer_id || b.influencer_user_id || 1)}
+                          className="btn btn-secondary btn-sm"
                           style={{ padding: '4px 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                         >
                           <MessageSquare size={13} /> Chat
@@ -465,7 +464,7 @@ export function UserBookingsPage() {
               </table>
             </div>
 
-            <Pagination 
+            <Pagination
               currentPage={currentPage}
               totalItems={myBookings.length}
               itemsPerPage={itemsPerPage}
@@ -488,7 +487,7 @@ export function UserFavorites() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>Saved Creators Wishlist</h1>
@@ -535,7 +534,7 @@ export function UserFavorites() {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: 'auto' }}>
-                <Link to={`/influencer/${encryptId(inf.id)}`} className="btn btn-secondary btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }}>View Profile</Link>
+                <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }}>View Profile</Link>
                 <button className="btn btn-danger btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => toggleFavorite(inf.id)}>Remove</button>
               </div>
             </div>
@@ -553,7 +552,7 @@ export function UserFavorites() {
 export function UserProfileEdit() {
   const { user, updateUser } = useAuth();
   const fileInputRef = React.useRef(null);
-  
+
   const [avatar, setAvatar] = useState(user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150');
   const [contactName, setContactName] = useState(user?.name || '');
   const [businessName, setBusinessName] = useState(user?.company || user?.name || '');
@@ -594,17 +593,17 @@ export function UserProfileEdit() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUser({ 
-      avatar, 
-      name: contactName, 
-      company: businessName, 
-      email, 
-      phone, 
-      gender, 
-      dob, 
-      city, 
-      state, 
-      country 
+    updateUser({
+      avatar,
+      name: contactName,
+      company: businessName,
+      email,
+      phone,
+      gender,
+      dob,
+      city,
+      state,
+      country
     });
     setSaved(true);
   };
@@ -623,27 +622,27 @@ export function UserProfileEdit() {
       )}
 
       <div className="glass-panel" style={{ padding: 'clamp(16px, 3.5vw, 28px)' }}>
-        
+
         {/* Hidden File Input */}
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          accept="image/*" 
-          onChange={handleImageFileChange} 
-          style={{ display: 'none' }} 
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={handleImageFileChange}
+          style={{ display: 'none' }}
         />
 
         {/* PROFILE PICTURE AVATAR HEADER */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '28px', paddingBottom: '20px', borderBottom: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
-          <div 
-            onClick={() => fileInputRef.current?.click()} 
+          <div
+            onClick={() => fileInputRef.current?.click()}
             style={{ position: 'relative', cursor: 'pointer' }}
             title="Click to change profile picture"
           >
-            <img 
-              src={avatar} 
-              alt={contactName} 
-              style={{ width: '95px', height: '95px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', boxShadow: '0 4px 15px var(--primary-glow)' }} 
+            <img
+              src={avatar}
+              alt={contactName}
+              style={{ width: '95px', height: '95px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', boxShadow: '0 4px 15px var(--primary-glow)' }}
             />
             <div style={{ position: 'absolute', bottom: '2px', right: '2px', background: 'var(--primary)', padding: '7px', borderRadius: '50%', color: '#FFF', display: 'flex', boxShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
               <Camera size={15} />
@@ -653,11 +652,11 @@ export function UserProfileEdit() {
           <div style={{ flex: 1, minWidth: 'min(100%, 200px)' }}>
             <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800 }}>{contactName || 'User Avatar'}</h3>
             <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>{email} • {gender}</span>
-            
+
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-              <button 
-                type="button" 
-                onClick={() => fileInputRef.current?.click()} 
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
                 className="btn btn-primary btn-sm"
                 style={{ fontSize: '0.82rem', padding: '7px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
@@ -668,7 +667,7 @@ export function UserProfileEdit() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          
+
           {/* SECTION 1: PERSONAL & CONTACT DETAILS */}
           <h4 style={{ fontSize: '0.96rem', color: 'var(--primary)', fontWeight: 800, marginBottom: '14px', letterSpacing: '0.04em' }}>
             1. PERSONAL & CONTACT DETAILS

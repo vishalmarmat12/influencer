@@ -5,7 +5,6 @@ import {
   Search, Filter, Star, ShieldCheck, MapPin, SlidersHorizontal,
   Zap, Clock, ThumbsUp, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
-import { encryptId } from '../../utils/cryptoId';
 
 export default function Explore() {
   const { influencers, categories } = useData();
@@ -265,14 +264,14 @@ export default function Explore() {
 
             {/* Filter Content */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              
+
               {/* Category Filter */}
               <div className="filter-section-group">
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.65rem' }}>
                   Category / Niche
                 </label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', maxHeight: '180px', overflowY: 'auto', paddingRight: '0.35rem' }}>
-                  <button 
+                  <button
                     onClick={() => { setSelectedCategory('all'); setCurrentPage(1); }}
                     style={{
                       display: 'flex',
@@ -297,7 +296,7 @@ export default function Explore() {
                     const count = influencers.filter(i => i.category?.toLowerCase() === cat.name?.toLowerCase() || i.categoryId === cat.id).length;
                     const isSelected = selectedCategory.toLowerCase() === cat.name?.toLowerCase() || selectedCategory === cat.id;
                     return (
-                      <button 
+                      <button
                         key={cat.id}
                         onClick={() => { setSelectedCategory(cat.name); setCurrentPage(1); }}
                         style={{
@@ -360,7 +359,7 @@ export default function Explore() {
                     {minFollowers >= 1000000 ? `${(minFollowers / 1000000).toFixed(1)}M` : minFollowers >= 1000 ? `${(minFollowers / 1000).toFixed(0)}k` : minFollowers}+
                   </span>
                 </div>
-                <input 
+                <input
                   type="range"
                   min="0"
                   max="1000000"
@@ -384,7 +383,7 @@ export default function Explore() {
                     ₹{Number(maxPrice).toLocaleString()}
                   </span>
                 </div>
-                <input 
+                <input
                   type="range"
                   min="1000"
                   max="100000"
@@ -403,7 +402,7 @@ export default function Explore() {
               {/* Verified Only Checkbox */}
               <div className="filter-section-group" style={{ padding: '12px 14px' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer', fontSize: '0.875rem' }}>
-                  <input 
+                  <input
                     type="checkbox"
                     checked={onlyVerified}
                     onChange={(e) => { setOnlyVerified(e.target.checked); setCurrentPage(1); }}
@@ -527,7 +526,7 @@ export default function Explore() {
 
                         <div style={{ display: 'flex', gap: '0.3rem' }}>
                           <Link
-                            to={`/influencer/${encryptId(inf.id)}`}
+                            to={`/influencer/${inf.id}`}
                             style={{
                               padding: '0.4rem 0.6rem',
                               background: 'var(--bg-pill)',
@@ -542,14 +541,14 @@ export default function Explore() {
                             View
                           </Link>
                           <Link
-                            to={`/book/${encryptId(inf.id)}`}
+                            to={`/book-influencer/${inf.id}`}
                             style={{
                               padding: '0.4rem 0.65rem',
                               background: 'var(--primary)',
                               color: '#fff',
                               borderRadius: 'var(--radius-sm)',
                               fontSize: '0.75rem',
-                              fontWeight: 600,
+                              fontWeight: 700,
                               textDecoration: 'none',
                               whiteSpace: 'nowrap'
                             }}

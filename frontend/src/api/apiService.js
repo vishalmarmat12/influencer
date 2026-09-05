@@ -112,6 +112,12 @@ export const api = {
   getReviews: (influencer_id) => fetchApi(`reviews${influencer_id ? '?influencer_id=' + influencer_id : ''}`),
   addReview: (reviewData) => fetchApi('reviews', { method: 'POST', body: reviewData }),
 
+  // Financial Reports & Platform Analytics
+  getFinancialReports: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return fetchApi(`reports${query ? '?' + query : ''}`);
+  },
+
   // Portfolio & Real File Uploads
   getPortfolio: (influencer_id) => fetchApi(`portfolio${influencer_id ? '?influencer_id=' + influencer_id : ''}`),
   updatePortfolio: (data) => fetchApi('portfolio', { method: 'POST', body: data }),
