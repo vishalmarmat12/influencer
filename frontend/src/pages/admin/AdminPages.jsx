@@ -8,7 +8,7 @@ import {
   Plus, Check, X, Download, Bell, Settings, Filter, ArrowUpRight, BarChart3,
   CalendarDays, PieChart, CheckCircle2, AlertTriangle, FileText, Globe, Search,
   DollarSign, Eye, Activity, Sliders, User, MessageSquare, Clock, RefreshCw, CheckSquare,
-  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload, TrendingUp
+  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload, TrendingUp, ArrowLeft
 } from 'lucide-react';
 
 /* -------------------------------------------------------------------------- */
@@ -310,7 +310,7 @@ export function AdminDashboard() {
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '8px' }}>ID</th>
+                  <th style={{ padding: '8px' }}>S.No</th>
                   <th style={{ padding: '8px' }}>Campaign</th>
                   <th style={{ padding: '8px' }}>Business</th>
                   <th style={{ padding: '8px' }}>Influencer</th>
@@ -319,9 +319,9 @@ export function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {paginatedBookings.map(b => (
+                {paginatedBookings.map((b, idx) => (
                   <tr key={b.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                    <td style={{ padding: '8px', color: 'var(--primary)', fontWeight: 600 }}>#{b.id}</td>
+                    <td style={{ padding: '8px', color: 'var(--primary)', fontWeight: 600 }}>#{(currentPage - 1) * itemsPerPage + idx + 1}</td>
                     <td style={{ padding: '8px', color: 'var(--text-main)', fontWeight: 600 }}>{b.campaign_name}</td>
                     <td style={{ padding: '8px', color: 'var(--text-muted)' }}>{b.business_name}</td>
                     <td style={{ padding: '8px', color: 'var(--text-main)' }}>{b.influencer_name}</td>
@@ -1888,7 +1888,7 @@ export function BookingMgmt() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '12px' }}>ID</th>
+                <th style={{ padding: '12px' }}>S.No</th>
                 <th style={{ padding: '12px' }}>Campaign</th>
                 <th style={{ padding: '12px' }}>Business</th>
                 <th style={{ padding: '12px' }}>Influencer</th>
@@ -1906,12 +1906,12 @@ export function BookingMgmt() {
                   </td>
                 </tr>
               ) : (
-                paginatedBookings.map(b => {
+                paginatedBookings.map((b, idx) => {
                   const isLoadingThis = actionLoadingId === b.id;
                   const st = (b.status || 'pending').toLowerCase();
                   return (
                     <tr key={b.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '12px', color: 'var(--primary)', fontWeight: 600 }}>#{b.id}</td>
+                      <td style={{ padding: '12px', color: 'var(--primary)', fontWeight: 600 }}>#{(currentPage - 1) * itemsPerPage + idx + 1}</td>
                       <td style={{ padding: '12px', color: 'var(--text-main)', fontWeight: 700 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span>{b.campaign_name}</span>
@@ -2732,7 +2732,7 @@ export function AdminReportsPage() {
   const [timeframe, setTimeframe] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTx, setSelectedTx] = useState(null);
+  const [selectedAuditTx, setSelectedAuditTx] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
@@ -2765,24 +2765,6 @@ export function AdminReportsPage() {
     }, 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
-
-  // Lock body scroll when Audit Modal is open so the background page NEVER scrolls
-  useEffect(() => {
-    if (selectedTx) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = 'hidden';
-      if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-      }
-    } else {
-      document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
-    };
-  }, [selectedTx]);
 
   const metrics = reportData?.metrics || {
     total_gmv: 0,
@@ -2820,6 +2802,170 @@ export function AdminReportsPage() {
     URL.revokeObjectURL(url);
   };
 
+  /* -------------------------------------------------------------------------- */
+  /* DEDICATED FULL-PAGE AUDIT VIEW                                            */
+  /* -------------------------------------------------------------------------- */
+  if (selectedAuditTx) {
+    return (
+      <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+        
+        {/* Navigation & Action Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <button 
+            type="button" 
+            onClick={() => setSelectedAuditTx(null)} 
+            className="btn btn-secondary btn-sm"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}
+          >
+            <ArrowLeft size={16} /> Back to Financial Ledger
+          </button>
+
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button 
+              type="button" 
+              className="btn btn-secondary btn-sm" 
+              onClick={() => window.print()}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <FileText size={14} /> Print Audit Statement
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-primary btn-sm"
+              onClick={() => setSelectedAuditTx(null)}
+              style={{ fontWeight: 700 }}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+
+        {/* Main Audit Record Card */}
+        <div className="glass-panel" style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '18px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <span className="badge badge-purple" style={{ fontSize: '0.84rem', padding: '4px 10px', fontWeight: 800 }}>
+                  Serial Record #{selectedAuditTx.serialNumber || selectedAuditTx.id}
+                </span>
+                <span className={`badge ${
+                  selectedAuditTx.status === 'completed' ? 'badge-green' : 
+                  selectedAuditTx.status === 'accepted' ? 'badge-purple' : 
+                  selectedAuditTx.status === 'rejected' ? 'badge-danger' : 'badge-amber'
+                }`} style={{ fontSize: '0.84rem', padding: '4px 10px', fontWeight: 700 }}>
+                  {selectedAuditTx.settlement_status.toUpperCase()}
+                </span>
+              </div>
+              <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+                {selectedAuditTx.campaign_name}
+              </h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '4px 0 0 0' }}>
+                Comprehensive transaction audit, platform commission calculations, and escrow disbursement trail.
+              </p>
+            </div>
+
+            <div style={{ textAlign: 'right' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700, display: 'block' }}>Total Deal Amount</span>
+              <strong style={{ fontSize: '2.1rem', color: 'var(--accent-emerald)', fontWeight: 900 }}>
+                ₹{selectedAuditTx.budget.toLocaleString()}
+              </strong>
+            </div>
+          </div>
+
+          {/* 3 Detail Metric Blocks */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '16px' }}>
+            
+            {/* Block 1: Brand / Client Info */}
+            <div style={{ background: 'var(--bg-input)', padding: '20px', borderRadius: '14px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Brand & Campaign Details
+              </span>
+              <div>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'block' }}>Brand / Company</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.98rem' }}>{selectedAuditTx.business_name}</strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'block' }}>Campaign Title</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.96rem' }}>{selectedAuditTx.campaign_name}</strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'block' }}>Campaign Date</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedAuditTx.date}</strong>
+              </div>
+            </div>
+
+            {/* Block 2: Creator Beneficiary Info */}
+            <div style={{ background: 'var(--bg-input)', padding: '20px', borderRadius: '14px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Creator Beneficiary
+              </span>
+              <div>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'block' }}>Influencer Creator</span>
+                <strong style={{ color: 'var(--primary)', fontSize: '0.98rem' }}>{selectedAuditTx.influencer_name}</strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'block' }}>Verification Status</span>
+                <strong style={{ color: 'var(--accent-emerald)', fontSize: '0.94rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <CheckCircle2 size={14} /> Verified Platform Creator
+                </strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'block' }}>Disbursement Custody</span>
+                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedAuditTx.settlement_status}</strong>
+              </div>
+            </div>
+
+            {/* Block 3: Financial Settlement Math */}
+            <div style={{ background: 'var(--bg-input)', padding: '20px', borderRadius: '14px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Financial Settlement Math
+              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Gross Escrow Deposit:</span>
+                <strong style={{ color: 'var(--text-main)' }}>₹{selectedAuditTx.budget.toLocaleString()}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Platform Fee ({metrics.commission_rate_percent}%):</span>
+                <strong style={{ color: 'var(--accent-emerald)' }}>-₹{selectedAuditTx.platform_fee.toLocaleString()}</strong>
+              </div>
+              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '1.05rem' }}>
+                <span style={{ color: 'var(--text-main)', fontWeight: 800 }}>Net Disbursable:</span>
+                <strong style={{ color: 'var(--accent-amber)', fontWeight: 800 }}>₹{selectedAuditTx.creator_net.toLocaleString()}</strong>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Audit Trail Note */}
+          <div style={{ background: 'rgba(99, 102, 241, 0.06)', border: '1px solid rgba(99, 102, 241, 0.25)', padding: '18px 20px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: 700, fontSize: '0.94rem' }}>
+              <ShieldCheck size={18} /> Verified MySQL Platform Ledger Audit Entry
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', margin: 0 }}>
+              This record is synchronized directly with the database transaction ledger. All escrow balances and platform commission fees are calculated automatically based on active marketplace settings.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px' }}>
+            <button 
+              type="button" 
+              className="btn btn-secondary btn-sm"
+              onClick={() => setSelectedAuditTx(null)}
+              style={{ fontWeight: 700 }}
+            >
+              ← Return to Reports Ledger
+            </button>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* MAIN REPORTS & LEDGER TABLE VIEW                                          */
+  /* -------------------------------------------------------------------------- */
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
       
@@ -2841,7 +2987,7 @@ export function AdminReportsPage() {
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           <button 
-            type="button"
+            type="button" 
             className="btn btn-secondary btn-sm" 
             onClick={fetchReports} 
             disabled={loading}
@@ -2851,7 +2997,7 @@ export function AdminReportsPage() {
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {loading ? 'Syncing...' : 'Refresh'}
           </button>
           <button 
-            type="button"
+            type="button" 
             className="btn btn-secondary btn-sm" 
             onClick={() => window.print()}
             style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
@@ -2860,7 +3006,7 @@ export function AdminReportsPage() {
             <FileText size={14} /> Print Statement
           </button>
           <button 
-            type="button"
+            type="button" 
             className="btn btn-primary btn-sm" 
             onClick={exportCSV} 
             style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}
@@ -3121,29 +3267,28 @@ export function AdminReportsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.86rem' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle', width: '70px' }}>S.No</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Campaign</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Brand Client</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle', width: '60px' }}>S.No</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle', minWidth: '180px' }}>Campaign & Brand</th>
                 <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Creator</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Deal Budget</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Budget</th>
                 <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Fee ({metrics.commission_rate_percent}%)</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Net Creator Payout</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Net Payout</th>
                 <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Date</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Settlement Status</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Audit Action</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Status</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle', textAlign: 'right' }}>Audit Action</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="10" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     <RefreshCw size={20} className="animate-spin" style={{ margin: '0 auto 8px auto', display: 'block' }} />
                     Loading financial records from API...
                   </td>
                 </tr>
               ) : paginatedLedger.length === 0 ? (
                 <tr>
-                  <td colSpan="10" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No financial transaction records found matching the filter criteria.
                   </td>
                 </tr>
@@ -3155,11 +3300,11 @@ export function AdminReportsPage() {
                       <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
                         <strong style={{ color: 'var(--primary)', fontSize: '0.88rem' }}>#{serialNumber}</strong>
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>
-                        {item.campaign_name}
-                      </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
-                        {item.business_name}
+                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>{item.campaign_name}</strong>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{item.business_name}</span>
+                        </div>
                       </td>
                       <td style={{ padding: '13px 16px', color: 'var(--primary)', fontWeight: 600, verticalAlign: 'middle' }}>
                         {item.influencer_name}
@@ -3173,7 +3318,7 @@ export function AdminReportsPage() {
                       <td style={{ padding: '13px 16px', color: 'var(--accent-amber)', fontWeight: 700, verticalAlign: 'middle' }}>
                         ₹{item.creator_net.toLocaleString()}
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
+                      <td style={{ padding: '13px 16px', color: 'var(--text-muted)', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                         {item.date}
                       </td>
                       <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
@@ -3185,14 +3330,17 @@ export function AdminReportsPage() {
                           {item.settlement_status.toUpperCase()}
                         </span>
                       </td>
-                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                      <td style={{ padding: '13px 16px', verticalAlign: 'middle', textAlign: 'right' }}>
                         <button 
                           type="button" 
-                          className="btn btn-secondary btn-sm" 
-                          onClick={() => setSelectedTx({ ...item, serialNumber })}
-                          style={{ padding: '5px 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}
+                          className="btn btn-primary btn-sm" 
+                          onClick={() => {
+                            setSelectedAuditTx({ ...item, serialNumber });
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          style={{ padding: '5px 12px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 700 }}
                         >
-                          <Eye size={13} /> Audit Details
+                          <Eye size={13} /> View Audit
                         </button>
                       </td>
                     </tr>
@@ -3210,121 +3358,6 @@ export function AdminReportsPage() {
           onPageChange={setCurrentPage}
         />
       </div>
-
-      {/* TRANSACTION AUDIT MODAL (Center Fixed & Viewport Locked) */}
-      {selectedTx && (
-        <div 
-          onClick={() => setSelectedTx(null)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 999999,
-            padding: '20px',
-            margin: 0
-          }}
-        >
-          <div 
-            className="glass-panel animate-scale-in" 
-            onClick={(e) => e.stopPropagation()}
-            style={{ 
-              maxWidth: '580px', 
-              width: '100%', 
-              padding: '24px', 
-              borderRadius: '20px', 
-              background: 'var(--bg-card)', 
-              boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.12)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="badge badge-purple">Record #{selectedTx.serialNumber || selectedTx.id}</span>
-                <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
-                  Financial Audit Breakdown
-                </h3>
-              </div>
-              <button 
-                type="button" 
-                onClick={() => setSelectedTx(null)} 
-                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px' }}
-                title="Close"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '18px' }}>
-              <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Serial Number</span>
-                <strong style={{ color: 'var(--primary)', fontSize: '0.94rem' }}>
-                  #{selectedTx.serialNumber || selectedTx.id}
-                </strong>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Settlement Status</span>
-                <strong style={{ color: 'var(--accent-emerald)', fontSize: '0.92rem', textTransform: 'uppercase' }}>
-                  {selectedTx.settlement_status}
-                </strong>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Campaign Name</span>
-                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedTx.campaign_name}</strong>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Brand Client</span>
-                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedTx.business_name}</strong>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Influencer Creator</span>
-                <strong style={{ color: 'var(--primary)', fontSize: '0.94rem' }}>{selectedTx.influencer_name}</strong>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Transaction Date</span>
-                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedTx.date}</strong>
-              </div>
-            </div>
-
-            {/* Financial Math Box */}
-            <div style={{ background: 'var(--bg-input)', padding: '16px', borderRadius: '12px', marginBottom: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Gross Deal Amount (Escrow Deposit):</span>
-                <strong style={{ color: 'var(--text-main)' }}>₹{selectedTx.budget.toLocaleString()}</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Platform Commission ({metrics.commission_rate_percent}%):</span>
-                <strong style={{ color: 'var(--accent-emerald)' }}>-₹{selectedTx.platform_fee.toLocaleString()}</strong>
-              </div>
-              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '0.98rem' }}>
-                <span style={{ color: 'var(--text-main)', fontWeight: 700 }}>Net Disbursable Creator Payout:</span>
-                <strong style={{ color: 'var(--accent-amber)' }}>₹{selectedTx.creator_net.toLocaleString()}</strong>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button 
-                type="button" 
-                className="btn btn-secondary btn-sm"
-                onClick={() => setSelectedTx(null)}
-              >
-                Close Audit View
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );
