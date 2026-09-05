@@ -2766,7 +2766,7 @@ export function AdminReportsPage() {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Lock body scroll when Audit Modal is open so the background page cannot scroll
+  // Lock body scroll when Audit Modal is open so the background page NEVER scrolls
   useEffect(() => {
     if (selectedTx) {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
@@ -3223,13 +3223,13 @@ export function AdminReportsPage() {
             bottom: 0,
             width: '100vw',
             height: '100vh',
-            background: 'rgba(0, 0, 0, 0.78)',
+            background: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 99999,
+            zIndex: 999999,
             padding: '20px',
             margin: 0
           }}

@@ -2060,10 +2060,9 @@ canvas {
   -webkit-overflow-scrolling: touch;
   border-radius: 14px;
   border: 1px solid var(--border-color);
-  background: rgba(15, 23, 42, 0.25);
+  background: rgba(15, 23, 42, 0.35);
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.45) rgba(0, 0, 0, 0.15);
-  transition: border-color 0.2s ease;
+  scrollbar-color: rgba(99, 102, 241, 0.45) rgba(0, 0, 0, 0.2);
 }
 
 .table-responsive-container::-webkit-scrollbar {
@@ -2071,14 +2070,14 @@ canvas {
 }
 
 .table-responsive-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
   margin: 0 6px;
 }
 
 .table-responsive-container::-webkit-scrollbar-thumb {
   background: rgba(99, 102, 241, 0.45);
-  border-radius: 10px;
+  border-radius: 999px;
   transition: background 0.2s ease;
 }
 
@@ -2101,7 +2100,7 @@ canvas {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
 }
