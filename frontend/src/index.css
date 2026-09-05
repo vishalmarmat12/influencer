@@ -2058,7 +2058,32 @@ canvas {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border-radius: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.25);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.45) rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s ease;
+}
+
+.table-responsive-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  margin: 0 6px;
+}
+
+.table-responsive-container::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.45);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.table-responsive-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.75);
 }
 
 .table-responsive-container table {
@@ -2070,22 +2095,24 @@ canvas {
 }
 
 .table-responsive-container th {
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-weight: 700;
   font-size: 0.78rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
 }
 
 .table-responsive-container td {
-  padding: 12px 14px;
+  padding: 13px 16px;
   font-size: 0.88rem;
   color: var(--text-main);
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
+  transition: background-color 0.15s ease;
 }
 
 .table-responsive-container tr:last-child td {
@@ -2093,5 +2120,5 @@ canvas {
 }
 
 .table-responsive-container tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.035);
 }

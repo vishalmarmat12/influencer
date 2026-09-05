@@ -2766,6 +2766,24 @@ export function AdminReportsPage() {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
+  // Lock body scroll when Audit Modal is open so the background page cannot scroll
+  useEffect(() => {
+    if (selectedTx) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+    } else {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    };
+  }, [selectedTx]);
+
   const metrics = reportData?.metrics || {
     total_gmv: 0,
     platform_commission: 0,
@@ -2788,9 +2806,9 @@ export function AdminReportsPage() {
   const paginatedLedger = ledger.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const exportCSV = () => {
-    const headers = "Transaction_ID,Encrypted_Token,Campaign_Name,Brand_Client,Creator,Deal_Budget,Platform_Fee,Creator_Net,Status,Date,Settlement_Status\n";
-    const rows = ledger.map(item => 
-      `${item.id},"${item.encrypted_id}","${(item.campaign_name || '').replace(/"/g, '""')}","${(item.business_name || '').replace(/"/g, '""')}","${(item.influencer_name || '').replace(/"/g, '""')}",${item.budget},${item.platform_fee},${item.creator_net},${item.status},${item.date},${item.settlement_status}`
+    const headers = "S_No,Campaign_Name,Brand_Client,Creator,Deal_Budget,Platform_Fee,Creator_Net,Status,Date,Settlement_Status\n";
+    const rows = ledger.map((item, idx) => 
+      `${idx + 1},"${(item.campaign_name || '').replace(/"/g, '""')}","${(item.business_name || '').replace(/"/g, '""')}","${(item.influencer_name || '').replace(/"/g, '""')}",${item.budget},${item.platform_fee},${item.creator_net},${item.status},${item.date},${item.settlement_status}`
     ).join("\n");
 
     const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
@@ -3103,16 +3121,16 @@ export function AdminReportsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.86rem' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Tx ID / Token</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Campaign</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Brand Client</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Creator</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Deal Budget</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Fee ({metrics.commission_rate_percent}%)</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Net Creator Payout</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Date</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Settlement Status</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Audit Action</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle', width: '70px' }}>S.No</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Campaign</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Brand Client</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Creator</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Deal Budget</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Fee ({metrics.commission_rate_percent}%)</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Net Creator Payout</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Date</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Settlement Status</th>
+                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Audit Action</th>
               </tr>
             </thead>
             <tbody>
@@ -3130,61 +3148,56 @@ export function AdminReportsPage() {
                   </td>
                 </tr>
               ) : (
-                paginatedLedger.map(item => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                    <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <strong style={{ color: 'var(--primary)', fontSize: '0.88rem' }}>#{item.id}</strong>
-                        <span 
-                          style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#818CF8', background: 'rgba(99, 102, 241, 0.12)', padding: '1px 5px', borderRadius: '4px', width: 'fit-content' }}
-                          title={`Encrypted ID: ${item.encrypted_id}`}
-                        >
-                          {item.encrypted_id}
+                paginatedLedger.map((item, idx) => {
+                  const serialNumber = (currentPage - 1) * itemsPerPage + idx + 1;
+                  return (
+                    <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                        <strong style={{ color: 'var(--primary)', fontSize: '0.88rem' }}>#{serialNumber}</strong>
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>
+                        {item.campaign_name}
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
+                        {item.business_name}
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--primary)', fontWeight: 600, verticalAlign: 'middle' }}>
+                        {item.influencer_name}
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--text-main)', fontWeight: 800, verticalAlign: 'middle' }}>
+                        ₹{item.budget.toLocaleString()}
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>
+                        +₹{item.platform_fee.toLocaleString()}
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--accent-amber)', fontWeight: 700, verticalAlign: 'middle' }}>
+                        ₹{item.creator_net.toLocaleString()}
+                      </td>
+                      <td style={{ padding: '13px 16px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
+                        {item.date}
+                      </td>
+                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                        <span className={`badge ${
+                          item.status === 'completed' ? 'badge-green' : 
+                          item.status === 'accepted' ? 'badge-purple' : 
+                          item.status === 'rejected' ? 'badge-danger' : 'badge-amber'
+                        }`} style={{ fontSize: '0.74rem', padding: '4px 8px' }}>
+                          {item.settlement_status.toUpperCase()}
                         </span>
-                      </div>
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>
-                      {item.campaign_name}
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
-                      {item.business_name}
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--primary)', fontWeight: 600, verticalAlign: 'middle' }}>
-                      {item.influencer_name}
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 800, verticalAlign: 'middle' }}>
-                      ₹{item.budget.toLocaleString()}
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>
-                      +₹{item.platform_fee.toLocaleString()}
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--accent-amber)', fontWeight: 700, verticalAlign: 'middle' }}>
-                      ₹{item.creator_net.toLocaleString()}
-                    </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>
-                      {item.date}
-                    </td>
-                    <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
-                      <span className={`badge ${
-                        item.status === 'completed' ? 'badge-green' : 
-                        item.status === 'accepted' ? 'badge-purple' : 
-                        item.status === 'rejected' ? 'badge-danger' : 'badge-amber'
-                      }`} style={{ fontSize: '0.74rem', padding: '4px 8px' }}>
-                        {item.settlement_status.toUpperCase()}
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
-                      <button 
-                        type="button" 
-                        className="btn btn-secondary btn-sm" 
-                        onClick={() => setSelectedTx(item)}
-                        style={{ padding: '4px 8px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                      >
-                        <Eye size={12} /> Audit Details
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                        <button 
+                          type="button" 
+                          className="btn btn-secondary btn-sm" 
+                          onClick={() => setSelectedTx({ ...item, serialNumber })}
+                          style={{ padding: '5px 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}
+                        >
+                          <Eye size={13} /> Audit Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -3198,23 +3211,47 @@ export function AdminReportsPage() {
         />
       </div>
 
-      {/* TRANSACTION AUDIT MODAL */}
+      {/* TRANSACTION AUDIT MODAL (Center Fixed & Viewport Locked) */}
       {selectedTx && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.7)',
-          backdropFilter: 'blur(6px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1200,
-          padding: '20px'
-        }}>
-          <div className="glass-panel animate-fade-in" style={{ maxWidth: '580px', width: '100%', padding: '24px', borderRadius: '18px', background: 'var(--bg-card)' }}>
+        <div 
+          onClick={() => setSelectedTx(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0, 0, 0, 0.78)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+            padding: '20px',
+            margin: 0
+          }}
+        >
+          <div 
+            className="glass-panel animate-scale-in" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ 
+              maxWidth: '580px', 
+              width: '100%', 
+              padding: '24px', 
+              borderRadius: '20px', 
+              background: 'var(--bg-card)', 
+              boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.12)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="badge badge-purple">Tx #{selectedTx.id}</span>
+                <span className="badge badge-purple">Record #{selectedTx.serialNumber || selectedTx.id}</span>
                 <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
                   Financial Audit Breakdown
                 </h3>
@@ -3222,7 +3259,8 @@ export function AdminReportsPage() {
               <button 
                 type="button" 
                 onClick={() => setSelectedTx(null)} 
-                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px' }}
+                title="Close"
               >
                 ✕
               </button>
@@ -3230,10 +3268,10 @@ export function AdminReportsPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '18px' }}>
               <div>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Encrypted Token ID</span>
-                <span style={{ fontFamily: 'monospace', color: '#818CF8', fontSize: '0.86rem', background: 'rgba(99, 102, 241, 0.15)', padding: '2px 6px', borderRadius: '4px' }}>
-                  {selectedTx.encrypted_id}
-                </span>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Serial Number</span>
+                <strong style={{ color: 'var(--primary)', fontSize: '0.94rem' }}>
+                  #{selectedTx.serialNumber || selectedTx.id}
+                </strong>
               </div>
               <div>
                 <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', display: 'block' }}>Settlement Status</span>
@@ -3277,7 +3315,7 @@ export function AdminReportsPage() {
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button 
-                type="button"
+                type="button" 
                 className="btn btn-secondary btn-sm"
                 onClick={() => setSelectedTx(null)}
               >
