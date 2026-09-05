@@ -8,7 +8,7 @@ import {
   Plus, Check, X, Download, Bell, Settings, Filter, ArrowUpRight, BarChart3,
   CalendarDays, PieChart, CheckCircle2, AlertTriangle, FileText, Globe, Search,
   DollarSign, Eye, Activity, Sliders, User, MessageSquare, Clock, RefreshCw, CheckSquare,
-  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload
+  Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload, TrendingUp
 } from 'lucide-react';
 
 /* -------------------------------------------------------------------------- */
