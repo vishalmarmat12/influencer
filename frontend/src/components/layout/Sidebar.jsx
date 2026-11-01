@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { 
@@ -13,6 +13,19 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
   const { user, activeRole, logout } = useAuth();
   const { bookings, messages } = useData();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Lock body scroll when mobile sidebar drawer is open
+  React.useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
 
   // Authenticated user role validation
   const currentRole = user?.role || activeRole || 'user';
@@ -92,7 +105,7 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
         aria-hidden="true"
       />
 
-      <aside className={`sidebar-aside animate-fade-in ${mobileOpen ? 'mobile-open' : ''}`}>
+      <aside className={`sidebar-aside ${mobileOpen ? 'mobile-open' : ''}`}>
         <div>
           {/* User Mini Profile Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '10px', marginBottom: '16px', background: 'var(--bg-input)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
@@ -120,10 +133,11 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
               type="button"
               className="btn btn-secondary mobile-close-btn" 
               onClick={onCloseMobile}
-              style={{ padding: '6px', borderRadius: '50%', border: 'none', cursor: 'pointer', flexShrink: 0 }}
+              style={{ width: '34px', height: '34px', padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
               title="Close menu"
+              aria-label="Close menu"
             >
-              <X size={16} />
+              <X size={18} color="var(--text-main)" />
             </button>
           </div>
 
@@ -142,6 +156,9 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
                       key={iIdx}
                       to={item.path}
                       end={item.path === '/admin' || item.path === '/creator' || item.path === '/user'}
+                      onClick={() => {
+                        if (onCloseMobile) onCloseMobile();
+                      }}
                       style={({ isActive }) => ({
                         display: 'flex',
                         alignItems: 'center',
@@ -178,7 +195,12 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
       {/* Footer Logout Button */}
       <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '12px', marginTop: '16px' }}>
         <button
-          onClick={logout}
+          onClick={() => {
+            const wasAdmin = user?.role === 'admin';
+            if (onCloseMobile) onCloseMobile();
+            logout();
+            navigate(wasAdmin ? '/admin/login' : '/login');
+          }}
           style={{
             width: '100%',
             display: 'flex',

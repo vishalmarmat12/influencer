@@ -1,23 +1,31 @@
 <?php
 // Database Auto-Initialization & Schema Synchronization Engine
 require_once __DIR__ . '/config/cors.php';
+require_once __DIR__ . '/config/env.php';
 
 function initDatabase() {
-    $host = "localhost";
-    $db_name = "influencer_connect";
-    $username = "root";
-    $password = "";
+    $host = env('DB_HOST', 'localhost');
+    $port = env('DB_PORT', '3306');
+    $db_name = env('DB_NAME', 'influencer_connect');
+    $username = env('DB_USER', env('DB_USERNAME', 'root'));
+    $password = env('DB_PASS', env('DB_PASSWORD', ''));
 
     try {
-        // 1. Connect to MySQL server without database specified
-        $pdo = new PDO("mysql:host=$host;charset=utf8mb4", $username, $password, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-
-        // 2. Create Database if not exists
-        $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $pdo->exec("USE `$db_name`");
+        // 1. Try connecting directly to the specified database (supports Hostinger & cloud hosting)
+        try {
+            $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4", $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (PDOException $dbErr) {
+            // If database not found on localhost, attempt to create it (local XAMPP mode)
+            $pdo = new PDO("mysql:host=$host;port=$port;charset=utf8mb4", $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("USE `$db_name`");
+        }
 
         // 3. Create Tables
         $pdo->exec("CREATE TABLE IF NOT EXISTS `users` (
@@ -294,7 +302,7 @@ function initDatabase() {
 }
 
 // If invoked directly from CLI or URL
-if (php_sapi_name() === 'cli' || (isset($_GET['init']) && $_GET['init'] === '1')) {
+if ((php_sapi_name() === 'cli' && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) || (isset($_GET['init']) && $_GET['init'] === '1')) {
     $res = initDatabase();
     if ($res) {
         echo json_encode(['status' => 'success', 'message' => 'MySQL Database & tables initialized and seeded successfully!']);

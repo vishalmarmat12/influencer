@@ -130,7 +130,7 @@ export default function Explore() {
   }, [selectedCategory, selectedPlatform, minFollowers, maxPrice, onlyVerified, search]);
 
   return (
-    <div className="explore-page-wrapper" style={{ minHeight: '100vh', padding: '1.5rem 0 4rem 0' }}>
+    <div className="explore-page-wrapper" style={{ minHeight: '100vh', paddingBottom: '3rem' }}>
       <div className="container">
         {/* Page Hero Banner */}
         <section className="page-hero-banner">
@@ -515,42 +515,48 @@ export default function Explore() {
                         )}
                       </div>
 
-                      {/* Price & Action */}
-                      <div style={{ marginTop: 'auto', paddingTop: '0.65rem', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.4rem' }}>
-                        <div>
-                          <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>From</span>
-                          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--accent-emerald)' }}>
+                      {/* Price & Action Footer */}
+                      <div className="influencer-card-footer" style={{ marginTop: 'auto', paddingTop: '0.65rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.04em' }}>From</span>
+                          <span style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--accent-emerald)' }}>
                             ₹{Number(inf.starting_price || inf.startingPrice || 8000).toLocaleString()}
                           </span>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '0.3rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
                           <Link
                             to={`/influencer/${inf.id}`}
+                            onClick={() => {
+                              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                            }}
+                            className="btn btn-secondary btn-sm"
                             style={{
-                              padding: '0.4rem 0.6rem',
-                              background: 'var(--bg-pill)',
-                              color: 'var(--text-main)',
-                              borderRadius: 'var(--radius-sm)',
-                              fontSize: '0.75rem',
-                              fontWeight: 600,
-                              textDecoration: 'none',
-                              whiteSpace: 'nowrap'
+                              padding: '6px 4px',
+                              fontSize: '0.78rem',
+                              fontWeight: 700,
+                              textAlign: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '8px',
+                              width: '100%'
                             }}
                           >
                             View
                           </Link>
                           <Link
                             to={`/book-influencer/${inf.id}`}
+                            onClick={() => {
+                              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                            }}
+                            className="btn btn-primary btn-sm"
                             style={{
-                              padding: '0.4rem 0.65rem',
-                              background: 'var(--primary)',
-                              color: '#fff',
-                              borderRadius: 'var(--radius-sm)',
-                              fontSize: '0.75rem',
+                              padding: '6px 4px',
+                              fontSize: '0.78rem',
                               fontWeight: 700,
-                              textDecoration: 'none',
-                              whiteSpace: 'nowrap'
+                              textAlign: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '8px',
+                              width: '100%'
                             }}
                           >
                             Book

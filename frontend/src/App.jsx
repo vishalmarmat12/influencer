@@ -2,7 +2,9 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/layout/Sidebar';
+import BottomNav from './components/layout/BottomNav';
 import Footer from './components/common/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
 // Pages Import
@@ -12,7 +14,7 @@ import InfluencerDetail from './pages/public/InfluencerDetail';
 import BookInfluencer from './pages/public/BookInfluencer';
 import { CategoriesPage, HowItWorksPage, AboutUsPage, ContactPage, LegalPage } from './pages/public/OtherPublicPages';
 
-import { LoginPage, RegisterPage, ForgotPasswordPage } from './pages/auth/AuthPages';
+import { LoginPage, RegisterPage, ForgotPasswordPage, AdminLoginPage } from './pages/auth/AuthPages';
 
 import { AdminDashboard, InfluencerMgmt, UserMgmt, CategoryMgmt, BookingMgmt, AdminSettingsPage, AdminAvailabilityMgmt, AdminReportsPage } from './pages/admin/AdminPages';
 import { InfluencerDashboard, InfluencerProfileEdit, InfluencerSocialsPage, InfluencerCharges, InfluencerPortfolioPage, InfluencerAvailability, InfluencerMessagesWorkspace, InfluencerAnalyticsPage, InfluencerRequestsPage } from './pages/influencer/InfluencerPages';
@@ -24,6 +26,9 @@ function ProtectedRoute({ allowedRole, children }) {
   const location = useLocation();
 
   if (!user) {
+    if (allowedRole === 'admin') {
+      return <Navigate to={`/admin/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
+    }
     return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
   }
 
@@ -92,13 +97,16 @@ function AppLayout() {
       )}
 
       {(!isPanelRoute && !isCreatorRole) && <Footer />}
+      <BottomNav />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       <Route element={<AppLayout />}>
         {/* Client / User Only Discovery & Profile Routes (Influencers Redirected to /creator) */}
         <Route element={<ClientDiscoveryRoute />}>
@@ -123,6 +131,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin-login" element={<AdminLoginPage />} />
 
         {/* Protected Admin Panel Routes (Admin Role Only) */}
         <Route element={<ProtectedRoute allowedRole="admin" />}>
@@ -164,5 +174,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
+    </>
   );
 }

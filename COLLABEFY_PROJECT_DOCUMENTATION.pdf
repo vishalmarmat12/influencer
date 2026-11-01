@@ -1,0 +1,2201 @@
+%PDF-1.4
+%����
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 8009 >>
+stream
+q
+0.120 0.100 0.280 rg
+45.00 765.00 505.00 50.00 re
+f
+1.000 1.000 1.000 rg
+BT
+/F2 18.00 Tf
+1 0 0 1 60.00 792.00 Tm
+(COLLABEFY PLATFORM) Tj
+ET
+0.780 0.820 0.950 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 60.00 776.00 Tm
+(ENTERPRISE TECHNICAL SPECIFICATION & DATA ARCHITECTURE) Tj
+ET
+0.960 0.970 0.990 rg
+45.00 705.00 505.00 48.00 re
+f
+0.880 0.900 0.950 rg
+45.00 705.00 505.00 1.00 re
+f
+0.200 0.250 0.350 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 55.00 735.00 Tm
+(System Name:) Tj
+ET
+0.300 0.350 0.450 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 125.00 735.00 Tm
+(Collabefy Creator Marketplace) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 300.00 735.00 Tm
+(Architecture:) Tj
+ET
+0.300 0.350 0.450 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 370.00 735.00 Tm
+(Decoupled SPA + RESTful API) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 55.00 717.00 Tm
+(Release Version:) Tj
+ET
+0.100 0.650 0.350 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 125.00 717.00 Tm
+(v2.0.0 \(Production Ready\)) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 300.00 717.00 Tm
+(Generated At:) Tj
+ET
+0.300 0.350 0.450 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 370.00 717.00 Tm
+(November 1, 2026 � 12:24 PM CET) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 763.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 767.89 Tm
+(1. Executive Summary & Purpose) Tj
+ET
+0.920 0.940 0.990 rg
+479.08 764.89 71.20 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 486.08 768.89 Tm
+(Core Vision) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 753.89 Tm
+(Collabefy is a modern, high-performance creator economy and influencer marketplace platform tailored for the Indian) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 740.39 Tm
+(and global social media ecosystem. It directly bridges verified multi-platform creators \(Instagram, YouTube, X\) with) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 726.89 Tm
+(leading brands and agencies.) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 709.39 Tm
+(The platform eliminates traditional agency markups, opaque pricing, and communication bottlenecks by providing) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 695.89 Tm
+(transparent upfront rate cards, verified audience analytics, single-date and range availability scheduling,) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 682.39 Tm
+(real-time 1-on-1 direct chat, verified campaign reviews, and automated commission fee tracking.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 666.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 664.89 Tm
+(Zero-Agency Markups: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 167.20 664.89 Tm
+(Brands directly negotiate and book creators with fixed, transparent rate cards.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 651.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 649.89 Tm
+(Multi-Role Workspaces: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 177.60 649.89 Tm
+(Tailored portals for Business Clients, Creators, and Platform System Administrators.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 636.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 634.89 Tm
+(Dual-Tier Storage Resilience: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 214.00 634.89 Tm
+(Seamless hybrid storage using MySQL InnoDB with instantaneous automatic to if) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 58.00 622.89 Tm
+(fallback local JSON storage MySQL is offline.) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 579.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 583.89 Tm
+(2. Technology Stack & Frameworks) Tj
+ET
+0.920 0.940 0.990 rg
+447.88 580.89 102.40 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 454.88 584.89 Tm
+(Modern Full-Stack) Tj
+ET
+0.930 0.950 0.980 rg
+45.00 554.89 505.00 20.00 re
+f
+0.800 0.850 0.920 rg
+45.00 554.89 505.00 1.00 re
+f
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 51.00 559.89 Tm
+(Tier / Domain) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 161.00 559.89 Tm
+(Technology) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 271.00 559.89 Tm
+(Version) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 336.00 559.89 Tm
+(Key Responsibility & Benefits) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 537.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 541.89 Tm
+(Frontend Framework) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 541.89 Tm
+(React.js \(SPA\)) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 541.89 Tm
+(v18 / v19) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 541.89 Tm
+(Reactive UI component hierarchy, dynamic hooks & context state) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 519.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 519.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 523.89 Tm
+(Build & Dev Tool) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 523.89 Tm
+(Vite Bundler) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 523.89 Tm
+(v8.2.0) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 523.89 Tm
+(Sub-second HMR, optimized tree-shaking, production minification) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 501.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 505.89 Tm
+(Routing Engine) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 505.89 Tm
+(React Router DOM) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 505.89 Tm
+(v7.x) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 505.89 Tm
+(Client-side declarative routing, protected role route boundaries) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 483.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 483.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 487.89 Tm
+(Iconography) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 487.89 Tm
+(Lucide React) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 487.89 Tm
+(v1.28.0) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 487.89 Tm
+(Consistent, crisp scalable vector interface icons) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 465.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 469.89 Tm
+(Styling Architecture) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 469.89 Tm
+(Custom Glassmorphism CSS) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 469.89 Tm
+(CSS3 / Tokens) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 469.89 Tm
+(Responsive glassmorphic UI, dynamic light/dark theme variables) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 447.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 447.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 451.89 Tm
+(Backend Runtime) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 451.89 Tm
+(PHP RESTful API) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 451.89 Tm
+(v8.0+) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 451.89 Tm
+(REST controller endpoints, JSON serialization, auth handling) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 429.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 433.89 Tm
+(Relational Database) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 433.89 Tm
+(MySQL / MariaDB) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 433.89 Tm
+(v10.4+ / InnoDB) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 433.89 Tm
+(ACID transactions, relational constraints, foreign keys) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 411.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 411.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 415.89 Tm
+(Offline Resilience) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 415.89 Tm
+(JSON Data Store Engine) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 271.00 415.89 Tm
+(Native JSON) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 336.00 415.89 Tm
+(Instant local file fallback ensuring zero service disruptions) Tj
+ET
+BT
+/F1 7.5 Tf
+0.45 0.50 0.60 rg
+1 0 0 1 45 34 Tm
+(Collabefy Platform • Connect • Collaborate • Grow • System Documentation) Tj
+ET
+BT
+/F2 7.5 Tf
+0.388 0.400 0.945 rg
+1 0 0 1 490.28 34 Tm
+(Page 1 of 5) Tj
+ET
+0.85 0.88 0.92 rg
+45.00 45.00 505.28 0.75 re
+f
+Q
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 7188 >>
+stream
+q
+0.388 0.400 0.945 rg
+45.00 806.89 505.28 2.00 re
+f
+0.388 0.400 0.945 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 45.00 811.89 Tm
+(COLLABEFY) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F1 7.50 Tf
+1 0 0 1 110.00 811.89 Tm
+(PROJECT TECHNICAL ARCHITECTURE & DATA SPECIFICATION) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 485.28 811.89 Tm
+(VERSION 2.0.0) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 763.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 767.89 Tm
+(3. Database Connection & Environment Config) Tj
+ET
+0.920 0.940 0.990 rg
+468.68 764.89 81.60 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 475.68 768.89 Tm
+(Security & DB) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 753.89 Tm
+(Collabefy utilizes a robust environment-driven database architecture. All credentials are isolated in the root) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 740.39 Tm
+(environment file \(.env\) and never hardcoded in source repositories.) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 714.89 Tm
+(Environment Configuration File \(.env\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 704.89 Tm
+(Location: c:\\xampp\\htdocs\\influencer\\.env) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 687.39 Tm
+(The configuration file holds credentials for database connectivity, cross-origin resource sharing, file upload) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 673.89 Tm
+(constraints, and runtime settings:) Tj
+ET
+0.930 0.950 0.980 rg
+45.00 641.39 505.00 20.00 re
+f
+0.800 0.850 0.920 rg
+45.00 641.39 505.00 1.00 re
+f
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 51.00 646.39 Tm
+(Variable Key) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 191.00 646.39 Tm
+(Default Value) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 301.00 646.39 Tm
+(Description & Usage) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 624.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 628.39 Tm
+(DB_HOST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 628.39 Tm
+(localhost) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 628.39 Tm
+(MySQL server hostname or container network address) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 606.39 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 606.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 610.39 Tm
+(DB_PORT) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 610.39 Tm
+(3306) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 610.39 Tm
+(MySQL listening port \(default XAMPP MariaDB port\)) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 588.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 592.39 Tm
+(DB_NAME) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 592.39 Tm
+(influencer_connect) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 592.39 Tm
+(Primary production database name) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 570.39 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 570.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 574.39 Tm
+(DB_USER) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 574.39 Tm
+(root) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 574.39 Tm
+(Database authentication user account) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 552.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 556.39 Tm
+(DB_PASS) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 556.39 Tm
+(\(empty in XAMPP\)) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 556.39 Tm
+(Database authentication password) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 534.39 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 534.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 538.39 Tm
+(APP_NAME) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 538.39 Tm
+(Collabefy) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 538.39 Tm
+(Platform brand identifier) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 516.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 520.39 Tm
+(APP_ENV) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 520.39 Tm
+(development) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 520.39 Tm
+(Application runtime stage \(development / production\)) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 498.39 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 498.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 502.39 Tm
+(CORS_ALLOWED_ORIGINS) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 502.39 Tm
+(http://localhost:5173) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 502.39 Tm
+(Permitted origins for cross-origin browser fetch queries) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 480.39 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 484.39 Tm
+(UPLOAD_MAX_FILESIZE_MB) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 191.00 484.39 Tm
+(10) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 301.00 484.39 Tm
+(Maximum permissible file size for uploaded creator portfolio assets) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 456.39 Tm
+(Database Connection Implementation \(api/config/database.php\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 446.39 Tm
+(The Database class initializes a high-performance PDO connection with UTF8MB4 charset, native exception handling,) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 432.89 Tm
+(disabled prepared statement emulation, and a fast 1-second timeout before dual-mode fallback:) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 417.39 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 415.39 Tm
+(Connection Class: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 151.60 415.39 Tm
+(Database::getConnection\(\) instantiates PDO using env\(\) values.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 402.39 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 400.39 Tm
+(DSN Format: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 120.40 400.39 Tm
+(mysql:host={DB_HOST};port={DB_PORT};dbname={DB_NAME};charset=utf8mb4) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 387.39 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 385.39 Tm
+(Auto-Initialization: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 167.20 385.39 Tm
+(If MySQL server is live but the database does not exist \(error code 1049\), automatically) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 58.00 373.39 Tm
+(api/init_db.php triggers to create schema tables and seed data.) Tj
+ET
+0.950 0.970 1.000 rg
+45.00 315.39 505.28 48.00 re
+f
+0.388 0.400 0.945 rg
+45.00 315.39 4.00 48.00 re
+f
+0.388 0.400 0.945 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 56.00 348.39 Tm
+(Automatic Schema & Table Creation \(api/init_db.php\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 8.20 Tf
+1 0 0 1 56.00 334.39 Tm
+(Running api/init_db.php or accessing the platform on a fresh installation automatically runs CREATE DATABASE IF NOT EXISTS, generates all 7 core tables, foreign key constraints, and seeds 10 verified creators with authentic rate cards.) Tj
+ET
+BT
+/F1 7.5 Tf
+0.45 0.50 0.60 rg
+1 0 0 1 45 34 Tm
+(Collabefy Platform • Connect • Collaborate • Grow • System Documentation) Tj
+ET
+BT
+/F2 7.5 Tf
+0.388 0.400 0.945 rg
+1 0 0 1 490.28 34 Tm
+(Page 2 of 5) Tj
+ET
+0.85 0.88 0.92 rg
+45.00 45.00 505.28 0.75 re
+f
+Q
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 7774 >>
+stream
+q
+0.388 0.400 0.945 rg
+45.00 806.89 505.28 2.00 re
+f
+0.388 0.400 0.945 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 45.00 811.89 Tm
+(COLLABEFY) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F1 7.50 Tf
+1 0 0 1 110.00 811.89 Tm
+(PROJECT TECHNICAL ARCHITECTURE & DATA SPECIFICATION) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 485.28 811.89 Tm
+(VERSION 2.0.0) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 763.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 767.89 Tm
+(4. Complete Data Storage Inventory) Tj
+ET
+0.920 0.940 0.990 rg
+453.08 764.89 97.20 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 460.08 768.89 Tm
+(Where Data Lives) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 753.89 Tm
+(Collabefy employs a multi-tiered data storage architecture. Depending on system state and data categorization,) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 740.39 Tm
+(records live across 4 primary layers:) Tj
+ET
+0.930 0.950 0.980 rg
+45.00 707.89 505.00 20.00 re
+f
+0.800 0.850 0.920 rg
+45.00 707.89 505.00 1.00 re
+f
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 51.00 712.89 Tm
+(Storage Tier) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 161.00 712.89 Tm
+(Physical Location) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 291.00 712.89 Tm
+(Data Category) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 436.00 712.89 Tm
+(Persistence Scope) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 690.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 694.89 Tm
+(Tier 1: Relational DB) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 694.89 Tm
+(MySQL \(influencer_connect\)) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 291.00 694.89 Tm
+(Users, Creators, Bookings, Chats, Reviews) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 436.00 694.89 Tm
+(Permanent, relational, ACID compliant) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 672.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 672.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 676.89 Tm
+(Tier 2: File Datastore) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 676.89 Tm
+(api/data_store.json) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 291.00 676.89 Tm
+(Full backup catalog & dual-mode fallback) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 436.00 676.89 Tm
+(Permanent file-based JSON sync) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 654.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 658.89 Tm
+(Tier 3: Browser Cache) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 658.89 Tm
+(Client localStorage) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 291.00 658.89 Tm
+(Session user, theme, read notifications, cart) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 436.00 658.89 Tm
+(Device specific browser persistence) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 636.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 636.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 640.89 Tm
+(Tier 4: File Uploads) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 161.00 640.89 Tm
+(uploads/ & frontend/public/) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 291.00 640.89 Tm
+(Creator avatars, portfolios, brand logos) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 436.00 640.89 Tm
+(File system static image binaries) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 612.89 Tm
+(Relational Database Tables Schema Breakdown) Tj
+ET
+0.930 0.950 0.980 rg
+45.00 587.89 505.00 20.00 re
+f
+0.800 0.850 0.920 rg
+45.00 587.89 505.00 1.00 re
+f
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 51.00 592.89 Tm
+(Table Name) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 146.00 592.89 Tm
+(Primary Columns & Types) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 381.00 592.89 Tm
+(Key Relationships & Purpose) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 570.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 574.89 Tm
+(users) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 574.89 Tm
+(id INT \(PK\), name VARCHAR, email VARCHAR UNIQUE, role ENUM, password VARCHAR, phone VARCHAR, status VARCHAR) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 574.89 Tm
+(Authenticates Brand users, Creators, and Platform Administrators.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 552.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 552.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 556.89 Tm
+(influencer_profiles) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 556.89 Tm
+(id INT \(PK\), user_id INT \(FK\), name, username UNIQUE, bio, city, category, starting_price, followers, rating, services \(JSON\)) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 556.89 Tm
+(Creator rate cards, portfolio links, follower counts, and verified status.) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 534.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 538.89 Tm
+(categories) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 538.89 Tm
+(id INT \(PK\), name VARCHAR, slug VARCHAR UNIQUE, icon VARCHAR, description TEXT, status VARCHAR) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 538.89 Tm
+(Industry niches \(Fashion, Tech, Food, Travel, Fitness, Automobile, etc.\).) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 516.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 516.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 520.89 Tm
+(bookings) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 520.89 Tm
+(id INT \(PK\), user_id INT, influencer_id INT, campaign_name, budget INT, date DATE, status ENUM, promotion_type) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 520.89 Tm
+(Campaign booking contracts \(status: pending, accepted, completed, cancelled\).) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 498.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 502.89 Tm
+(messages) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 502.89 Tm
+(id INT \(PK\), conversation_id INT, sender_id INT, receiver_id INT, message TEXT, is_read TINYINT, created_at) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 502.89 Tm
+(Real-time 1-on-1 direct negotiation messages between brands and creators.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 480.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 480.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 484.89 Tm
+(reviews) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 484.89 Tm
+(id INT \(PK\), influencer_id INT, user_id INT, user_name VARCHAR, rating TINYINT \(1-5\), review_text TEXT) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 484.89 Tm
+(Verified campaign reviews and satisfaction ratings recalculation.) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 462.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 466.89 Tm
+(availability) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 466.89 Tm
+(id INT \(PK\), influencer_id INT, from_date DATE, to_date DATE, status VARCHAR \('busy','holiday'\), notes) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 466.89 Tm
+(Creator blackout calendar preventing overlapping booking proposals.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 444.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 444.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 448.89 Tm
+(site_settings) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 146.00 448.89 Tm
+(id INT, setting_key VARCHAR UNIQUE, setting_value TEXT, updated_at) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 381.00 448.89 Tm
+(Dynamic global branding: site name, logo, tagline, commission % fee.) Tj
+ET
+BT
+/F1 7.5 Tf
+0.45 0.50 0.60 rg
+1 0 0 1 45 34 Tm
+(Collabefy Platform • Connect • Collaborate • Grow • System Documentation) Tj
+ET
+BT
+/F2 7.5 Tf
+0.388 0.400 0.945 rg
+1 0 0 1 490.28 34 Tm
+(Page 3 of 5) Tj
+ET
+0.85 0.88 0.92 rg
+45.00 45.00 505.28 0.75 re
+f
+Q
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 9463 >>
+stream
+q
+0.388 0.400 0.945 rg
+45.00 806.89 505.28 2.00 re
+f
+0.388 0.400 0.945 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 45.00 811.89 Tm
+(COLLABEFY) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F1 7.50 Tf
+1 0 0 1 110.00 811.89 Tm
+(PROJECT TECHNICAL ARCHITECTURE & DATA SPECIFICATION) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 485.28 811.89 Tm
+(VERSION 2.0.0) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 763.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 767.89 Tm
+(5. User Roles, Portals & Workflows) Tj
+ET
+0.920 0.940 0.990 rg
+473.88 764.89 76.40 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 480.88 768.89 Tm
+(3 Core Roles) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 745.89 Tm
+(Role 1: Business / Brand Client \(user@demo.com\)) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 737.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 735.89 Tm
+(Discovery & Search: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 162.00 735.89 Tm
+(Filter creators by niche category, follower range, city, starting budget, and keyword) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 58.00 723.89 Tm
+(search.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 710.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 708.89 Tm
+(Direct Booking: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 141.20 708.89 Tm
+(Submit campaign proposals with deliverable choice \(Reels, Story, Video\) and date scheduling.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 695.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 693.89 Tm
+(Direct Messaging: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 151.60 693.89 Tm
+(Chat 1-on-1 with creators to agree on deliverables and deadlines.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 680.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 678.89 Tm
+(Verified Reviews: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 151.60 678.89 Tm
+(Rate creator deliverables upon campaign completion with 1 to 5 star feedback.) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 655.89 Tm
+(Role 2: Content Creator / Influencer \(influencer@demo.com\)) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 647.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 645.89 Tm
+(Rate Cards Manager: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 162.00 645.89 Tm
+(Set fixed pricing packages for Instagram Reels, Posts, and YouTube Videos.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 632.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 630.89 Tm
+(Availability Calendar: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 177.60 630.89 Tm
+(Block dates for personal shoots or holidays to prevent conflict bookings.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 617.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 615.89 Tm
+(Campaign Negotiation: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 172.40 615.89 Tm
+(Review incoming proposals and click Accept, Decline, or Complete deliverable.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 602.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 600.89 Tm
+(Profile & Portfolio: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 167.20 600.89 Tm
+(Showcase recent brand collabs, social handles, bio, and metro city location.) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 577.89 Tm
+(Role 3: System Administrator \(admin@influencer.com\)) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 569.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 567.89 Tm
+(Financial Analytics: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 167.20 567.89 Tm
+(Live ledger calculating gross booking volume, platform fee commissions, and payouts.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 554.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 552.89 Tm
+(Categories Management: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 177.60 552.89 Tm
+(Add, edit, or delete marketplace categories with custom icons.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 539.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 537.89 Tm
+(Creator Verification Audit: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 203.60 537.89 Tm
+(Grant or revoke blue verified creator badges.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 524.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 522.89 Tm
+(Site Customization: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 162.00 522.89 Tm
+(Update platform name, slogan tagline, hero imagery, and commission rates in real time.) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 479.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 483.89 Tm
+(6. Key REST API Endpoints Overview) Tj
+ET
+0.920 0.940 0.990 rg
+447.88 480.89 102.40 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 454.88 484.89 Tm
+(REST Architecture) Tj
+ET
+0.930 0.950 0.980 rg
+45.00 454.89 505.00 20.00 re
+f
+0.800 0.850 0.920 rg
+45.00 454.89 505.00 1.00 re
+f
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 51.00 459.89 Tm
+(Method) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 96.00 459.89 Tm
+(Endpoint Route) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 216.00 459.89 Tm
+(Parameters / Body) Tj
+ET
+0.150 0.200 0.300 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 401.00 459.89 Tm
+(Action Performed) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 437.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 441.89 Tm
+(POST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 441.89 Tm
+(/api/login) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 441.89 Tm
+({ email, password }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 441.89 Tm
+(Authenticates credentials and returns user role token.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 419.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 419.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 423.89 Tm
+(GET) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 423.89 Tm
+(/api/influencers) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 423.89 Tm
+(?category=Fashion&search=Aanya) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 423.89 Tm
+(Returns filtered list of active verified creators.) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 401.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 405.89 Tm
+(GET) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 405.89 Tm
+(/api/influencer-detail) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 405.89 Tm
+(?id=1) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 405.89 Tm
+(Fetches creator portfolio, services, rating, and socials.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 383.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 383.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 387.89 Tm
+(POST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 387.89 Tm
+(/api/bookings) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 387.89 Tm
+({ user_id, influencer_id, date, budget }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 387.89 Tm
+(Submits new campaign booking proposal.) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 365.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 369.89 Tm
+(PUT) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 369.89 Tm
+(/api/bookings) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 369.89 Tm
+({ id, status: 'accepted' }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 369.89 Tm
+(Updates booking lifecycle transition.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 347.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 347.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 351.89 Tm
+(POST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 351.89 Tm
+(/api/messages) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 351.89 Tm
+({ conversation_id, receiver_id, message }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 351.89 Tm
+(Sends real-time direct chat message.) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 329.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 333.89 Tm
+(POST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 333.89 Tm
+(/api/reviews) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 333.89 Tm
+({ influencer_id, rating: 5, comment }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 333.89 Tm
+(Submits verified client review and recomputes score.) Tj
+ET
+0.980 0.990 1.000 rg
+45.00 311.89 505.00 18.00 re
+f
+0.900 0.920 0.950 rg
+45.00 311.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 315.89 Tm
+(POST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 315.89 Tm
+(/api/availability) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 315.89 Tm
+({ influencer_id, from_date, to_date }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 315.89 Tm
+(Blocks creator calendar dates.) Tj
+ET
+0.900 0.920 0.950 rg
+45.00 293.89 505.00 0.50 re
+f
+0.100 0.150 0.250 rg
+BT
+/F2 8.00 Tf
+1 0 0 1 51.00 297.89 Tm
+(POST) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 96.00 297.89 Tm
+(/api/settings) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 216.00 297.89 Tm
+({ site_name, commission_fee }) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F1 8.00 Tf
+1 0 0 1 401.00 297.89 Tm
+(Updates platform branding and system commission.) Tj
+ET
+BT
+/F1 7.5 Tf
+0.45 0.50 0.60 rg
+1 0 0 1 45 34 Tm
+(Collabefy Platform • Connect • Collaborate • Grow • System Documentation) Tj
+ET
+BT
+/F2 7.5 Tf
+0.388 0.400 0.945 rg
+1 0 0 1 490.28 34 Tm
+(Page 4 of 5) Tj
+ET
+0.85 0.88 0.92 rg
+45.00 45.00 505.28 0.75 re
+f
+Q
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< /Length 5182 >>
+stream
+q
+0.388 0.400 0.945 rg
+45.00 806.89 505.28 2.00 re
+f
+0.388 0.400 0.945 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 45.00 811.89 Tm
+(COLLABEFY) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F1 7.50 Tf
+1 0 0 1 110.00 811.89 Tm
+(PROJECT TECHNICAL ARCHITECTURE & DATA SPECIFICATION) Tj
+ET
+0.450 0.500 0.600 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 485.28 811.89 Tm
+(VERSION 2.0.0) Tj
+ET
+0.388 0.400 0.945 rg
+45.00 763.89 4.00 18.00 re
+f
+0.080 0.120 0.220 rg
+BT
+/F2 13.00 Tf
+1 0 0 1 55.00 767.89 Tm
+(7. Local Setup, Deployment & Verification) Tj
+ET
+0.920 0.940 0.990 rg
+473.88 764.89 76.40 15.00 re
+f
+0.350 0.380 0.850 rg
+BT
+/F2 7.50 Tf
+1 0 0 1 480.88 768.89 Tm
+(DevOps Guide) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 745.89 Tm
+(Prerequisites) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 735.89 Tm
+(Ensure your local development environment has XAMPP \(Apache + MySQL with PHP 8.0+\) and Node.js \(v18 or v20+\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 722.39 Tm
+(installed.) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 696.89 Tm
+(Quick Start Commands) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 688.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 686.89 Tm
+(1. Apache & MySQL: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 156.80 686.89 Tm
+(Open XAMPP Control Panel and start Apache and MySQL services.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 673.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 671.89 Tm
+(2. Configure .env: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 156.80 671.89 Tm
+(Edit c:\\xampp\\htdocs\\influencer\\.env with your MySQL port and credentials.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 658.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 656.89 Tm
+(3. Initialize DB: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 151.60 656.89 Tm
+(Run 'php api/init_db.php' in terminal to auto-generate database and initial tables.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 643.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 641.89 Tm
+(4. Frontend Dev Server: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 182.80 641.89 Tm
+(Run 'cd frontend && npm run dev' to start Vite client at http://localhost:5173.) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 628.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 626.89 Tm
+(5. Production Build: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 167.20 626.89 Tm
+(Run 'cd frontend && npm run build' to bundle high-performance static assets into /dist.) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 603.89 Tm
+(Automated Test Suite Execution) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 593.89 Tm
+(Collabefy includes a comprehensive end-to-end automated test runner for verifying data consistency and API) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 580.39 Tm
+(endpoints:) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 564.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 562.89 Tm
+(Run Backend Tests: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 156.80 562.89 Tm
+(Command: php scratch/run_full_api_test.php \(Verifies 22 API endpoints with 100% pass rate\)) Tj
+ET
+0.388 0.400 0.945 rg
+48.00 549.89 4.00 4.00 re
+f
+0.120 0.160 0.250 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 58.00 547.89 Tm
+(Run Frontend Tests: ) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 162.00 547.89 Tm
+(Command: node frontend/scripts/automated_test_runner.js \(Verifies 61 data models & form) Tj
+ET
+0.280 0.320 0.400 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 58.00 535.89 Tm
+(checks\)) Tj
+ET
+0.950 0.970 1.000 rg
+45.00 477.89 505.28 48.00 re
+f
+0.388 0.400 0.945 rg
+45.00 477.89 4.00 48.00 re
+f
+0.388 0.400 0.945 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 56.00 510.89 Tm
+(Dual-Mode Zero-Disruption Reliability) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 8.20 Tf
+1 0 0 1 56.00 496.89 Tm
+(If MySQL is stopped or undergoing maintenance, Collabefy instantly switches to api/data_store.json in under 1 millisecond. Users never see database error screens or broken pages.) Tj
+ET
+0.200 0.250 0.350 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 45.00 454.89 Tm
+(Project Directory Structure Summary) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 444.89 Tm
+(c:\\xampp\\htdocs\\influencer) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 427.39 Tm
+(+-- .env & .env.example \(Database credentials & environment configuration\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 409.89 Tm
+(+-- api/ \(PHP REST API endpoints, routing, config, and data_store.json fallback\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 392.39 Tm
+(+-- frontend/src/ \(React 18 source components, pages, context, and custom styling\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 374.89 Tm
+(+-- frontend/public/ \(Collabefy brand logos, cropped icons, and model photography\)) Tj
+ET
+0.250 0.300 0.380 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 45.00 357.39 Tm
+(+-- uploads/ \(Uploaded media, avatars, and campaign brief attachments\)) Tj
+ET
+BT
+/F1 7.5 Tf
+0.45 0.50 0.60 rg
+1 0 0 1 45 34 Tm
+(Collabefy Platform • Connect • Collaborate • Grow • System Documentation) Tj
+ET
+BT
+/F2 7.5 Tf
+0.388 0.400 0.945 rg
+1 0 0 1 490.28 34 Tm
+(Page 5 of 5) Tj
+ET
+0.85 0.88 0.92 rg
+45.00 45.00 505.28 0.75 re
+f
+Q
+endstream
+endobj
+xref
+0 15
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000147 00000 n 
+0000000244 00000 n 
+0000000346 00000 n 
+0000000488 00000 n 
+0000008548 00000 n 
+0000008690 00000 n 
+0000015929 00000 n 
+0000016072 00000 n 
+0000023898 00000 n 
+0000024042 00000 n 
+0000033557 00000 n 
+0000033701 00000 n 
+trailer
+<< /Size 15 /Root 1 0 R >>
+startxref
+38935
+%%EOF

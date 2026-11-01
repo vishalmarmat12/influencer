@@ -3,7 +3,7 @@
         {
             "id": 1,
             "name": "System Admin",
-            "company": "InfluencerConnect HQ",
+            "company": "Collabefy HQ",
             "email": "admin@influencer.com",
             "role": "Administrator",
             "phone": "+91 98765 00001",
@@ -153,6 +153,38 @@
             "icon": "Car",
             "description": "Cars, bikes, and automotive reviews",
             "status": "active"
+        },
+        {
+            "id": 11,
+            "name": "Test Tech 562",
+            "slug": "test-tech-562",
+            "icon": "Cpu",
+            "status": "active",
+            "description": "Automated test category description for software and AI"
+        },
+        {
+            "id": 12,
+            "name": "Test Tech 744",
+            "slug": "test-tech-744",
+            "icon": "Cpu",
+            "status": "active",
+            "description": "Automated test category description for software and AI"
+        },
+        {
+            "id": 13,
+            "name": "Test Tech 253",
+            "slug": "test-tech-253",
+            "icon": "Cpu",
+            "status": "active",
+            "description": "Automated test category description for software and AI"
+        },
+        {
+            "id": 14,
+            "name": "Test Tech 573",
+            "slug": "test-tech-573",
+            "icon": "Cpu",
+            "status": "active",
+            "description": "Automated test category description for software and AI"
         }
     ],
     "influencers": [
@@ -175,7 +207,7 @@
             "followers": 450000,
             "starting_price": 8000,
             "verified": true,
-            "rating": 4.9,
+            "rating": 5,
             "views_count": 14500,
             "services": [
                 {
@@ -201,7 +233,8 @@
                     "subscribers": "180K",
                     "url": "https:\/\/youtube.com\/aanyavlogs"
                 }
-            }
+            },
+            "reviews_count": 4
         },
         {
             "id": 2,
@@ -621,8 +654,10 @@
             "description": "Unboxing and benchmark of new AI ultrabook",
             "date": "2026-08-20",
             "budget": 65000,
-            "status": "pending",
-            "created_at": "2026-08-05"
+            "status": "accepted",
+            "created_at": "2026-08-05",
+            "accepted_at": "2026-10-31 08:59:12",
+            "declined_at": "2026-10-31 08:56:01"
         },
         {
             "id": 103,
@@ -651,6 +686,76 @@
             "budget": 45000,
             "status": "completed",
             "created_at": "2026-07-28"
+        },
+        {
+            "id": 110,
+            "user_id": 4,
+            "influencer_id": 1,
+            "campaign_name": "nnnnnn",
+            "business_name": "Aanya Verma",
+            "promotion_type": "Instagram Reel",
+            "description": "",
+            "booking_date": "2026-08-05",
+            "booking_time": null,
+            "budget": 8000,
+            "status": "accepted",
+            "accepted_at": "2026-11-01 14:34:59",
+            "declined_at": "2026-08-08 16:59:11",
+            "completed_at": null,
+            "created_at": "2026-08-05 18:48:45",
+            "influencer_name": "Aanya Verma",
+            "user_name": "Aanya Verma",
+            "user_email": "influencer@demo.com",
+            "creator_name": "Aanya Verma",
+            "date": "2026-08-05"
+        },
+        {
+            "id": 106,
+            "status": "Pending",
+            "created_at": "2026-11-01",
+            "user_id": 2,
+            "influencer_id": 4,
+            "campaign_title": "Automated Brand Summer Launch 2026",
+            "deliverable": "Instagram Reel + 2 Stories",
+            "proposed_date": "2026-11-15",
+            "budget": 45000,
+            "brief": "Detailed product review and unboxing video targeting Tier-1 urban audience."
+        },
+        {
+            "id": 107,
+            "status": "Pending",
+            "created_at": "2026-11-01",
+            "user_id": 2,
+            "influencer_id": 4,
+            "campaign_title": "Automated Brand Summer Launch 2026",
+            "deliverable": "Instagram Reel + 2 Stories",
+            "proposed_date": "2026-11-15",
+            "budget": 45000,
+            "brief": "Detailed product review and unboxing video targeting Tier-1 urban audience."
+        },
+        {
+            "id": 108,
+            "status": "Pending",
+            "created_at": "2026-11-01",
+            "user_id": 2,
+            "influencer_id": 4,
+            "campaign_title": "Automated Brand Summer Launch 2026",
+            "deliverable": "Instagram Reel + 2 Stories",
+            "proposed_date": "2026-11-15",
+            "budget": 45000,
+            "brief": "Detailed product review and unboxing video targeting Tier-1 urban audience."
+        },
+        {
+            "id": 109,
+            "status": "Pending",
+            "created_at": "2026-11-01",
+            "user_id": 2,
+            "influencer_id": 4,
+            "campaign_title": "Automated Brand Summer Launch 2026",
+            "deliverable": "Instagram Reel + 2 Stories",
+            "proposed_date": "2026-11-15",
+            "budget": 45000,
+            "brief": "Detailed product review and unboxing video targeting Tier-1 urban audience."
         }
     ],
     "reviews": [
@@ -680,6 +785,42 @@
             "rating": 5,
             "review_text": "Siddharth high energy routine resonated deeply with our fitness audience!",
             "created_at": "2026-08-23"
+        },
+        {
+            "id": 4,
+            "influencer_id": 4,
+            "user_id": 2,
+            "user_name": "Verified Client",
+            "rating": 5,
+            "comment": "",
+            "date": "2026-11-01"
+        },
+        {
+            "id": 5,
+            "influencer_id": 4,
+            "user_id": 2,
+            "user_name": "Verified Client",
+            "rating": 5,
+            "comment": "",
+            "date": "2026-11-01"
+        },
+        {
+            "id": 6,
+            "influencer_id": 4,
+            "user_id": 2,
+            "user_name": "Verified Client",
+            "rating": 5,
+            "comment": "",
+            "date": "2026-11-01"
+        },
+        {
+            "id": 7,
+            "influencer_id": 4,
+            "user_id": 2,
+            "user_name": "Verified Client",
+            "rating": 5,
+            "comment": "",
+            "date": "2026-11-01"
         }
     ],
     "availability": [
@@ -698,6 +839,33 @@
             "to_date": "2026-09-18",
             "status": "busy",
             "notes": "Attending Tech Expo"
+        },
+        {
+            "id": 3,
+            "influencer_id": 1,
+            "from_date": "2026-11-08",
+            "to_date": "2026-11-08",
+            "status": "available",
+            "notes": "Automated test photoshoot booking",
+            "created_at": "2026-11-01 11:58:53"
+        },
+        {
+            "id": 4,
+            "influencer_id": 1,
+            "from_date": "2026-11-08",
+            "to_date": "2026-11-08",
+            "status": "available",
+            "notes": "Automated test photoshoot booking",
+            "created_at": "2026-11-01 12:02:41"
+        },
+        {
+            "id": 5,
+            "influencer_id": 1,
+            "from_date": "2026-11-08",
+            "to_date": "2026-11-08",
+            "status": "available",
+            "notes": "Automated test photoshoot booking",
+            "created_at": "2026-11-01 12:19:15"
         }
     ],
     "conversations": [
@@ -705,9 +873,17 @@
             "id": 1,
             "participant_one_id": 2,
             "participant_two_id": 4,
-            "last_message": "Looking forward to collaborating on the summer campaign!",
-            "last_message_time": "2026-08-08 13:00:12",
+            "last_message": "Hello from automated testing! Looking forward to reviewing the campaign draft.",
+            "last_message_time": "2026-11-01 12:19:16",
             "created_at": "2026-08-08 12:57:26"
+        },
+        {
+            "id": 2,
+            "participant_one_id": 2,
+            "participant_two_id": 7,
+            "last_message": "What are your turnaround times?",
+            "last_message_time": "2026-10-31 14:02:45",
+            "created_at": "2026-10-31 13:58:12"
         }
     ],
     "messages": [
@@ -730,13 +906,63 @@
             "message": "Hi Rohan! Thanks for reaching out. Let's discuss the campaign guidelines and target delivery dates.",
             "is_read": 1,
             "created_at": "2026-08-08 12:58:01"
+        },
+        {
+            "id": 3,
+            "conversation_id": 2,
+            "sender_id": 2,
+            "receiver_id": 7,
+            "booking_id": 0,
+            "message": "What are your turnaround times?",
+            "is_read": 0,
+            "created_at": "2026-10-31 14:02:45"
+        },
+        {
+            "id": 4,
+            "conversation_id": 1,
+            "sender_id": 2,
+            "receiver_id": 4,
+            "booking_id": 0,
+            "message": "Hello from automated testing! Looking forward to reviewing the campaign draft.",
+            "is_read": 0,
+            "created_at": "2026-11-01 11:57:41"
+        },
+        {
+            "id": 5,
+            "conversation_id": 1,
+            "sender_id": 2,
+            "receiver_id": 4,
+            "booking_id": 0,
+            "message": "Hello from automated testing! Looking forward to reviewing the campaign draft.",
+            "is_read": 0,
+            "created_at": "2026-11-01 11:58:53"
+        },
+        {
+            "id": 6,
+            "conversation_id": 1,
+            "sender_id": 2,
+            "receiver_id": 4,
+            "booking_id": 0,
+            "message": "Hello from automated testing! Looking forward to reviewing the campaign draft.",
+            "is_read": 0,
+            "created_at": "2026-11-01 12:02:41"
+        },
+        {
+            "id": 7,
+            "conversation_id": 1,
+            "sender_id": 2,
+            "receiver_id": 4,
+            "booking_id": 0,
+            "message": "Hello from automated testing! Looking forward to reviewing the campaign draft.",
+            "is_read": 0,
+            "created_at": "2026-11-01 12:19:16"
         }
     ],
     "site_settings": {
-        "site_name": "InfluencerConnect",
-        "site_tagline": "India's #1 Verified Creator Marketplace",
-        "logo_url": "",
-        "contact_email": "support@influencerconnect.com",
+        "site_name": "Collabefy",
+        "site_tagline": "Connect \u2022 Collaborate \u2022 Grow",
+        "logo_url": "\/collabefy-logo.png",
+        "contact_email": "support@collabefy.com",
         "contact_phone": "+91 98765 43210",
         "contact_address": "Tech Park Tower B, Suite 402, Bangalore, India",
         "office_hours": "Mon - Sat: 9:00 AM - 7:00 PM IST",
@@ -744,12 +970,12 @@
         "hero_badge": "\u26a1 India's #1 Verified Creator Marketplace",
         "hero_title": "Connect & Book Top Influencers for Your Brand Campaigns",
         "hero_subtitle": "Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.",
-        "hero_image_url": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80",
-        "about_story_image": "https:\/\/images.unsplash.com\/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
+        "hero_image_url": "\/images\/collabefy-hero.jpg",
+        "about_story_image": "\/images\/collabefy-about-story.jpg",
         "cta_title": "Are You a Creator or Influencer?",
         "cta_subtitle": "Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.",
         "footer_about": "The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.",
-        "terms_content": "Welcome to InfluencerConnect. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.",
-        "privacy_content": "Your privacy is paramount. InfluencerConnect ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs."
+        "terms_content": "Welcome to Collabefy. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.",
+        "privacy_content": "Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs."
     }
 }

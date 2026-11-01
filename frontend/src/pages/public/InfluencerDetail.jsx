@@ -46,6 +46,17 @@ export default function InfluencerDetail() {
   const targetInfId = Number(inf.id || influencerId);
   const targetUserId = Number(inf.user_id || targetInfId);
 
+  // Always scroll to the very top when loading an influencer profile
+  useEffect(() => {
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    } catch {
+      window.scrollTo(0, 0);
+    }
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  }, [id, targetInfId]);
+
   useEffect(() => {
     if (matchedInf) {
       fetchReviews(targetInfId);

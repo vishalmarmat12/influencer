@@ -452,7 +452,7 @@ const AUTHENTIC_REVIEWS = [
 ];
 
 const AUTHENTIC_USERS = [
-  { id: 1, name: 'System Admin', company: 'InfluencerConnect HQ', email: 'admin@influencer.com', role: 'Administrator', phone: '+91 98765 00001', status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', created_at: '2026-01-01' },
+  { id: 1, name: 'System Admin', company: 'Collabefy HQ', email: 'admin@influencer.com', role: 'Administrator', phone: '+91 98765 00001', status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', created_at: '2026-01-01' },
   { id: 2, name: 'Rohan Sharma', company: 'TechGear Inc', email: 'user@demo.com', role: 'Brand Account', phone: '+91 98765 43210', status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', created_at: '2026-02-10' },
   { id: 3, name: 'Ananya Roy', company: 'Luxe Fashion Co.', email: 'ananya@luxefashion.com', role: 'Agency', phone: '+91 98765 11223', status: 'Active', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', created_at: '2026-03-15' },
   { id: 4, name: 'Vikram Seth', company: 'FitLife Supplements', email: 'vikram@fitlife.com', role: 'Brand Account', phone: '+91 98765 33445', status: 'Active', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', created_at: '2026-04-02' },
@@ -461,10 +461,10 @@ const AUTHENTIC_USERS = [
 ];
 
 export const DEFAULT_SITE_SETTINGS = {
-  site_name: 'InfluencerConnect',
-  site_tagline: "India's #1 Verified Creator Marketplace",
-  logo_url: '',
-  contact_email: 'support@influencerconnect.com',
+  site_name: 'Collabefy',
+  site_tagline: "Connect • Collaborate • Grow",
+  logo_url: '/collabefy-logo.png',
+  contact_email: 'support@collabefy.com',
   contact_phone: '+91 98765 43210',
   contact_address: 'Tech Park Tower B, Suite 402, Bangalore, India',
   office_hours: 'Mon - Sat: 9:00 AM - 7:00 PM IST',
@@ -472,36 +472,119 @@ export const DEFAULT_SITE_SETTINGS = {
   hero_badge: "⚡ India's #1 Verified Creator Marketplace",
   hero_title: 'Connect & Book Top Influencers for Your Brand Campaigns',
   hero_subtitle: 'Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.',
-  hero_image_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80',
-  about_story_image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80',
+  hero_image_url: '/images/collabefy-hero.jpg',
+  about_story_image: '/images/collabefy-about-story.jpg',
   cta_title: 'Are You a Creator or Influencer?',
   cta_subtitle: 'Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.',
   footer_about: 'The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.',
-  terms_content: 'Welcome to InfluencerConnect. By accessing or using our platform, power users and brands agree to comply with our verified guidelines.',
-  privacy_content: 'Your privacy is paramount. InfluencerConnect ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
+  terms_content: 'Welcome to Collabefy. By accessing or using our platform, power users and brands agree to comply with our verified guidelines.',
+  privacy_content: 'Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
 };
 
 export const DataProvider = ({ children }) => {
   const { user } = useAuth();
-  const [categories, setCategories] = useState(AUTHENTIC_CATEGORIES);
-  const [influencers, setInfluencers] = useState(AUTHENTIC_INFLUENCERS);
-  const [users, setUsers] = useState(AUTHENTIC_USERS);
-  const [bookings, setBookings] = useState(AUTHENTIC_BOOKINGS);
-  const [messages, setMessages] = useState([]);
+  const [categories, setCategories] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_categories');
+      return saved ? JSON.parse(saved) : AUTHENTIC_CATEGORIES;
+    } catch (e) {
+      return AUTHENTIC_CATEGORIES;
+    }
+  });
+
+  const [influencers, setInfluencers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_influencers');
+      return saved ? JSON.parse(saved) : AUTHENTIC_INFLUENCERS;
+    } catch (e) {
+      return AUTHENTIC_INFLUENCERS;
+    }
+  });
+
+  const [users, setUsers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_users');
+      return saved ? JSON.parse(saved) : AUTHENTIC_USERS;
+    } catch (e) {
+      return AUTHENTIC_USERS;
+    }
+  });
+
+  const [bookings, setBookings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_bookings');
+      return saved ? JSON.parse(saved) : AUTHENTIC_BOOKINGS;
+    } catch (e) {
+      return AUTHENTIC_BOOKINGS;
+    }
+  });
+
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_messages');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
   const [siteSettings, setSiteSettings] = useState(() => {
     try {
       const saved = localStorage.getItem('influencer_site_settings');
-      return saved ? { ...DEFAULT_SITE_SETTINGS, ...JSON.parse(saved) } : DEFAULT_SITE_SETTINGS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        let changed = false;
+        if (parsed.site_name === 'InfluencerConnect' || !parsed.site_name) {
+          parsed.site_name = 'Collabefy';
+          parsed.site_tagline = 'Connect • Collaborate • Grow';
+          parsed.logo_url = '/collabefy-logo.png';
+          parsed.contact_email = 'support@collabefy.com';
+          changed = true;
+        }
+        if (!parsed.hero_image_url || parsed.hero_image_url.includes('unsplash.com')) {
+          parsed.hero_image_url = '/images/collabefy-hero.jpg';
+          changed = true;
+        }
+        if (!parsed.about_story_image || parsed.about_story_image.includes('unsplash.com')) {
+          parsed.about_story_image = '/images/collabefy-about-story.jpg';
+          changed = true;
+        }
+        if (changed) {
+          try {
+            localStorage.setItem('influencer_site_settings', JSON.stringify({ ...DEFAULT_SITE_SETTINGS, ...parsed }));
+          } catch (e) {}
+        }
+        return { ...DEFAULT_SITE_SETTINGS, ...parsed };
+      }
+      return DEFAULT_SITE_SETTINGS;
     } catch (e) {
       return DEFAULT_SITE_SETTINGS;
     }
   });
+
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem('influencer_connect_favorites');
     return saved ? JSON.parse(saved) : [];
   });
-  const [availabilityList, setAvailabilityList] = useState([]);
-  const [reviewsList, setReviewsList] = useState(AUTHENTIC_REVIEWS);
+
+  const [availabilityList, setAvailabilityList] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_availability');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [reviewsList, setReviewsList] = useState(() => {
+    try {
+      const saved = localStorage.getItem('influencer_connect_reviews');
+      return saved ? JSON.parse(saved) : AUTHENTIC_REVIEWS;
+    } catch (e) {
+      return AUTHENTIC_REVIEWS;
+    }
+  });
+
   const [readNotifIds, setReadNotifIds] = useState(() => {
     try {
       const saved = localStorage.getItem('influencer_read_notif_ids');
@@ -510,8 +593,52 @@ export const DataProvider = ({ children }) => {
       return [];
     }
   });
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Sync state into localStorage for seamless instant persistence
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_bookings', JSON.stringify(bookings));
+    } catch (e) {}
+  }, [bookings]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_categories', JSON.stringify(categories));
+    } catch (e) {}
+  }, [categories]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_influencers', JSON.stringify(influencers));
+    } catch (e) {}
+  }, [influencers]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_users', JSON.stringify(users));
+    } catch (e) {}
+  }, [users]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_availability', JSON.stringify(availabilityList));
+    } catch (e) {}
+  }, [availabilityList]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_reviews', JSON.stringify(reviewsList));
+    } catch (e) {}
+  }, [reviewsList]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('influencer_connect_messages', JSON.stringify(messages));
+    } catch (e) {}
+  }, [messages]);
 
   useEffect(() => {
     localStorage.setItem('influencer_connect_favorites', JSON.stringify(favorites));
@@ -526,15 +653,42 @@ export const DataProvider = ({ children }) => {
 
     const dynamicNotifs = [];
 
+    // 1. Unread chat messages notifications for all logged-in roles
+    const unreadMsgs = (messages || []).filter(m => 
+      Number(m.receiver_id) === Number(user.id) && !m.is_read
+    );
+
+    unreadMsgs.forEach(m => {
+      const id = `msg_${m.id}`;
+      const senderInf = (influencers || []).find(i => Number(i.user_id) === Number(m.sender_id) || Number(i.id) === Number(m.sender_id));
+      const senderName = senderInf ? senderInf.name : (m.sender_name || `User #${m.sender_id}`);
+      const chatLink = user.role === 'influencer' 
+        ? `/creator/messages?conversationId=${m.conversation_id}`
+        : `/user/messages?conversationId=${m.conversation_id}`;
+
+      dynamicNotifs.push({
+        id,
+        type: 'message',
+        title: `New Message from ${senderName}`,
+        message: m.message || 'Sent you a campaign negotiation message.',
+        time: m.created_at ? new Date(m.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Recent',
+        link: chatLink,
+        read: readNotifIds.includes(id)
+      });
+    });
+
+    // 2. Role-specific Dynamic Notifications
     if (user.role === 'admin') {
       const pendingBookings = (bookings || []).filter(b => b.status === 'pending');
       pendingBookings.forEach(b => {
         const id = `admin_bk_${b.id}`;
         dynamicNotifs.push({
           id,
+          type: 'booking',
           title: `Pending Campaign Approval`,
           message: `${b.business_name || 'Client'} requested "${b.campaign_name || 'Campaign'}" with ${b.influencer_name || 'Creator'}.`,
           time: b.date || 'Recent',
+          link: '/admin/bookings',
           read: readNotifIds.includes(id)
         });
       });
@@ -544,42 +698,101 @@ export const DataProvider = ({ children }) => {
         const id = `admin_unverified_creators`;
         dynamicNotifs.push({
           id,
+          type: 'system',
           title: `Creator Verification Audit`,
           message: `${unverifiedCreators.length} creator accounts are pending badge audit.`,
           time: 'Action Required',
+          link: '/admin/influencers',
           read: readNotifIds.includes(id)
         });
       }
     } else if (user.role === 'influencer') {
       const myBookings = (bookings || []).filter(b => b.influencer_id == user.id || b.influencer_user_id == user.id || b.influencer_name === user.name);
+      
       const pendingReqs = myBookings.filter(b => b.status === 'pending');
       pendingReqs.forEach(b => {
         const id = `creator_req_${b.id}`;
         dynamicNotifs.push({
           id,
+          type: 'booking',
           title: `New Campaign Proposal!`,
           message: `${b.business_name || 'Brand'} offered ₹${(b.budget || 0).toLocaleString()} for "${b.campaign_name}".`,
           time: b.date || 'Recent',
+          link: '/creator/requests',
+          read: readNotifIds.includes(id)
+        });
+      });
+
+      const acceptedReqs = myBookings.filter(b => b.status === 'accepted');
+      acceptedReqs.forEach(b => {
+        const id = `creator_acc_${b.id}`;
+        dynamicNotifs.push({
+          id,
+          type: 'booking',
+          title: `Active Campaign Collaboration`,
+          message: `Deliverable for "${b.campaign_name}" is in progress.`,
+          time: b.date || 'Recent',
+          link: '/creator/requests',
           read: readNotifIds.includes(id)
         });
       });
     } else if (user.role === 'user') {
       const myBookings = (bookings || []).filter(b => b.user_id == user.id || b.user_email === user.email);
+      
       const acceptedBookings = myBookings.filter(b => b.status === 'accepted');
       acceptedBookings.forEach(b => {
         const id = `user_accepted_${b.id}`;
         dynamicNotifs.push({
           id,
+          type: 'booking',
           title: `Campaign Proposal Accepted!`,
           message: `${b.influencer_name} accepted "${b.campaign_name}".`,
           time: b.date || 'Recent',
+          link: '/user/bookings',
+          read: readNotifIds.includes(id)
+        });
+      });
+
+      const pendingBookings = myBookings.filter(b => b.status === 'pending');
+      pendingBookings.forEach(b => {
+        const id = `user_pending_${b.id}`;
+        dynamicNotifs.push({
+          id,
+          type: 'booking',
+          title: `Proposal Sent to Creator`,
+          message: `Your booking for "${b.campaign_name}" is awaiting creator review.`,
+          time: b.date || 'Recent',
+          link: '/user/bookings',
+          read: readNotifIds.includes(id)
+        });
+      });
+
+      const completedBookings = myBookings.filter(b => b.status === 'completed');
+      completedBookings.forEach(b => {
+        const id = `user_completed_${b.id}`;
+        dynamicNotifs.push({
+          id,
+          type: 'system',
+          title: `Campaign Completed!`,
+          message: `Deliverables for "${b.campaign_name}" are delivered. Leave a review!`,
+          time: b.date || 'Recent',
+          link: '/user/bookings',
           read: readNotifIds.includes(id)
         });
       });
     }
 
     setNotifications(dynamicNotifs);
-  }, [user, bookings, influencers, readNotifIds]);
+  }, [user, bookings, influencers, messages, readNotifIds]);
+
+  const markNotificationRead = (id) => {
+    if (!id) return;
+    const updated = Array.from(new Set([...readNotifIds, id]));
+    setReadNotifIds(updated);
+    try {
+      localStorage.setItem('influencer_read_notif_ids', JSON.stringify(updated));
+    } catch (e) {}
+  };
 
   const markAllNotificationsRead = () => {
     const allIds = notifications.map(n => n.id);
@@ -618,28 +831,19 @@ export const DataProvider = ({ children }) => {
         });
       }
 
-      if (activeUser) {
-        const bkRes = await api.getBookings({
-          user_id: activeUser.id,
-          role: activeUser.role
-        }).catch(() => null);
-        if (bkRes && bkRes.data && Array.isArray(bkRes.data)) {
-          setBookings(bkRes.data.length > 0 ? bkRes.data : AUTHENTIC_BOOKINGS);
-        }
+      const queryParams = activeUser ? { user_id: activeUser.id, role: activeUser.role } : {};
+      const bkRes = await api.getBookings(queryParams).catch(() => null);
+      if (bkRes && bkRes.data && Array.isArray(bkRes.data) && bkRes.data.length > 0) {
+        setBookings(bkRes.data);
+      }
 
+      if (activeUser) {
         const msgRes = await api.getMessages({
           user_id: activeUser.id,
           role: activeUser.role
         }).catch(() => null);
-        if (msgRes && msgRes.data && Array.isArray(msgRes.data)) {
-          setMessages(msgRes.data.length > 0 ? msgRes.data : AUTHENTIC_MESSAGES);
-        }
-      } else {
-        const bkRes = await api.getBookings().catch(() => null);
-        if (bkRes && bkRes.data && Array.isArray(bkRes.data) && bkRes.data.length > 0) {
-          setBookings(bkRes.data);
-        } else {
-          setBookings(AUTHENTIC_BOOKINGS);
+        if (msgRes && msgRes.data && Array.isArray(msgRes.data) && msgRes.data.length > 0) {
+          setMessages(msgRes.data);
         }
       }
     } catch (e) {
@@ -825,32 +1029,51 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const fetchBookings = async () => {
+    try {
+      const activeRole = user?.role || 'admin';
+      const bkRes = await api.getBookings({
+        user_id: user?.id,
+        role: activeRole
+      }).catch(() => null);
+      if (bkRes && bkRes.data && Array.isArray(bkRes.data)) {
+        setBookings(bkRes.data);
+        return bkRes.data;
+      }
+    } catch (e) {
+      console.error('Fetch bookings error:', e);
+    }
+    return bookings;
+  };
+
   const updateBookingStatus = async (id, status) => {
     const numericId = Number(id);
+    const targetStatus = String(status || '').toLowerCase().trim();
+
     // Optimistic immediate state update
     setBookings((prev) =>
-      prev.map((b) => (Number(b.id) === numericId || String(b.id) === String(id) ? { ...b, status } : b))
+      prev.map((b) => (Number(b.id) === numericId || String(b.id) === String(id) ? { ...b, status: targetStatus } : b))
     );
 
     try {
-      const res = await api.updateBookingStatus(id, status, {
+      const res = await api.updateBookingStatus(id, targetStatus, {
         user_id: user?.id || 1,
         role: user?.role || 'admin'
       });
-      if (res && res.status === 'success') {
+      if (res && (res.status === 'success' || !res.error)) {
         const updatedData = res.data;
-        if (updatedData && typeof updatedData === 'object') {
+        if (updatedData && typeof updatedData === 'object' && (updatedData.id || updatedData.campaign_name)) {
           setBookings((prev) =>
-            prev.map((b) => (Number(b.id) === numericId || String(b.id) === String(id) ? { ...b, ...updatedData, status } : b))
+            prev.map((b) => (Number(b.id) === numericId || String(b.id) === String(id) ? { ...b, ...updatedData, id: b.id, status: targetStatus } : b))
           );
         }
-        return { success: true, data: updatedData, message: res.message || `Status updated to ${status}` };
+        return { success: true, data: updatedData, message: res.message || `Status updated to ${targetStatus}` };
       } else {
-        return { success: true, message: `Status updated to ${status}` };
+        return { success: true, message: `Status updated to ${targetStatus}` };
       }
     } catch (err) {
       console.error('Update booking status error:', err);
-      return { success: true, message: `Status updated to ${status}` };
+      return { success: true, message: `Status updated to ${targetStatus}` };
     }
   };
 
@@ -1029,6 +1252,7 @@ export const DataProvider = ({ children }) => {
         favorites,
         notifications,
         markAllNotificationsRead,
+        markNotificationRead,
         availabilityList,
         reviewsList,
         loading,
@@ -1043,6 +1267,7 @@ export const DataProvider = ({ children }) => {
         updateCategory,
         deleteCategory,
         createBooking,
+        fetchBookings,
         updateBookingStatus,
         deleteBooking,
         sendMessage,

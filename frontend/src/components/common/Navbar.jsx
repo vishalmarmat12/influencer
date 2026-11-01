@@ -3,12 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import {
-  Bell, User, LogOut, Shield, Sparkles, Briefcase, Sun, Moon, ChevronDown, Check, LayoutDashboard, Menu
+  Bell, User, LogOut, Shield, Sparkles, Briefcase, Sun, Moon, ChevronDown, Check, LayoutDashboard, Menu, MessageSquare
 } from 'lucide-react';
 
 export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
   const { user, activeRole, theme, toggleTheme, logout } = useAuth();
-  const { notifications, markAllNotificationsRead, siteSettings } = useData();
+  const { notifications, markAllNotificationsRead, markNotificationRead, siteSettings } = useData();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -65,21 +65,30 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
                 <Menu size={19} />
               </button>
             )}
-            <Link to="/creator" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0, overflow: 'hidden' }}>
-              {siteSettings?.logo_url ? (
-                <img src={siteSettings.logo_url} alt="Logo" style={{ width: '38px', height: '38px', borderRadius: '10px', objectFit: 'contain', flexShrink: 0 }} />
-              ) : (
-                <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent-pink))', width: '38px', height: '38px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px var(--primary-glow)', flexShrink: 0 }}>
-                  <Sparkles size={20} color="#FFF" />
+            <Link to="/creator" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0 }}>
+              <img
+                src="/collabefy-icon.png"
+                alt="Collabefy"
+                style={{
+                  height: 'clamp(36px, 5vw, 44px)',
+                  width: 'auto',
+                  flexShrink: 0,
+                  objectFit: 'contain'
+                }}
+                onError={(e) => { e.currentTarget.src = '/collabefy-logo.png'; }}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0, overflow: 'hidden' }}>
+                <div style={{ fontSize: 'clamp(1.2rem, 3.6vw, 1.42rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+                  <span style={{ color: 'var(--text-main)' }}>Collab</span>
+                  <span style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C026D3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>efy</span>
                 </div>
-              )}
-              <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                <h2 className="gradient-text navbar-logo-title" style={{ fontSize: 'clamp(1.05rem, 3.5vw, 1.35rem)', lineHeight: 1.15, fontWeight: 800, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', margin: 0 }}>
-                  {siteSettings?.site_name || 'InfluencerConnect'}
-                </h2>
-                <span className="hide-on-mobile" style={{ fontSize: '0.68rem', color: 'var(--primary)', letterSpacing: '0.08em', fontWeight: 800, display: 'block', marginTop: '1px' }}>
-                  CREATOR DASHBOARD PORTAL
-                </span>
+                <div style={{ fontSize: 'clamp(0.64rem, 1.6vw, 0.72rem)', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.04em', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '1px' }}>
+                  <span>Connect</span>
+                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span>Collaborate</span>
+                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span>Grow</span>
+                </div>
               </div>
             </Link>
           </div>
@@ -103,12 +112,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
               <div style={{ position: 'relative' }}>
                 <button
                   className="btn btn-secondary"
-                  onClick={() => {
-                    if (!showNotifs && markAllNotificationsRead) {
-                      markAllNotificationsRead();
-                    }
-                    setShowNotifs(!showNotifs);
-                  }}
+                  onClick={() => setShowNotifs(!showNotifs)}
                   style={{ width: '38px', height: '38px', padding: 0, borderRadius: '50%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   title="Notifications"
                 >
@@ -119,31 +123,88 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
                 </button>
 
                 {showNotifs && (
-                  <div className="glass-panel animate-fade-in" style={{ position: 'absolute', right: 0, top: '48px', width: '320px', maxWidth: 'calc(100vw - 24px)', padding: '16px', zIndex: 100, boxSizing: 'border-box', boxShadow: '0 10px 40px rgba(0,0,0,0.25)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                      <span>Notifications</span>
-                      <span className={`badge ${unreadNotifs > 0 ? 'badge-amber' : 'badge-purple'}`} style={{ fontSize: '0.72rem' }}>
-                        {unreadNotifs > 0 ? `${unreadNotifs} New` : 'All Read'}
-                      </span>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '260px', overflowY: 'auto' }}>
-                      {(!notifications || notifications.length === 0) ? (
-                        <div style={{ padding: '24px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.84rem' }}>
-                          <Bell size={24} color="var(--text-dim)" style={{ marginBottom: '6px', opacity: 0.6 }} />
-                          <p>No new notifications right now.</p>
+                  <>
+                    <div 
+                      onClick={() => setShowNotifs(false)} 
+                      style={{ position: 'fixed', inset: 0, zIndex: 1150 }} 
+                    />
+                    <div className="glass-panel animate-fade-in navbar-notifications-dropdown">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>Notifications</span>
+                          {unreadNotifs > 0 && (
+                            <span className="badge badge-amber" style={{ fontSize: '0.72rem', padding: '2px 8px' }}>
+                              {unreadNotifs} New
+                            </span>
+                          )}
                         </div>
-                      ) : (
-                        notifications.map(n => (
-                          <div key={n.id} style={{ padding: '10px 12px', borderRadius: '8px', background: n.read ? 'var(--bg-card)' : 'var(--bg-input)', borderLeft: n.read ? 'none' : '3px solid var(--primary)', fontSize: '0.84rem' }}>
-                            <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{n.title}</div>
-                            <div style={{ color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.3 }}>{n.message}</div>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '4px', display: 'block' }}>{n.time}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (markAllNotificationsRead) markAllNotificationsRead();
+                          }}
+                          className="badge badge-purple"
+                          style={{ fontSize: '0.72rem', border: 'none', cursor: 'pointer', padding: '4px 10px', borderRadius: '6px' }}
+                        >
+                          ALL READ
+                        </button>
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+                        {(!notifications || notifications.length === 0) ? (
+                          <div style={{ padding: '24px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.84rem' }}>
+                            <Bell size={24} color="var(--text-dim)" style={{ marginBottom: '6px', opacity: 0.6 }} />
+                            <p>No new notifications right now.</p>
                           </div>
-                        ))
-                      )}
+                        ) : (
+                          notifications.map(n => (
+                            <div 
+                              key={n.id} 
+                              onClick={() => {
+                                if (markNotificationRead) markNotificationRead(n.id);
+                                setShowNotifs(false);
+                                if (n.link) navigate(n.link);
+                              }}
+                              style={{ 
+                                padding: '10px 12px', 
+                                borderRadius: '10px', 
+                                background: n.read ? 'var(--bg-card)' : 'var(--bg-input)', 
+                                borderLeft: n.read ? '3px solid transparent' : '3px solid var(--primary)', 
+                                border: '1px solid var(--border-color)',
+                                fontSize: '0.84rem',
+                                cursor: n.link ? 'pointer' : 'default',
+                                display: 'flex',
+                                gap: '10px',
+                                alignItems: 'flex-start',
+                                transition: 'all 0.2s ease'
+                              }}
+                            >
+                              <div style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                background: n.type === 'message' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                                color: n.type === 'message' ? 'var(--primary)' : 'var(--accent-emerald)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                                marginTop: '2px'
+                              }}>
+                                {n.type === 'message' ? <MessageSquare size={13} /> : <Sparkles size={13} />}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.86rem' }}>{n.title}</div>
+                                <div style={{ color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.35, fontSize: '0.8rem' }}>{n.message}</div>
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '4px', display: 'block' }}>{n.time}</span>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             )}
@@ -188,8 +249,9 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
 
                     <button
                       onClick={() => {
+                        const wasAdmin = userRole === 'admin';
                         logout();
-                        navigate('/login');
+                        navigate(wasAdmin ? '/admin/login' : '/login');
                         setShowUserDropdown(false);
                       }}
                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600, marginTop: '4px', borderTop: '1px solid var(--border-color)' }}
@@ -277,24 +339,31 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
 
             <Link
               to={getDashboardPath()}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0, overflow: 'hidden' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0 }}
             >
-              {siteSettings?.logo_url ? (
-                <img src={siteSettings.logo_url} alt="Logo" style={{ width: '38px', height: '38px', borderRadius: '10px', objectFit: 'contain', flexShrink: 0 }} />
-              ) : (
-                <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent-pink))', width: '38px', height: '38px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px var(--primary-glow)', flexShrink: 0 }}>
-                  <Sparkles size={20} color="#FFF" />
+              <img
+                src="/collabefy-icon.png"
+                alt="Collabefy"
+                style={{
+                  height: 'clamp(36px, 5vw, 44px)',
+                  width: 'auto',
+                  flexShrink: 0,
+                  objectFit: 'contain'
+                }}
+                onError={(e) => { e.currentTarget.src = '/collabefy-logo.png'; }}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0, overflow: 'hidden' }}>
+                <div style={{ fontSize: 'clamp(1.2rem, 3.6vw, 1.42rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+                  <span style={{ color: 'var(--text-main)' }}>Collab</span>
+                  <span style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C026D3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>efy</span>
                 </div>
-              )}
-              <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                <h2 className="gradient-text navbar-logo-title" style={{ fontSize: 'clamp(1.05rem, 3.5vw, 1.35rem)', lineHeight: 1.15, fontWeight: 800, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', margin: 0 }}>
-                  {siteSettings?.site_name || 'InfluencerConnect'}
-                </h2>
-                {activeRole !== 'guest' && (
-                  <span className="hide-on-mobile" style={{ fontSize: '0.68rem', color: 'var(--primary)', letterSpacing: '0.08em', fontWeight: 800, display: 'block', marginTop: '1px' }}>
-                    {activeRole.toUpperCase()} DASHBOARD
-                  </span>
-                )}
+                <div style={{ fontSize: 'clamp(0.64rem, 1.6vw, 0.72rem)', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.04em', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '1px' }}>
+                  <span>Connect</span>
+                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span>Collaborate</span>
+                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span>Grow</span>
+                </div>
               </div>
             </Link>
           </div>
@@ -380,12 +449,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
               <div style={{ position: 'relative' }}>
                 <button
                   className="btn btn-secondary"
-                  onClick={() => {
-                    if (!showNotifs && markAllNotificationsRead) {
-                      markAllNotificationsRead();
-                    }
-                    setShowNotifs(!showNotifs);
-                  }}
+                  onClick={() => setShowNotifs(!showNotifs)}
                   style={{ width: '38px', height: '38px', padding: 0, borderRadius: '50%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   title="Notifications"
                 >
@@ -396,31 +460,88 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
                 </button>
 
                 {showNotifs && (
-                  <div className="glass-panel animate-fade-in" style={{ position: 'absolute', right: 0, top: '48px', width: '320px', maxWidth: 'calc(100vw - 24px)', padding: '16px', zIndex: 100, boxSizing: 'border-box', boxShadow: '0 10px 40px rgba(0,0,0,0.25)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                      <span>Notifications</span>
-                      <span className={`badge ${unreadNotifs > 0 ? 'badge-amber' : 'badge-purple'}`} style={{ fontSize: '0.72rem' }}>
-                        {unreadNotifs > 0 ? `${unreadNotifs} New` : 'All Read'}
-                      </span>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '260px', overflowY: 'auto' }}>
-                      {(!notifications || notifications.length === 0) ? (
-                        <div style={{ padding: '24px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.84rem' }}>
-                          <Bell size={24} color="var(--text-dim)" style={{ marginBottom: '6px', opacity: 0.6 }} />
-                          <p>No new notifications right now.</p>
+                  <>
+                    <div 
+                      onClick={() => setShowNotifs(false)} 
+                      style={{ position: 'fixed', inset: 0, zIndex: 1150 }} 
+                    />
+                    <div className="glass-panel animate-fade-in navbar-notifications-dropdown">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>Notifications</span>
+                          {unreadNotifs > 0 && (
+                            <span className="badge badge-amber" style={{ fontSize: '0.72rem', padding: '2px 8px' }}>
+                              {unreadNotifs} New
+                            </span>
+                          )}
                         </div>
-                      ) : (
-                        notifications.map(n => (
-                          <div key={n.id} style={{ padding: '10px 12px', borderRadius: '8px', background: n.read ? 'var(--bg-card)' : 'var(--bg-input)', borderLeft: n.read ? 'none' : '3px solid var(--primary)', fontSize: '0.84rem' }}>
-                            <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{n.title}</div>
-                            <div style={{ color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.3 }}>{n.message}</div>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '4px', display: 'block' }}>{n.time}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (markAllNotificationsRead) markAllNotificationsRead();
+                          }}
+                          className="badge badge-purple"
+                          style={{ fontSize: '0.72rem', border: 'none', cursor: 'pointer', padding: '4px 10px', borderRadius: '6px' }}
+                        >
+                          ALL READ
+                        </button>
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+                        {(!notifications || notifications.length === 0) ? (
+                          <div style={{ padding: '24px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.84rem' }}>
+                            <Bell size={24} color="var(--text-dim)" style={{ marginBottom: '6px', opacity: 0.6 }} />
+                            <p>No new notifications right now.</p>
                           </div>
-                        ))
-                      )}
+                        ) : (
+                          notifications.map(n => (
+                            <div 
+                              key={n.id} 
+                              onClick={() => {
+                                if (markNotificationRead) markNotificationRead(n.id);
+                                setShowNotifs(false);
+                                if (n.link) navigate(n.link);
+                              }}
+                              style={{ 
+                                padding: '10px 12px', 
+                                borderRadius: '10px', 
+                                background: n.read ? 'var(--bg-card)' : 'var(--bg-input)', 
+                                borderLeft: n.read ? '3px solid transparent' : '3px solid var(--primary)', 
+                                border: '1px solid var(--border-color)',
+                                fontSize: '0.84rem',
+                                cursor: n.link ? 'pointer' : 'default',
+                                display: 'flex',
+                                gap: '10px',
+                                alignItems: 'flex-start',
+                                transition: 'all 0.2s ease'
+                              }}
+                            >
+                              <div style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                background: n.type === 'message' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                                color: n.type === 'message' ? 'var(--primary)' : 'var(--accent-emerald)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                                marginTop: '2px'
+                              }}>
+                                {n.type === 'message' ? <MessageSquare size={13} /> : <Sparkles size={13} />}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.86rem' }}>{n.title}</div>
+                                <div style={{ color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.35, fontSize: '0.8rem' }}>{n.message}</div>
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '4px', display: 'block' }}>{n.time}</span>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             )}
@@ -465,8 +586,9 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
 
                     <button
                       onClick={() => {
+                        const wasAdmin = userRole === 'admin';
                         logout();
-                        navigate('/login');
+                        navigate(wasAdmin ? '/admin/login' : '/login');
                         setShowUserDropdown(false);
                       }}
                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600, marginTop: '4px', borderTop: '1px solid var(--border-color)' }}

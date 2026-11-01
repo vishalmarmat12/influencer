@@ -11,6 +11,7 @@ import {
 import { InstagramIcon, YoutubeIcon, TwitterIcon, LinkedinIcon } from '../../components/common/SocialIcons';
 import ChatBox from '../../components/chat/ChatBox';
 import Pagination from '../../components/common/Pagination';
+import { computeBookingTimeSeries, generateSvgCurve, computeSocialReachDistribution } from '../../utils/chartUtils';
 
 /* -------------------------------------------------------------------------- */
 /* 1. INFLUENCER DASHBOARD OVERVIEW                                            */
@@ -29,6 +30,11 @@ export function InfluencerDashboard() {
   const pendingCount = myBookings.filter(b => b.status === 'pending').length;
   const acceptedCount = myBookings.filter(b => b.status === 'accepted' || b.status === 'completed').length;
   const totalRevenue = myBookings.filter(b => b.status === 'accepted' || b.status === 'completed').reduce((sum, b) => sum + (b.budget || 0), 0);
+
+  // Dynamic Chart & Donut Calculations for Creator
+  const timeSeries = computeBookingTimeSeries(myBookings, growthTimeframe);
+  const chart = generateSvgCurve(timeSeries, { height: 130, strokeColor: '#F97316' });
+  const socialData = computeSocialReachDistribution(user?.socials, user?.followers);
 
   const paginatedBookings = myBookings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -51,7 +57,7 @@ export function InfluencerDashboard() {
       </div>
 
       {/* 1. TOP 5 KPI STATS CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
         
         {/* Card 1: Total Followers */}
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #F97316', position: 'relative' }}>
@@ -127,53 +133,102 @@ export function InfluencerDashboard() {
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '18px' }}>
         
         <div className="glass-panel" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
             <div>
-              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Audience Reach Trajectory</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Follower growth across your linked platforms</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Audience Reach Trajectory</h3>
+                <span className="badge badge-amber" style={{ fontSize: '0.72rem', padding: '1px 6px' }}>
+                  ₹{chart.total.toLocaleString()} Earned
+                </span>
+              </div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                {growthTimeframe === 'Week' ? 'Weekly revenue & booking milestones (Past 7 Days)' : growthTimeframe === 'Year' ? 'Annual growth & deal revenue progression' : 'Monthly revenue & campaign booking progression'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '3px', background: 'var(--bg-input)', padding: '3px', borderRadius: '6px' }}>
+              {['Week', 'Month', 'Year'].map(t => (
+                <button
+                  key={t}
+                  onClick={() => setGrowthTimeframe(t)}
+                  style={{
+                    padding: '3px 10px',
+                    borderRadius: '5px',
+                    border: 'none',
+                    background: growthTimeframe === t ? 'var(--primary)' : 'transparent',
+                    color: growthTimeframe === t ? '#FFF' : 'var(--text-muted)',
+                    fontWeight: 600,
+                    fontSize: '0.76rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
             </div>
           </div>
 
           <div style={{ height: '140px', width: '100%', position: 'relative' }}>
-            <svg viewBox="0 0 500 130" style={{ width: '100%', height: '100%' }}>
+            <svg viewBox="0 0 500 130" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
               <defs>
                 <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#F97316" stopOpacity="0.25" />
+                  <stop offset="0%" stopColor="#F97316" stopOpacity="0.30" />
                   <stop offset="100%" stopColor="#F97316" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              <path d="M 0,90 Q 75,70 150,60 T 300,40 T 450,30 L 500,35 L 500,130 L 0,130 Z" fill="url(#chartGrad)" />
-              <path d="M 0,90 Q 75,70 150,60 T 300,40 T 450,30 L 500,35" fill="none" stroke="#F97316" strokeWidth="2" />
+              {chart.pathArea && (
+                <path d={chart.pathArea} fill="url(#chartGrad)" />
+              )}
+              {chart.pathStroke && (
+                <path d={chart.pathStroke} fill="none" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+              {chart.coords.map((pt, idx) => (
+                <g key={idx}>
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r="4"
+                    fill="#F97316"
+                    stroke="var(--bg-card)"
+                    strokeWidth="2"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <title>{`${pt.label}: ₹${pt.value.toLocaleString()}`}</title>
+                  </circle>
+                </g>
+              ))}
             </svg>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-dim)', fontSize: '0.74rem', marginTop: '6px' }}>
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-dim)', fontSize: '0.74rem', marginTop: '6px', padding: '0 8px' }}>
+              {chart.coords.map(pt => (
+                <span key={pt.label} style={{ fontWeight: 600 }}>{pt.label}</span>
+              ))}
             </div>
           </div>
         </div>
 
         <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Linked Social Reach</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Followers by social platform</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Linked Social Reach</h3>
+              <span className="badge badge-green" style={{ fontSize: '0.68rem', padding: '1px 5px' }}>Dynamic</span>
+            </div>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Followers distributed across your linked handles</span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '12px 0' }}>
-            <div style={{ width: '105px', height: '105px', borderRadius: '50%', background: 'conic-gradient(#EC4899 0% 65%, #3B82F6 65% 100%)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '105px', height: '105px', borderRadius: '50%', background: socialData.conicGradient, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s ease' }}>
               <div style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'var(--bg-card)' }} />
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#EC4899' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Insta:</span>
-              <strong style={{ color: 'var(--text-main)' }}>{user?.socials?.instagram?.followers || '180K'}</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#3B82F6' }} />
-              <span style={{ color: 'var(--text-muted)' }}>YT:</span>
-              <strong style={{ color: 'var(--text-main)' }}>{user?.socials?.youtube?.subscribers || '70K'}</strong>
-            </div>
+            {socialData.platforms.map(p => (
+              <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: p.color, flexShrink: 0 }} />
+                <span style={{ color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}:</span>
+                <strong style={{ color: 'var(--text-main)' }}>{p.percent}%</strong>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -182,7 +237,7 @@ export function InfluencerDashboard() {
       {/* 3. QUICK ACTIONS GRID */}
       <div className="glass-panel" style={{ padding: '20px' }}>
         <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '14px' }}>Quick Creator Tools</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '10px' }}>
+        <div className="dashboard-quick-actions-grid">
           <Link to="/creator/profile" className="glass-panel glass-panel-hover" style={{ padding: '12px', textDecoration: 'none', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
             <User size={17} color="var(--primary)" />
             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-main)' }}>Edit Profile</span>
@@ -216,59 +271,72 @@ export function InfluencerDashboard() {
       </div>
 
       {/* 4. RECENT BOOKINGS TABLE */}
-      <div className="glass-panel" style={{ padding: '20px' }}>
+      <div className="light-table-card" data-theme="light" style={{ padding: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
           <div>
-            <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Incoming Collaboration Bookings ({myBookings.length})</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Latest brand campaign proposals assigned to your profile</span>
+            <h3 style={{ fontSize: '1.05rem', color: '#0F172A', fontWeight: 800 }}>Incoming Collaboration Bookings ({myBookings.length})</h3>
+            <span style={{ fontSize: '0.78rem', color: '#64748B' }}>Latest brand campaign proposals assigned to your profile</span>
           </div>
-          <Link to="/creator/requests" style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
+          <Link to="/creator/requests" style={{ color: '#4F46E5', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none' }}>View All →</Link>
         </div>
 
         {myBookings.length === 0 ? (
-          <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            <CalendarCheck size={36} color="var(--text-dim)" style={{ marginBottom: '10px' }} />
-            <p style={{ fontSize: '0.9rem', fontWeight: 600 }}>No incoming campaign proposals yet.</p>
-            <span style={{ fontSize: '0.8rem' }}>When brands submit a booking request for your services, it will appear here.</span>
+          <div style={{ padding: '30px', textAlign: 'center', color: '#64748B' }}>
+            <CalendarCheck size={36} color="#94A3B8" style={{ marginBottom: '10px', opacity: 0.6 }} />
+            <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#0F172A' }}>No incoming campaign proposals yet.</p>
+            <span style={{ fontSize: '0.8rem', color: '#64748B' }}>When brands submit a booking request for your services, it will appear here.</span>
           </div>
         ) : (
           <>
-            <div className="table-responsive-container">
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+            {/* DESKTOP TABLE VIEW */}
+            <div className="desktop-table-view light-table-wrapper">
+              <table className="light-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                    <th style={{ padding: '8px' }}>ID</th>
-                    <th style={{ padding: '8px' }}>Campaign Name</th>
-                    <th style={{ padding: '8px' }}>Brand Client</th>
-                    <th style={{ padding: '8px' }}>Deliverable</th>
-                    <th style={{ padding: '8px' }}>Date</th>
-                    <th style={{ padding: '8px' }}>Offered Budget</th>
-                    <th style={{ padding: '8px' }}>Status</th>
-                    <th style={{ padding: '8px' }}>Action</th>
+                  <tr>
+                    <th style={{ padding: '13px 14px', width: '55px', textAlign: 'center' }}>ID</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '150px' }}>Campaign Name</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '120px' }}>Brand Client</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '110px' }}>Deliverable</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '95px', whiteSpace: 'nowrap' }}>Date</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '100px', whiteSpace: 'nowrap' }}>Offered Budget</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '95px' }}>Status</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '100px' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedBookings.map(bk => (
-                    <tr key={bk.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '8px', color: 'var(--primary)', fontWeight: 600 }}>#{bk.id}</td>
-                      <td style={{ padding: '8px', color: 'var(--text-main)', fontWeight: 700 }}>{bk.campaign_name}</td>
-                      <td style={{ padding: '8px', color: 'var(--text-main)' }}>{bk.business_name}</td>
-                      <td style={{ padding: '8px', color: 'var(--text-muted)' }}>{bk.promotion_type}</td>
-                      <td style={{ padding: '8px', color: 'var(--text-muted)' }}>{bk.date || bk.booking_date}</td>
-                      <td style={{ padding: '8px', color: 'var(--accent-emerald)', fontWeight: 700 }}>₹{(bk.budget || 0).toLocaleString()}</td>
-                      <td style={{ padding: '8px' }}>
-                        <span className={`badge ${bk.status === 'accepted' ? 'badge-green' : bk.status === 'pending' ? 'badge-amber' : bk.status === 'completed' ? 'badge-blue' : 'badge-purple'}`} style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
+                    <tr key={bk.id}>
+                      <td style={{ textAlign: 'center', color: '#4F46E5', fontWeight: 700, fontSize: '0.82rem' }}>#{bk.id}</td>
+                      <td style={{ textAlign: 'left', color: '#0F172A', fontWeight: 700 }}>{bk.campaign_name}</td>
+                      <td style={{ textAlign: 'left', color: '#1E293B', fontWeight: 600 }}>{bk.business_name}</td>
+                      <td style={{ textAlign: 'left', color: '#64748B' }}>{bk.promotion_type}</td>
+                      <td style={{ textAlign: 'center', color: '#64748B', whiteSpace: 'nowrap' }}>{bk.date || bk.booking_date}</td>
+                      <td style={{ textAlign: 'right', color: '#059669', fontWeight: 800, whiteSpace: 'nowrap' }}>₹{(bk.budget || 0).toLocaleString()}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className={`badge ${bk.status === 'accepted' ? 'badge-green' : bk.status === 'pending' ? 'badge-amber' : bk.status === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
                           {(bk.status || 'pending').toUpperCase()}
                         </span>
                       </td>
-                      <td style={{ padding: '8px' }}>
+                      <td style={{ textAlign: 'center' }}>
                         {bk.status === 'pending' ? (
-                          <div style={{ display: 'flex', gap: '4px' }}>
-                            <button onClick={() => updateBookingStatus(bk.id, 'accepted')} className="btn btn-primary btn-sm" style={{ padding: '3px 6px' }} title="Accept"><Check size={12} /></button>
-                            <button onClick={() => updateBookingStatus(bk.id, 'rejected')} className="btn btn-danger btn-sm" style={{ padding: '3px 6px' }} title="Reject"><X size={12} /></button>
+                          <div style={{ display: 'inline-flex', gap: '5px', alignItems: 'center', justifyContent: 'center' }}>
+                            <button
+                              onClick={() => updateBookingStatus(bk.id, 'accepted')}
+                              style={{ background: '#10B981', color: '#FFF', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                              title="Accept"
+                            >
+                              <Check size={13} />
+                            </button>
+                            <button
+                              onClick={() => updateBookingStatus(bk.id, 'rejected')}
+                              style={{ background: '#FFF1F2', color: '#E11D48', border: '1px solid #FECDD3', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                              title="Reject"
+                            >
+                              <X size={13} />
+                            </button>
                           </div>
                         ) : (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Managed</span>
+                          <span style={{ fontSize: '0.76rem', color: '#64748B', fontWeight: 600 }}>Managed</span>
                         )}
                       </td>
                     </tr>
@@ -277,12 +345,95 @@ export function InfluencerDashboard() {
               </table>
             </div>
 
-            <Pagination 
-              currentPage={currentPage}
-              totalItems={myBookings.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
-            />
+            {/* DEDICATED MOBILE CARDS VIEW */}
+            <div className="mobile-cards-view">
+              {paginatedBookings.map(bk => (
+                <div key={bk.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">#{bk.id}</span>
+                    <span className={`badge ${bk.status === 'accepted' ? 'badge-green' : bk.status === 'pending' ? 'badge-amber' : bk.status === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.74rem', padding: '3px 9px' }}>
+                      {(bk.status || 'pending').toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="mobile-card-title">{bk.campaign_name}</h4>
+                    <span className="mobile-card-subtitle">
+                      Brand: <strong style={{ color: '#0F172A' }}>{bk.business_name}</strong>
+                    </span>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Deliverable</span>
+                      <span className="mobile-card-grid-value">{bk.promotion_type || 'Brand Post'}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Date</span>
+                      <span className="mobile-card-grid-value">{bk.date || bk.booking_date || 'Upcoming'}</span>
+                    </div>
+                    <div className="mobile-card-grid-item" style={{ gridColumn: 'span 2' }}>
+                      <span className="mobile-card-grid-label">Offered Budget</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontSize: '1.05rem', fontWeight: 800 }}>
+                        ₹{(bk.budget || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {bk.status === 'pending' && (
+                    <div className="mobile-card-actions">
+                      <button
+                        onClick={() => updateBookingStatus(bk.id, 'accepted')}
+                        style={{
+                          background: '#10B981',
+                          color: '#FFFFFF',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '9px 12px',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        <Check size={14} /> Accept Proposal
+                      </button>
+                      <button
+                        onClick={() => updateBookingStatus(bk.id, 'rejected')}
+                        style={{
+                          background: '#FFF1F2',
+                          color: '#E11D48',
+                          border: '1px solid #FECDD3',
+                          borderRadius: '8px',
+                          padding: '9px 12px',
+                          fontSize: '0.82rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        <X size={14} /> Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid #F1F5F9' }}>
+              <Pagination 
+                currentPage={currentPage}
+                totalItems={myBookings.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </>
         )}
       </div>
@@ -482,7 +633,7 @@ export function InfluencerRequestsPage() {
       </div>
 
       {/* DYNAMIC DASHBOARD STAT CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
         
         {/* Card 1: Pending Proposals */}
         <div className="glass-panel" style={{ padding: '18px', borderLeft: '4px solid #F59E0B' }}>
@@ -1769,7 +1920,7 @@ export function InfluencerAvailability() {
       </div>
 
       {/* TOP STATS CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
         <div className="glass-panel" style={{ padding: '18px', borderTop: '3px solid #10B981' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Open Ranges</span>
@@ -1954,38 +2105,39 @@ export function InfluencerAvailability() {
       </div>
 
       {/* PREVIOUSLY ADDED DATE RANGES TABLE / LIST */}
-      <div className="glass-panel" style={{ padding: '24px' }}>
-        <h3 style={{ color: 'var(--text-main)', fontSize: '1.3rem', fontWeight: 800, marginBottom: '16px' }}>
+      <div className="light-table-card" data-theme="light" style={{ padding: '24px' }}>
+        <h3 style={{ color: '#0F172A', fontSize: '1.25rem', fontWeight: 800, marginBottom: '16px' }}>
           Configured Date Ranges ({myRanges.length})
         </h3>
 
         {myRanges.length === 0 ? (
-          <div style={{ textStyle: 'center', padding: '30px', color: 'var(--text-muted)', textAlign: 'center' }}>
+          <div style={{ padding: '30px', color: '#64748B', textAlign: 'center' }}>
             No availability or unavailability date ranges configured yet. Add your first range above!
           </div>
         ) : (
           <>
-            <div className="table-responsive-container">
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+            {/* DESKTOP TABLE VIEW */}
+            <div className="desktop-table-view light-table-wrapper">
+              <table className="light-table">
                 <thead>
-                  <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-dim)', fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    <th style={{ padding: '12px' }}>Status</th>
-                    <th style={{ padding: '12px' }}>From Date</th>
-                    <th style={{ padding: '12px' }}>To Date</th>
-                    <th style={{ padding: '12px' }}>Duration</th>
-                    <th style={{ padding: '12px' }}>Notes / Reason</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>Actions</th>
+                  <tr>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', width: '110px' }}>Status</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', width: '120px' }}>From Date</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', width: '120px' }}>To Date</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', width: '100px' }}>Duration</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '150px' }}>Notes / Reason</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'right', width: '120px' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedRanges.map((item) => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '12px' }}>{renderBadge(item.status)}</td>
-                      <td style={{ padding: '12px', fontWeight: 700, color: 'var(--text-main)' }}>{formatDate(item.from_date)}</td>
-                      <td style={{ padding: '12px', fontWeight: 700, color: 'var(--text-main)' }}>{formatDate(item.to_date)}</td>
-                      <td style={{ padding: '12px', color: 'var(--text-muted)' }}>{calculateDays(item.from_date, item.to_date)} Days</td>
-                      <td style={{ padding: '12px', color: 'var(--text-muted)' }}>{item.notes || '—'}</td>
-                      <td style={{ padding: '12px', textAlign: 'right' }}>
+                    <tr key={item.id}>
+                      <td style={{ textAlign: 'center' }}>{renderBadge(item.status)}</td>
+                      <td style={{ textAlign: 'center', fontWeight: 700, color: '#0F172A' }}>{formatDate(item.from_date)}</td>
+                      <td style={{ textAlign: 'center', fontWeight: 700, color: '#0F172A' }}>{formatDate(item.to_date)}</td>
+                      <td style={{ textAlign: 'center', color: '#64748B' }}>{calculateDays(item.from_date, item.to_date)} Days</td>
+                      <td style={{ textAlign: 'left', color: '#475569' }}>{item.notes || '—'}</td>
+                      <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                           <button 
                             onClick={() => handleEdit(item)} 
@@ -2011,12 +2163,60 @@ export function InfluencerAvailability() {
               </table>
             </div>
 
-            <Pagination 
-              currentPage={currentPage}
-              totalItems={myRanges.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
-            />
+            {/* DEDICATED MOBILE CARDS VIEW */}
+            <div className="mobile-cards-view">
+              {paginatedRanges.map((item) => (
+                <div key={item.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">{calculateDays(item.from_date, item.to_date)} Days</span>
+                    {renderBadge(item.status)}
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">From Date</span>
+                      <span className="mobile-card-grid-value">{formatDate(item.from_date)}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">To Date</span>
+                      <span className="mobile-card-grid-value">{formatDate(item.to_date)}</span>
+                    </div>
+                    {item.notes && (
+                      <div className="mobile-card-grid-item" style={{ gridColumn: 'span 2' }}>
+                        <span className="mobile-card-grid-label">Notes / Reason</span>
+                        <span className="mobile-card-grid-value" style={{ fontWeight: 500, fontSize: '0.82rem', color: '#475569' }}>{item.notes}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mobile-card-actions">
+                    <button 
+                      onClick={() => handleEdit(item)} 
+                      className="btn btn-secondary btn-sm" 
+                      style={{ padding: '8px', fontSize: '0.8rem' }}
+                    >
+                      <Edit size={13} /> Edit Range
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(item.id)} 
+                      className="btn btn-danger btn-sm" 
+                      style={{ padding: '8px', fontSize: '0.8rem', flex: '0 0 auto', width: 'auto' }}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid #F1F5F9' }}>
+              <Pagination 
+                currentPage={currentPage}
+                totalItems={myRanges.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </>
         )}
       </div>
@@ -2412,7 +2612,7 @@ export function InfluencerMessagesWorkspace() {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+      <div className="chat-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
         <div>
           <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>Creator Messages</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Chat directly with brand clients and negotiate campaign briefs</p>

@@ -5,13 +5,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import apiService from '../../api/apiService';
 import Pagination from '../../components/common/Pagination';
 import {
-  CalendarCheck, Heart, MessageSquare, Star, Sparkles, Search,
+  CalendarCheck, Calendar, Heart, MessageSquare, Star, Sparkles, Search,
   CheckCircle2, Plus, ArrowRight, DollarSign, ShieldCheck, User,
   Bell, Send, BarChart3, Clock, Check, X, ThumbsUp, ArrowUpRight,
   Filter, Eye, Sliders, Settings, Users, Image, Globe, ArrowDownRight, CheckSquare,
   Camera, Phone, Mail, MapPin
 } from 'lucide-react';
 import ChatBox from '../../components/chat/ChatBox';
+import { computeBookingTimeSeries, generateSvgCurve, computeChannelDistribution } from '../../utils/chartUtils';
 
 /* -------------------------------------------------------------------------- */
 /* 1. USER / BRAND DASHBOARD OVERVIEW                                        */
@@ -28,6 +29,11 @@ export function UserDashboard({ setSelectedInfluencerId }) {
   const pendingCount = myBookings.filter(b => b.status === 'pending').length;
   const activeCount = myBookings.filter(b => b.status === 'accepted' || b.status === 'pending').length;
   const totalSpent = myBookings.reduce((sum, b) => sum + (b.budget || 0), 0);
+
+  // Dynamic Chart & Donut Calculations from authentic bookings
+  const timeSeries = computeBookingTimeSeries(myBookings, timeframe);
+  const chart = generateSvgCurve(timeSeries, { height: 130, strokeColor: '#8B5CF6' });
+  const channelData = computeChannelDistribution(myBookings);
 
   const savedInfluencers = (influencers || []).filter(inf => (favorites || []).includes(inf.id));
   const displayWishlist = savedInfluencers.length > 0 ? savedInfluencers.slice(0, 4) : (influencers || []).slice(0, 3);
@@ -62,7 +68,7 @@ export function UserDashboard({ setSelectedInfluencerId }) {
       </div>
 
       {/* 2. TOP 5 KPI STAT CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
 
         {/* Card 1: Total Bookings */}
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #6366F1', position: 'relative' }}>
@@ -141,10 +147,17 @@ export function UserDashboard({ setSelectedInfluencerId }) {
 
         {/* Campaign Spend Chart */}
         <div className="glass-panel" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
             <div>
-              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Campaign Budget Investment</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Monthly influencer marketing spend trajectory</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Campaign Budget Investment</h3>
+                <span className="badge badge-purple" style={{ fontSize: '0.72rem', padding: '1px 6px' }}>
+                  ₹{chart.total.toLocaleString()} spent
+                </span>
+              </div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                {timeframe === 'Week' ? 'Daily campaign spend trajectory (Past 7 Days)' : timeframe === 'Year' ? 'Yearly marketing budget progression' : 'Monthly marketing spend trajectory'}
+              </span>
             </div>
             <div style={{ display: 'flex', gap: '3px', background: 'var(--bg-input)', padding: '3px', borderRadius: '6px' }}>
               {['Week', 'Month', 'Year'].map(t => (
@@ -159,7 +172,8 @@ export function UserDashboard({ setSelectedInfluencerId }) {
                     color: timeframe === t ? '#FFF' : 'var(--text-muted)',
                     fontWeight: 600,
                     fontSize: '0.76rem',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
                   }}
                 >
                   {t}
@@ -169,18 +183,39 @@ export function UserDashboard({ setSelectedInfluencerId }) {
           </div>
 
           <div style={{ height: '140px', width: '100%', position: 'relative' }}>
-            <svg viewBox="0 0 500 130" style={{ width: '100%', height: '100%' }}>
+            <svg viewBox="0 0 500 130" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
               <defs>
                 <linearGradient id="userChartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
-              <path d="M 0,90 Q 75,70 150,50 T 300,35 T 450,25 L 500,30 L 500,130 L 0,130 Z" fill="url(#userChartGrad)" />
-              <path d="M 0,90 Q 75,70 150,50 T 300,35 T 450,25 L 500,30" fill="none" stroke="#8B5CF6" strokeWidth="2.5" />
+              {chart.pathArea && (
+                <path d={chart.pathArea} fill="url(#userChartGrad)" />
+              )}
+              {chart.pathStroke && (
+                <path d={chart.pathStroke} fill="none" stroke="#8B5CF6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+              {chart.coords.map((pt, idx) => (
+                <g key={idx}>
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r="4"
+                    fill="#8B5CF6"
+                    stroke="var(--bg-card)"
+                    strokeWidth="2"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <title>{`${pt.label}: ₹${pt.value.toLocaleString()}`}</title>
+                  </circle>
+                </g>
+              ))}
             </svg>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-dim)', fontSize: '0.74rem', marginTop: '6px' }}>
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-dim)', fontSize: '0.74rem', marginTop: '6px', padding: '0 8px' }}>
+              {chart.coords.map(pt => (
+                <span key={pt.label} style={{ fontWeight: 600 }}>{pt.label}</span>
+              ))}
             </div>
           </div>
         </div>
@@ -188,37 +223,27 @@ export function UserDashboard({ setSelectedInfluencerId }) {
         {/* Spend Split Donut Graphic */}
         <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Channel Split</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Channel Split</h3>
+              <span className="badge badge-green" style={{ fontSize: '0.68rem', padding: '1px 5px' }}>Dynamic</span>
+            </div>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Spend by content promotion format</span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '12px 0' }}>
-            <div style={{ width: '105px', height: '105px', borderRadius: '50%', background: 'conic-gradient(#6366F1 0% 40%, #EC4899 40% 70%, #10B981 70% 90%, #F59E0B 90% 100%)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '105px', height: '105px', borderRadius: '50%', background: channelData.conicGradient, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s ease' }}>
               <div style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'var(--bg-card)' }} />
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#6366F1' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Reels:</span>
-              <strong style={{ color: 'var(--text-main)' }}>40%</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#EC4899' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Posts:</span>
-              <strong style={{ color: 'var(--text-main)' }}>30%</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981' }} />
-              <span style={{ color: 'var(--text-muted)' }}>YT Videos:</span>
-              <strong style={{ color: 'var(--text-main)' }}>20%</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#F59E0B' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Stories:</span>
-              <strong style={{ color: 'var(--text-main)' }}>10%</strong>
-            </div>
+            {channelData.channels.map(ch => (
+              <div key={ch.name} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: ch.color, flexShrink: 0 }} />
+                <span style={{ color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ch.name}:</span>
+                <strong style={{ color: 'var(--text-main)' }}>{ch.percent}%</strong>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -227,7 +252,7 @@ export function UserDashboard({ setSelectedInfluencerId }) {
       {/* 4. QUICK ACTIONS 6-GRID */}
       <div className="glass-panel" style={{ padding: '20px' }}>
         <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '14px' }}>Quick Actions</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: '10px' }}>
+        <div className="dashboard-quick-actions-grid">
           <Link to="/explore" className="glass-panel glass-panel-hover" style={{ padding: '14px', textDecoration: 'none', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
             <Search size={18} color="var(--primary)" />
             <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-main)' }}>Find Creators</span>
@@ -280,21 +305,85 @@ export function UserDashboard({ setSelectedInfluencerId }) {
               </div>
             ) : (
               myBookings.slice(0, 4).map(b => (
-                <div key={b.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: 'var(--bg-input)', borderRadius: '10px', flexWrap: 'wrap', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'var(--primary)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', flexShrink: 0 }}>
-                      {b.influencer_name ? b.influencer_name.charAt(0) : 'I'}
-                    </div>
-                    <div>
-                      <h4 style={{ fontSize: '0.88rem', color: 'var(--text-main)', fontWeight: 700 }}>{b.campaign_name || b.influencer_name}</h4>
-                      <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>{b.promotion_type} • {b.date || b.booking_date}</span>
-                    </div>
+                <div 
+                  key={b.id} 
+                  style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'auto 1fr auto', 
+                    alignItems: 'center', 
+                    padding: '11px 13px', 
+                    background: 'var(--bg-input)', 
+                    borderRadius: '12px', 
+                    gap: '12px' 
+                  }}
+                >
+                  <div style={{ 
+                    width: '38px', 
+                    height: '38px', 
+                    borderRadius: '50%', 
+                    background: 'linear-gradient(135deg, var(--primary), #8B5CF6)', 
+                    color: '#FFF', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    fontWeight: 800, 
+                    fontSize: '0.85rem', 
+                    flexShrink: 0 
+                  }}>
+                    {b.influencer_name ? b.influencer_name.charAt(0).toUpperCase() : 'I'}
                   </div>
 
-                  <div style={{ textAlign: 'right' }}>
-                    <strong style={{ fontSize: '0.9rem', color: 'var(--accent-emerald)', display: 'block', fontWeight: 700 }}>₹{(b.budget || 0).toLocaleString()}</strong>
-                    <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : 'badge-blue'}`} style={{ fontSize: '0.68rem', padding: '1px 5px' }}>
-                      {(b.status || 'pending').toUpperCase()}
+                  <div style={{ minWidth: 0 }}>
+                    <h4 style={{ 
+                      fontSize: '0.88rem', 
+                      color: 'var(--text-main)', 
+                      fontWeight: 700, 
+                      margin: 0,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {b.campaign_name || b.influencer_name}
+                    </h4>
+                    <span style={{ 
+                      fontSize: '0.74rem', 
+                      color: 'var(--text-muted)', 
+                      display: 'block', 
+                      marginTop: '2px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {b.promotion_type} • {b.date || b.booking_date}
+                    </span>
+                  </div>
+
+                  <div style={{ 
+                    textAlign: 'right', 
+                    flexShrink: 0, 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'flex-end', 
+                    gap: '3px' 
+                  }}>
+                    <strong style={{ 
+                      fontSize: '0.92rem', 
+                      color: 'var(--accent-emerald)', 
+                      fontWeight: 800,
+                      lineHeight: 1
+                    }}>
+                      ₹{(b.budget || 0).toLocaleString()}
+                    </strong>
+                    <span 
+                      className={`badge ${
+                        b.status === 'accepted' ? 'badge-green' : 
+                        b.status === 'completed' ? 'badge-blue' : 
+                        b.status === 'pending' ? 'badge-amber' : 
+                        'badge-red'
+                      }`} 
+                      style={{ fontSize: '0.66rem', padding: '2px 6px', textTransform: 'uppercase' }}
+                    >
+                      {b.status || 'pending'}
                     </span>
                   </div>
                 </div>
@@ -314,15 +403,25 @@ export function UserDashboard({ setSelectedInfluencerId }) {
             {displayWishlist.map(w => {
               const followersFormatted = w.followers ? (w.followers >= 1000000 ? `${(w.followers / 1000000).toFixed(1)}M` : `${(w.followers / 1000).toFixed(0)}K`) : '50K';
               return (
-                <div key={w.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img src={w.avatar || w.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'} alt={w.name} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <div>
-                      <h4 style={{ fontSize: '0.84rem', color: 'var(--text-main)', fontWeight: 700 }}>{w.name}</h4>
-                      <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{followersFormatted} • <Star size={10} fill="var(--accent-amber)" color="var(--accent-amber)" /> {w.rating || '4.9'}</span>
-                    </div>
+                <div 
+                  key={w.id} 
+                  style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'auto 1fr auto', 
+                    alignItems: 'center', 
+                    gap: '10px' 
+                  }}
+                >
+                  <img src={w.avatar || w.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'} alt={w.name} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <h4 style={{ fontSize: '0.84rem', color: 'var(--text-main)', fontWeight: 700, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{w.name}</h4>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', display: 'block', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {followersFormatted} • <Star size={10} fill="var(--accent-amber)" color="var(--accent-amber)" /> {w.rating || '4.9'}
+                    </span>
                   </div>
-                  <strong style={{ fontSize: '0.84rem', color: 'var(--primary)', fontWeight: 700 }}>₹{(w.starting_price || w.startingPrice || 8000).toLocaleString()}</strong>
+                  <strong style={{ fontSize: '0.84rem', color: 'var(--primary)', fontWeight: 700, flexShrink: 0, textAlign: 'right' }}>
+                    ₹{(w.starting_price || w.startingPrice || 8000).toLocaleString()}
+                  </strong>
                 </div>
               );
             })}
@@ -411,49 +510,63 @@ export function UserBookingsPage() {
         </Link>
       </div>
 
-      <div className="glass-panel" style={{ padding: '20px' }}>
+      <div className="light-table-card" data-theme="light">
         {myBookings.length === 0 ? (
-          <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            <CalendarCheck size={40} color="var(--text-dim)" style={{ marginBottom: '12px' }} />
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: 700 }}>No Campaign Bookings Found</h3>
-            <p style={{ fontSize: '0.88rem', marginTop: '4px' }}>You haven't booked any influencers yet. Browse creators to start your first campaign!</p>
+          <div style={{ padding: '40px 20px', textAlign: 'center', color: '#64748B' }}>
+            <CalendarCheck size={40} color="#94A3B8" style={{ marginBottom: '12px', opacity: 0.6 }} />
+            <h3 style={{ fontSize: '1.15rem', color: '#0F172A', fontWeight: 800 }}>No Campaign Bookings Found</h3>
+            <p style={{ fontSize: '0.88rem', marginTop: '4px', color: '#64748B' }}>You haven't booked any influencers yet. Browse creators to start your first campaign!</p>
             <Link to="/explore" className="btn btn-primary btn-sm" style={{ marginTop: '14px' }}>
               Explore Influencers
             </Link>
           </div>
         ) : (
           <>
-            <div className="table-responsive-container">
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+            {/* DESKTOP TABLE VIEW */}
+            <div className="desktop-table-view light-table-wrapper">
+              <table className="light-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                    <th style={{ padding: '10px' }}>ID</th>
-                    <th style={{ padding: '10px' }}>Campaign Name</th>
-                    <th style={{ padding: '10px' }}>Influencer</th>
-                    <th style={{ padding: '10px' }}>Deliverable</th>
-                    <th style={{ padding: '10px' }}>Date</th>
-                    <th style={{ padding: '10px' }}>Budget</th>
-                    <th style={{ padding: '10px' }}>Status</th>
-                    <th style={{ padding: '10px' }}>Action</th>
+                  <tr>
+                    <th style={{ padding: '13px 14px', width: '55px', textAlign: 'center' }}>ID</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '150px' }}>Campaign Name</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '130px' }}>Influencer</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '110px' }}>Deliverable</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '95px', whiteSpace: 'nowrap' }}>Date</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '100px', whiteSpace: 'nowrap' }}>Budget</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '95px' }}>Status</th>
+                    <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '100px' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedBookings.map(b => (
-                    <tr key={b.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '10px', color: 'var(--primary)', fontWeight: 600 }}>#{b.id}</td>
-                      <td style={{ padding: '10px', color: 'var(--text-main)', fontWeight: 700 }}>{b.campaign_name}</td>
-                      <td style={{ padding: '10px', color: 'var(--text-main)' }}>{b.influencer_name}</td>
-                      <td style={{ padding: '10px', color: 'var(--text-muted)' }}>{b.promotion_type}</td>
-                      <td style={{ padding: '10px', color: 'var(--text-muted)' }}>{b.date}</td>
-                      <td style={{ padding: '10px', color: 'var(--accent-emerald)', fontWeight: 700 }}>₹{(b.budget || 0).toLocaleString()}</td>
-                      <td style={{ padding: '10px' }}>
-                        <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : 'badge-blue'}`}>{(b.status || 'pending').toUpperCase()}</span>
+                    <tr key={b.id}>
+                      <td style={{ textAlign: 'center', color: '#4F46E5', fontWeight: 700, fontSize: '0.82rem' }}>#{b.id}</td>
+                      <td style={{ textAlign: 'left', color: '#0F172A', fontWeight: 700 }}>{b.campaign_name}</td>
+                      <td style={{ textAlign: 'left', color: '#1E293B', fontWeight: 600 }}>{b.influencer_name}</td>
+                      <td style={{ textAlign: 'left', color: '#64748B' }}>{b.promotion_type}</td>
+                      <td style={{ textAlign: 'center', color: '#64748B', whiteSpace: 'nowrap' }}>{b.date}</td>
+                      <td style={{ textAlign: 'right', color: '#059669', fontWeight: 800, whiteSpace: 'nowrap' }}>₹{(b.budget || 0).toLocaleString()}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : b.status === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                          {(b.status || 'pending').toUpperCase()}
+                        </span>
                       </td>
-                      <td style={{ padding: '10px' }}>
+                      <td style={{ textAlign: 'center' }}>
                         <button
                           onClick={() => handleDirectChat(b.influencer_id || b.influencer_user_id || 1)}
-                          className="btn btn-secondary btn-sm"
-                          style={{ padding: '4px 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                          style={{
+                            background: '#EEF2FF',
+                            color: '#4F46E5',
+                            border: '1px solid #C7D2FE',
+                            borderRadius: '7px',
+                            padding: '5px 12px',
+                            fontSize: '0.76rem',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
                         >
                           <MessageSquare size={13} /> Chat
                         </button>
@@ -464,12 +577,74 @@ export function UserBookingsPage() {
               </table>
             </div>
 
-            <Pagination
-              currentPage={currentPage}
-              totalItems={myBookings.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
-            />
+            {/* DEDICATED MOBILE CARDS VIEW */}
+            <div className="mobile-cards-view">
+              {paginatedBookings.map(b => (
+                <div key={b.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">#{b.id}</span>
+                    <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : b.status === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.74rem', padding: '3px 9px' }}>
+                      {(b.status || 'pending').toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="mobile-card-title">{b.campaign_name}</h4>
+                    <span className="mobile-card-subtitle">
+                      Creator: <strong style={{ color: '#0F172A' }}>{b.influencer_name}</strong>
+                    </span>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Deliverable</span>
+                      <span className="mobile-card-grid-value">{b.promotion_type || 'Brand Post'}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Campaign Date</span>
+                      <span className="mobile-card-grid-value">{b.date || 'TBD'}</span>
+                    </div>
+                    <div className="mobile-card-grid-item" style={{ gridColumn: 'span 2' }}>
+                      <span className="mobile-card-grid-label">Agreed Budget</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontSize: '1.05rem', fontWeight: 800 }}>
+                        ₹{(b.budget || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mobile-card-actions">
+                    <button
+                      onClick={() => handleDirectChat(b.influencer_id || b.influencer_user_id || 1)}
+                      style={{
+                        background: '#4F46E5',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '9px 14px',
+                        fontSize: '0.84rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <MessageSquare size={14} /> Message Creator
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid #F1F5F9' }}>
+              <Pagination
+                currentPage={currentPage}
+                totalItems={myBookings.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </>
         )}
       </div>
@@ -673,7 +848,7 @@ export function UserProfileEdit() {
             1. PERSONAL & CONTACT DETAILS
           </h4>
 
-          <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
+          <div className="form-grid-2" style={{ marginBottom: '16px' }}>
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <User size={14} color="var(--primary)" /> Full Name / Contact Person
@@ -688,7 +863,7 @@ export function UserProfileEdit() {
             </div>
           </div>
 
-          <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
+          <div className="form-grid-2" style={{ marginBottom: '16px' }}>
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Mail size={14} color="var(--accent-purple)" /> Email Address
@@ -703,7 +878,7 @@ export function UserProfileEdit() {
             </div>
           </div>
 
-          <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '24px' }}>
+          <div className="form-grid-2" style={{ marginBottom: '24px' }}>
             <div className="form-group">
               <label className="form-label">Gender</label>
               <select className="form-select" value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -726,7 +901,7 @@ export function UserProfileEdit() {
             2. LOCATION & ADDRESS
           </h4>
 
-          <div className="form-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', marginBottom: '24px' }}>
+          <div className="form-grid-3" style={{ marginBottom: '24px' }}>
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <MapPin size={14} color="var(--primary)" /> City
@@ -758,7 +933,7 @@ export function UserProfileEdit() {
 export function UserMessagesWorkspace() {
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      <div>
+      <div className="chat-page-header">
         <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>Direct Creator Messages</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Negotiate campaign deliverables, chat in real-time, and manage active creator threads.</p>
       </div>

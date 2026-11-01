@@ -1,0 +1,32 @@
+# ==============================================================================
+# Collabefy - Hostinger Production Apache Configuration
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Forward /api requests to api/ directory handler
+  RewriteRule ^api/(.*)$ api/$1 [L,QSA]
+  RewriteRule ^api$ api/ [L,QSA]
+
+  # 2. Serve static files, assets, images and uploads directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Route all SPA client routes (e.g. /explore, /user/*, /creator/*, /admin/*) to index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Security Headers & Gzip Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+

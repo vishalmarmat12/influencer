@@ -13,25 +13,15 @@ export function LoginPage() {
   const queryParams = new URLSearchParams(location.search);
   const redirectParam = queryParams.get('redirect');
 
-  const [selectedRole, setSelectedRole] = useState('user'); // user, influencer, admin
-  const [email, setEmail] = useState('user@demo.com');
-  const [password, setPassword] = useState('user123');
+  const [selectedRole, setSelectedRole] = useState('user'); // 'user' or 'influencer' only
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRoleChange = (role) => {
     setSelectedRole(role);
     setErrorMsg('');
-    if (role === 'admin') {
-      setEmail('admin@influencer.com');
-      setPassword('admin123');
-    } else if (role === 'influencer') {
-      setEmail('influencer@demo.com');
-      setPassword('creator123');
-    } else {
-      setEmail('user@demo.com');
-      setPassword('user123');
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -56,9 +46,21 @@ export function LoginPage() {
       if (res && res.user) {
         const userRole = res.user.role;
 
-        // Verify role authorization
-        if (selectedRole === 'admin' && userRole !== 'admin') {
-          setErrorMsg('Unauthorized: Account is not an Admin!');
+        // Disallow admin login on public login portal
+        if (userRole === 'admin') {
+          setErrorMsg('Administrator accounts must authenticate via the private admin portal.');
+          setLoading(false);
+          return;
+        }
+
+        // Verify role authorization between user and creator
+        if (selectedRole === 'influencer' && userRole !== 'influencer') {
+          setErrorMsg('Account mismatch: This is not a Creator account.');
+          setLoading(false);
+          return;
+        }
+        if (selectedRole === 'user' && userRole === 'influencer') {
+          setErrorMsg('Account mismatch: This account is registered as a Creator.');
           setLoading(false);
           return;
         }
@@ -66,18 +68,16 @@ export function LoginPage() {
         // Navigate to appropriate panel or redirect query path
         if (redirectParam) {
           navigate(redirectParam);
-        } else if (userRole === 'admin') {
-          navigate('/admin');
         } else if (userRole === 'influencer') {
           navigate('/creator');
         } else {
           navigate('/user');
         }
       } else {
-        setErrorMsg('Invalid email or password credentials.');
+        setErrorMsg('Invalid email or password.');
       }
     } catch (err) {
-      setErrorMsg('Login failed. Please try again.');
+      setErrorMsg('Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -91,16 +91,15 @@ export function LoginPage() {
           <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent-pink))', width: '48px', height: '48px', borderRadius: '14px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px', boxShadow: '0 6px 20px var(--primary-glow)' }}>
             <Sparkles size={24} color="#FFF" />
           </div>
-          <h2 style={{ fontSize: 'clamp(1.4rem, 3.5vw, 1.8rem)', color: 'var(--text-main)', fontWeight: 800 }}>Panel Authentication</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '4px' }}>Select panel role and log in with credentials</p>
+          <h2 style={{ fontSize: 'clamp(1.4rem, 3.5vw, 1.8rem)', color: 'var(--text-main)', fontWeight: 800 }}>Account Login</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '4px' }}>Sign in to manage your campaigns and collaborations</p>
         </div>
 
-        {/* ROLE SELECTION TABS */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px', background: 'var(--bg-input)', padding: '4px', borderRadius: '12px', marginBottom: '18px', border: '1px solid var(--border-color)' }}>
+        {/* ROLE SELECTION TABS: USER OR CREATOR ONLY (NO ADMIN) */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', background: 'var(--bg-input)', padding: '4px', borderRadius: '12px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
           {[
-            { role: 'user', label: 'Business User' },
-            { role: 'influencer', label: 'Creator' },
-            { role: 'admin', label: 'Admin' }
+            { role: 'user', label: 'Business / Brand' },
+            { role: 'influencer', label: 'Influencer / Creator' }
           ].map(r => {
             const isSelected = selectedRole === r.role;
             return (
@@ -115,7 +114,7 @@ export function LoginPage() {
                   background: isSelected ? 'linear-gradient(135deg, var(--primary), var(--accent-purple))' : 'transparent',
                   color: isSelected ? '#FFFFFF' : 'var(--text-main)',
                   fontWeight: isSelected ? 700 : 600,
-                  fontSize: '0.8rem',
+                  fontSize: '0.84rem',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   boxShadow: isSelected ? '0 4px 14px var(--primary-glow)' : 'none',
@@ -127,17 +126,6 @@ export function LoginPage() {
               </button>
             );
           })}
-        </div>
-
-        {/* PRESET HINT BOX */}
-        <div style={{ background: 'rgba(99, 102, 241, 0.08)', padding: '10px 12px', borderRadius: '10px', marginBottom: '18px', border: '1px solid rgba(99, 102, 241, 0.2)', fontSize: '0.8rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary)', fontWeight: 700, marginBottom: '4px' }}>
-            <KeyRound size={14} /> Panel Login Credentials:
-          </div>
-          <div style={{ color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
-            <span>Email: <strong>{email}</strong></span>
-            <span>Pass: <strong>{password}</strong></span>
-          </div>
         </div>
 
         {errorMsg && (
@@ -152,6 +140,7 @@ export function LoginPage() {
             <input 
               type="email" 
               className="form-input" 
+              placeholder="e.g. name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -159,10 +148,20 @@ export function LoginPage() {
           </div>
 
           <div className="form-group" style={{ marginBottom: '20px' }}>
-            <label className="form-label" style={{ fontSize: '0.86rem', fontWeight: 600 }}>Password</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <label className="form-label" style={{ fontSize: '0.86rem', fontWeight: 600, margin: 0 }}>Password</label>
+              <button 
+                type="button" 
+                onClick={() => navigate('/forgot-password')}
+                style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}
+              >
+                Forgot Password?
+              </button>
+            </div>
             <input 
               type="password" 
               className="form-input" 
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -170,7 +169,7 @@ export function LoginPage() {
           </div>
 
           <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '12px', fontSize: '0.94rem' }} disabled={loading}>
-            {loading ? 'Authenticating...' : `Sign In to ${selectedRole === 'admin' ? 'Admin Panel' : selectedRole === 'influencer' ? 'Creator Panel' : 'Business Panel'}`}
+            {loading ? 'Signing In...' : `Sign In as ${selectedRole === 'influencer' ? 'Creator' : 'Business'}`}
           </button>
         </form>
 
@@ -179,6 +178,126 @@ export function LoginPage() {
           <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer' }}>
             Register Free
           </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+export function AdminLoginPage() {
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const redirectParam = queryParams.get('redirect');
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // If already logged in as admin, redirect immediately to admin dashboard
+  React.useEffect(() => {
+    if (user && user.role === 'admin') {
+      navigate('/admin', { replace: true });
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    if (!email.trim() || !password) {
+      setErrorMsg('Please enter both administrator email and password.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await login(email.trim(), password, 'admin');
+      if (res && res.user) {
+        if (res.user.role !== 'admin') {
+          setErrorMsg('Access Denied: This account is not authorized for the admin portal.');
+          setLoading(false);
+          return;
+        }
+
+        if (redirectParam && redirectParam.startsWith('/admin')) {
+          navigate(redirectParam);
+        } else {
+          navigate('/admin');
+        }
+      } else {
+        setErrorMsg('Invalid administrator credentials.');
+      }
+    } catch (err) {
+      setErrorMsg('Authentication error. Please verify credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="animate-fade-in" style={{ maxWidth: '440px', margin: '30px auto 0 auto', width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+      <div className="glass-panel" style={{ padding: 'clamp(24px, 4vw, 40px)', border: '1px solid rgba(239, 68, 68, 0.3)', boxShadow: '0 12px 40px rgba(0, 0, 0, 0.25)' }}>
+        
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <div style={{ background: 'linear-gradient(135deg, #EF4444, #7C3AED)', width: '52px', height: '52px', borderRadius: '16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px', boxShadow: '0 8px 24px rgba(239, 68, 68, 0.35)' }}>
+            <ShieldCheck size={28} color="#FFF" />
+          </div>
+          <h2 style={{ fontSize: 'clamp(1.4rem, 3.5vw, 1.75rem)', color: 'var(--text-main)', fontWeight: 800 }}>Admin Portal Access</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.84rem', marginTop: '4px' }}>
+            Restricted environment for authorized platform administrators only.
+          </p>
+        </div>
+
+        {errorMsg && (
+          <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444', borderRadius: '8px', marginBottom: '18px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertCircle size={16} style={{ flexShrink: 0 }} /> {errorMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group" style={{ marginBottom: '16px' }}>
+            <label className="form-label" style={{ fontSize: '0.86rem', fontWeight: 600 }}>Administrator Email</label>
+            <input 
+              type="email" 
+              className="form-input" 
+              placeholder="admin@domain.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+            />
+          </div>
+
+          <div className="form-group" style={{ marginBottom: '22px' }}>
+            <label className="form-label" style={{ fontSize: '0.86rem', fontWeight: 600 }}>Security Password</label>
+            <input 
+              type="password" 
+              className="form-input" 
+              placeholder="••••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            style={{ width: '100%', padding: '12px', fontSize: '0.94rem', background: 'linear-gradient(135deg, #EF4444, #7C3AED)', border: 'none' }} 
+            disabled={loading}
+          >
+            {loading ? 'Authenticating Admin...' : 'Authenticate & Access Panel'}
+          </button>
+        </form>
+
+        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+          🔒 Protected internal portal. Unauthorized access attempts are monitored and logged.
         </div>
 
       </div>

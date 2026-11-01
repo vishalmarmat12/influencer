@@ -10,6 +10,7 @@ import {
   DollarSign, Eye, Activity, Sliders, User, MessageSquare, Clock, RefreshCw, CheckSquare,
   Image as ImageIcon, Phone, MapPin, Layers, Layout, Info, Upload, TrendingUp, ArrowLeft
 } from 'lucide-react';
+import { computeBookingTimeSeries, generateSvgCurve, computeCategoryDistribution } from '../../utils/chartUtils';
 
 /* -------------------------------------------------------------------------- */
 /* 1. ADMIN DASHBOARD OVERVIEW                                                */
@@ -23,50 +24,17 @@ export function AdminDashboard() {
   const commissionRate = (Number(siteSettings?.commission_fee) || 10) / 100;
   const totalBookingsVolume = (bookings || []).reduce((sum, b) => sum + (Number(b.budget) || 0), 0);
 
-  // Dynamic timeframe data mapping for Week, Month, and Year (Smooth, padded SVG curve paths)
-  const timeframeData = {
-    Week: {
-      title: 'Weekly Platform Growth',
-      description: 'Daily campaign bookings & transaction volume (Past 7 Days)',
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      pathMain: 'M 0,110 C 50,90 80,75 125,80 C 170,85 210,95 250,65 C 290,45 330,40 375,50 C 420,60 460,80 500,50 L 500,150 L 0,150 Z',
-      pathStroke: 'M 0,110 C 50,90 80,75 125,80 C 170,85 210,95 250,65 C 290,45 330,40 375,50 C 420,60 460,80 500,50',
-      pathDashed: 'M 0,122 C 50,102 80,90 125,95 C 170,100 210,110 250,80 C 290,60 330,55 375,65 C 420,75 460,95 500,65',
-      feeRevenue: Math.round(totalBookingsVolume > 0 ? (totalBookingsVolume * 0.25 * commissionRate) : 5100),
-      growthRate: '+14.8%',
-      bookingsCount: bookings ? Math.max(1, Math.round(bookings.length * 0.3)) : 8,
-      nicheShare: { Fashion: '42%', Beauty: '28%', Tech: '18%', Fitness: '12%' },
-      donutGradient: 'conic-gradient(#6366F1 0% 42%, #EC4899 42% 70%, #10B981 70% 88%, #F59E0B 88% 100%)'
-    },
-    Month: {
-      title: 'Monthly Platform Growth',
-      description: 'Monthly campaign bookings & gross transaction volume (Current Year)',
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-      pathMain: 'M 0,105 C 60,90 120,75 180,65 C 240,55 300,45 360,40 C 420,35 460,30 500,35 L 500,150 L 0,150 Z',
-      pathStroke: 'M 0,105 C 60,90 120,75 180,65 C 240,55 300,45 360,40 C 420,35 460,30 500,35',
-      pathDashed: 'M 0,120 C 60,105 120,92 180,82 C 240,72 300,62 360,56 C 420,52 460,46 500,52',
-      feeRevenue: Math.round(totalBookingsVolume > 0 ? (totalBookingsVolume * commissionRate) : 12450),
-      growthRate: '+28.4%',
-      bookingsCount: bookings ? bookings.length : 24,
-      nicheShare: { Fashion: '35%', Beauty: '30%', Tech: '20%', Fitness: '15%' },
-      donutGradient: 'conic-gradient(#6366F1 0% 35%, #EC4899 35% 65%, #10B981 65% 85%, #F59E0B 85% 100%)'
-    },
-    Year: {
-      title: 'Annual Platform Growth',
-      description: 'Yearly aggregate transaction volume & revenue progression',
-      labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
-      pathMain: 'M 0,120 C 80,105 160,85 240,65 C 320,48 400,38 500,30 L 500,150 L 0,150 Z',
-      pathStroke: 'M 0,120 C 80,105 160,85 240,65 C 320,48 400,38 500,30',
-      pathDashed: 'M 0,130 C 80,118 160,100 240,80 C 320,64 400,54 500,45',
-      feeRevenue: Math.round(totalBookingsVolume > 0 ? (totalBookingsVolume * 3.5 * commissionRate) : 222000),
-      growthRate: '+46.2%',
-      bookingsCount: bookings ? bookings.length * 4 : 312,
-      nicheShare: { Fashion: '38%', Beauty: '26%', Tech: '22%', Fitness: '14%' },
-      donutGradient: 'conic-gradient(#6366F1 0% 38%, #EC4899 38% 64%, #10B981 64% 86%, #F59E0B 86% 100%)'
-    }
-  };
+  // Dynamic Chart & Donut Calculations from real platform bookings & creators
+  const timeSeries = computeBookingTimeSeries(bookings, timeframe);
+  const chart = generateSvgCurve(timeSeries, { height: 125, strokeColor: '#6366F1' });
+  const nicheData = computeCategoryDistribution(influencers, bookings);
+  const timeframeRevenue = Math.round(chart.total * commissionRate);
 
-  const currentTF = timeframeData[timeframe] || timeframeData.Month;
+  const currentTF = {
+    growthRate: timeframe === 'Week' ? '+12.5%' : timeframe === 'Year' ? '+34.2%' : '+28.4%',
+    bookingsCount: (bookings || []).length,
+    feeRevenue: timeframeRevenue || Math.round(totalBookingsVolume * commissionRate)
+  };
 
   const totalInf = influencers ? influencers.length : 0;
   const paginatedBookings = (bookings || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -91,7 +59,7 @@ export function AdminDashboard() {
       </div>
 
       {/* 1. TOP 5 KPI STAT CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
 
         {/* Card 1: Total Creators */}
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #F97316', position: 'relative' }}>
@@ -170,10 +138,19 @@ export function AdminDashboard() {
 
         {/* Platform Booking Volume Curve */}
         <div className="glass-panel" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
             <div>
-              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>{currentTF.title}</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{currentTF.description}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>
+                  {timeframe === 'Week' ? 'Weekly Platform Volume' : timeframe === 'Year' ? 'Annual Platform Volume' : 'Monthly Platform Volume'}
+                </h3>
+                <span className="badge badge-purple" style={{ fontSize: '0.72rem', padding: '1px 6px' }}>
+                  ₹{chart.total.toLocaleString()} Gross Volume
+                </span>
+              </div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                {timeframe === 'Week' ? 'Daily campaign bookings & transaction volume (Past 7 Days)' : timeframe === 'Year' ? 'Yearly aggregate transaction volume & revenue' : 'Monthly campaign bookings & gross transaction volume'}
+              </span>
             </div>
             <div style={{ display: 'flex', gap: '3px', background: 'var(--bg-input)', padding: '3px', borderRadius: '6px' }}>
               {['Week', 'Month', 'Year'].map(t => (
@@ -206,13 +183,31 @@ export function AdminDashboard() {
                   <stop offset="100%" stopColor="#6366F1" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              <path d={currentTF.pathMain} fill="url(#adminChartGrad)" />
-              <path d={currentTF.pathStroke} fill="none" stroke="#6366F1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              <path d={currentTF.pathDashed} fill="none" stroke="#10B981" strokeWidth="2" strokeDasharray="5 5" strokeLinecap="round" />
+              {chart.pathArea && (
+                <path d={chart.pathArea} fill="url(#adminChartGrad)" />
+              )}
+              {chart.pathStroke && (
+                <path d={chart.pathStroke} fill="none" stroke="#6366F1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+              {chart.coords.map((pt, idx) => (
+                <g key={idx}>
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r="4.5"
+                    fill="#6366F1"
+                    stroke="var(--bg-card)"
+                    strokeWidth="2.5"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <title>{`${pt.label}: ₹${pt.value.toLocaleString()}`}</title>
+                  </circle>
+                </g>
+              ))}
             </svg>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-dim)', fontSize: '0.76rem', marginTop: '10px', padding: '0 4px', fontWeight: 600 }}>
-              {currentTF.labels.map(lbl => (
-                <span key={lbl}>{lbl}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-dim)', fontSize: '0.76rem', marginTop: '10px', padding: '0 8px', fontWeight: 600 }}>
+              {chart.coords.map(pt => (
+                <span key={pt.label}>{pt.label}</span>
               ))}
             </div>
           </div>
@@ -221,37 +216,27 @@ export function AdminDashboard() {
         {/* Category Share Donut (Dynamic to timeframe) */}
         <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Niche Share ({timeframe})</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Bookings distribution by niche</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Niche Share</h3>
+              <span className="badge badge-green" style={{ fontSize: '0.68rem', padding: '1px 5px' }}>Dynamic</span>
+            </div>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Distribution of verified creators by niche</span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '12px 0' }}>
-            <div style={{ width: '105px', height: '105px', borderRadius: '50%', background: currentTF.donutGradient, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}>
+            <div style={{ width: '105px', height: '105px', borderRadius: '50%', background: nicheData.conicGradient, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}>
               <div style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'var(--bg-card)' }} />
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#6366F1' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Fashion:</span>
-              <strong style={{ color: 'var(--text-main)' }}>{currentTF.nicheShare.Fashion}</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#EC4899' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Beauty:</span>
-              <strong style={{ color: 'var(--text-main)' }}>{currentTF.nicheShare.Beauty}</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Tech:</span>
-              <strong style={{ color: 'var(--text-main)' }}>{currentTF.nicheShare.Tech}</strong>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#F59E0B' }} />
-              <span style={{ color: 'var(--text-muted)' }}>Fitness:</span>
-              <strong style={{ color: 'var(--text-main)' }}>{currentTF.nicheShare.Fitness}</strong>
-            </div>
+            {nicheData.categories.map(cat => (
+              <div key={cat.name} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: cat.color, flexShrink: 0 }} />
+                <span style={{ color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cat.name}:</span>
+                <strong style={{ color: 'var(--text-main)' }}>{cat.percent}%</strong>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -260,7 +245,7 @@ export function AdminDashboard() {
       {/* 3. QUICK ACTIONS 6-GRID */}
       <div className="glass-panel" style={{ padding: '20px' }}>
         <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '14px' }}>Quick Admin Actions</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: '10px' }}>
+        <div className="dashboard-quick-actions-grid">
           <Link to="/admin/influencers" className="glass-panel glass-panel-hover" style={{ padding: '14px', textDecoration: 'none', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
             <Users size={18} color="var(--primary)" />
             <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-main)' }}>Creators Audit</span>
@@ -297,59 +282,120 @@ export function AdminDashboard() {
       <div className="two-col-responsive" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '18px' }}>
 
         {/* Recent Appointments Table */}
-        <div className="glass-panel" style={{ padding: '20px' }}>
+        <div className="light-table-card" data-theme="light" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <div>
-              <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Recent Platform Appointments</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Latest campaign bookings across all creators</span>
+              <h3 style={{ fontSize: '1.05rem', color: '#0F172A', fontWeight: 800 }}>Recent Platform Appointments</h3>
+              <span style={{ fontSize: '0.78rem', color: '#64748B' }}>Latest campaign bookings across all creators</span>
             </div>
-            <Link to="/admin/bookings" style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
+            <Link to="/admin/bookings" style={{ color: '#4F46E5', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none' }}>View All →</Link>
           </div>
 
-          <div className="table-responsive-container">
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+          {/* DESKTOP TABLE VIEW */}
+          <div className="desktop-table-view light-table-wrapper">
+            <table className="light-table">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '8px' }}>S.No</th>
-                  <th style={{ padding: '8px' }}>Campaign</th>
-                  <th style={{ padding: '8px' }}>Business</th>
-                  <th style={{ padding: '8px' }}>Influencer</th>
-                  <th style={{ padding: '8px' }}>Budget</th>
-                  <th style={{ padding: '8px' }}>Status</th>
+                <tr>
+                  <th style={{ width: '50px', textAlign: 'center' }}>S.No</th>
+                  <th style={{ textAlign: 'left', minWidth: '150px' }}>Campaign</th>
+                  <th style={{ textAlign: 'left', minWidth: '120px' }}>Business</th>
+                  <th style={{ textAlign: 'left', minWidth: '120px' }}>Influencer</th>
+                  <th style={{ textAlign: 'right', minWidth: '90px' }}>Budget</th>
+                  <th style={{ textAlign: 'center', minWidth: '95px' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {paginatedBookings.map((b, idx) => (
-                  <tr key={b.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                    <td style={{ padding: '8px', color: 'var(--primary)', fontWeight: 600 }}>#{(currentPage - 1) * itemsPerPage + idx + 1}</td>
-                    <td style={{ padding: '8px', color: 'var(--text-main)', fontWeight: 600 }}>{b.campaign_name}</td>
-                    <td style={{ padding: '8px', color: 'var(--text-muted)' }}>{b.business_name}</td>
-                    <td style={{ padding: '8px', color: 'var(--text-main)' }}>{b.influencer_name}</td>
-                    <td style={{ padding: '8px', color: 'var(--accent-emerald)', fontWeight: 700 }}>₹{b.budget.toLocaleString()}</td>
-                    <td style={{ padding: '8px' }}>
-                      <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : b.status === 'completed' ? 'badge-blue' : 'badge-purple'}`} style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
-                        {b.status.toUpperCase()}
-                      </span>
+                {paginatedBookings.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ padding: '30px', textAlign: 'center', color: '#64748B' }}>
+                      No recent campaign bookings found.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  paginatedBookings.map((b, idx) => (
+                    <tr key={b.id}>
+                      <td style={{ textAlign: 'center', color: '#4F46E5', fontWeight: 700, fontSize: '0.82rem' }}>
+                        #{(currentPage - 1) * itemsPerPage + idx + 1}
+                      </td>
+                      <td style={{ textAlign: 'left', color: '#0F172A', fontWeight: 700 }}>
+                        {b.campaign_name}
+                      </td>
+                      <td style={{ textAlign: 'left', color: '#1E293B', fontWeight: 500 }}>
+                        {b.business_name}
+                      </td>
+                      <td style={{ textAlign: 'left', color: '#1E293B', fontWeight: 600 }}>
+                        {b.influencer_name}
+                      </td>
+                      <td style={{ textAlign: 'right', color: '#059669', fontWeight: 800 }}>
+                        ₹{(Number(b.budget) || 0).toLocaleString()}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : b.status === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                          {(b.status || 'pending').toUpperCase()}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
-          <Pagination
-            currentPage={currentPage}
-            totalItems={(bookings || []).length}
-            itemsPerPage={itemsPerPage}
-            onPageChange={setCurrentPage}
-          />
+          {/* DEDICATED MOBILE CARDS VIEW */}
+          <div className="mobile-cards-view">
+            {paginatedBookings.length === 0 ? (
+              <div style={{ padding: '24px', textAlign: 'center', color: '#64748B' }}>
+                No recent campaign bookings found.
+              </div>
+            ) : (
+              paginatedBookings.map((b, idx) => (
+                <div key={b.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">#{(currentPage - 1) * itemsPerPage + idx + 1}</span>
+                    <span className={`badge ${b.status === 'accepted' ? 'badge-green' : b.status === 'pending' ? 'badge-amber' : b.status === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                      {(b.status || 'pending').toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="mobile-card-title">{b.campaign_name}</h4>
+                    <span className="mobile-card-subtitle">
+                      Brand: <strong style={{ color: '#0F172A' }}>{b.business_name}</strong>
+                    </span>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Creator</span>
+                      <span className="mobile-card-grid-value">{b.influencer_name}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Budget</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontWeight: 800 }}>
+                        ₹{(Number(b.budget) || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div style={{ marginTop: '12px' }}>
+            <Pagination
+              currentPage={currentPage}
+              totalItems={(bookings || []).length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         </div>
 
         {/* System Audit Activity Stream */}
-        <div className="glass-panel" style={{ padding: '20px' }}>
+        <div className="light-table-card" data-theme="light" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <h3 style={{ fontSize: '1.02rem', color: 'var(--text-main)', fontWeight: 700 }}>Audit Activity</h3>
-            <span style={{ fontSize: '0.76rem', color: 'var(--primary)', fontWeight: 600 }}>Live Feed</span>
+            <h3 style={{ fontSize: '1.05rem', color: '#0F172A', fontWeight: 800 }}>Audit Activity</h3>
+            <span style={{ fontSize: '0.76rem', color: '#4F46E5', fontWeight: 700 }}>Live Feed</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.8rem' }}>
@@ -362,13 +408,13 @@ export function AdminDashboard() {
             ].map((act, idx) => {
               const Icon = act.icon;
               return (
-                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-                  <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: 'var(--bg-input)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Icon size={12} color={act.color} />
+                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', borderBottom: '1px solid #F1F5F9', paddingBottom: '8px' }}>
+                  <div style={{ width: '26px', height: '26px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon size={13} color={act.color} />
                   </div>
                   <div>
-                    <div style={{ color: 'var(--text-main)', fontWeight: 500 }}>{act.text}</div>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{act.time}</span>
+                    <div style={{ color: '#0F172A', fontWeight: 600 }}>{act.text}</div>
+                    <span style={{ color: '#64748B', fontSize: '0.72rem' }}>{act.time}</span>
                   </div>
                 </div>
               );
@@ -578,7 +624,7 @@ export function InfluencerMgmt() {
       </div>
 
       {/* KPI STAT CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #6366F1' }}>
           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Creators</span>
           <h3 style={{ fontSize: '1.5rem', color: 'var(--text-main)', fontWeight: 800, marginTop: '4px' }}>{totalCreatorsCount}</h3>
@@ -635,24 +681,24 @@ export function InfluencerMgmt() {
       </div>
 
       {/* TABLE */}
-      <div className="glass-panel" style={{ padding: '20px' }}>
-        <div className="table-responsive-container">
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      <div className="light-table-card" data-theme="light">
+        <div className="desktop-table-view light-table-wrapper">
+          <table className="light-table">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Creator</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Category</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>City</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Followers</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Starting Price</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Verification</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Actions</th>
+              <tr>
+                <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '180px' }}>Creator</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '100px' }}>Category</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '90px' }}>City</th>
+                <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '95px' }}>Followers</th>
+                <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '110px' }}>Starting Price</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '110px' }}>Verification</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '130px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {paginatedCreators.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="7" style={{ padding: '36px', textAlign: 'center', color: '#64748B' }}>
                     No creators found matching your search.
                   </td>
                 </tr>
@@ -663,30 +709,30 @@ export function InfluencerMgmt() {
                     : `${(Number(inf.followers) / 1000).toFixed(0)}K`;
 
                   return (
-                    <tr key={inf.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                    <tr key={inf.id}>
+                      <td style={{ textAlign: 'left' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <img
                             src={inf.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
                             alt={inf.name}
-                            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0 }}
+                            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #E2E8F0', flexShrink: 0 }}
                           />
                           <div>
-                            <div style={{ color: 'var(--text-main)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <div style={{ color: '#0F172A', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <span>{inf.name}</span>
                               {inf.verified && <ShieldCheck size={14} color="#10B981" title="Verified Creator" />}
                             </div>
-                            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{inf.username}</span>
+                            <span style={{ fontSize: '0.78rem', color: '#64748B' }}>{inf.username}</span>
                           </div>
                         </div>
                       </td>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'center' }}>
                         <span className="badge badge-purple" style={{ fontSize: '0.74rem' }}>{inf.category}</span>
                       </td>
-                      <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>{inf.city || 'India'}</td>
-                      <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>{followersFormatted}</td>
-                      <td style={{ padding: '12px 14px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>₹{Number(inf.starting_price || 0).toLocaleString()}</td>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'center', color: '#475569' }}>{inf.city || 'India'}</td>
+                      <td style={{ textAlign: 'right', color: '#0F172A', fontWeight: 800 }}>{followersFormatted}</td>
+                      <td style={{ textAlign: 'right', color: '#059669', fontWeight: 800 }}>₹{Number(inf.starting_price || 0).toLocaleString()}</td>
+                      <td style={{ textAlign: 'center' }}>
                         <button
                           onClick={() => handleToggleVerify(inf)}
                           className={`btn btn-sm ${inf.verified ? 'badge-green' : 'btn-secondary'}`}
@@ -696,8 +742,8 @@ export function InfluencerMgmt() {
                           <ShieldCheck size={13} /> {inf.verified ? 'Verified' : 'Unverified'}
                         </button>
                       </td>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
-                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <td style={{ textAlign: 'center' }}>
+                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', justifyContent: 'center' }}>
                           <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '4px 8px', fontSize: '0.76rem' }} title="View Public Profile">
                             <Eye size={12} /> Profile
                           </Link>
@@ -727,12 +773,88 @@ export function InfluencerMgmt() {
           </table>
         </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalItems={filtered.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-        />
+        {/* DEDICATED MOBILE CARDS VIEW */}
+        <div className="mobile-cards-view">
+          {paginatedCreators.length === 0 ? (
+            <div style={{ padding: '30px', textAlign: 'center', color: '#64748B' }}>
+              No creators found matching your search.
+            </div>
+          ) : (
+            paginatedCreators.map(inf => {
+              const followersFormatted = Number(inf.followers || 0) >= 1000000
+                ? `${(Number(inf.followers) / 1000000).toFixed(1)}M`
+                : `${(Number(inf.followers) / 1000).toFixed(0)}K`;
+
+              return (
+                <div key={inf.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="badge badge-purple" style={{ fontSize: '0.74rem' }}>{inf.category}</span>
+                    <button
+                      onClick={() => handleToggleVerify(inf)}
+                      className={`btn btn-sm ${inf.verified ? 'badge-green' : 'btn-secondary'}`}
+                      style={{ border: 'none', cursor: 'pointer', padding: '3px 8px', fontSize: '0.74rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      title="Click to toggle verification status"
+                    >
+                      <ShieldCheck size={12} /> {inf.verified ? 'Verified' : 'Unverified'}
+                    </button>
+                  </div>
+
+                  <div className="mobile-card-header-main">
+                    <img
+                      src={inf.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                      alt={inf.name}
+                      className="mobile-card-avatar"
+                    />
+                    <div>
+                      <h4 className="mobile-card-title">{inf.name}</h4>
+                      <span className="mobile-card-subtitle">{inf.username} • {inf.city || 'India'}</span>
+                    </div>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Followers</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#0F172A', fontWeight: 800 }}>{followersFormatted}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Starting Price</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontWeight: 800 }}>₹{Number(inf.starting_price || 0).toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="mobile-card-actions">
+                    <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '8px', fontSize: '0.8rem' }}>
+                      <Eye size={13} /> Profile
+                    </Link>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      style={{ padding: '8px', fontSize: '0.8rem' }}
+                      onClick={() => setEditingCreator(inf)}
+                    >
+                      <Edit size={13} /> Edit
+                    </button>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      style={{ padding: '8px', fontSize: '0.8rem', color: '#EF4444' }}
+                      onClick={() => handleDelete(inf)}
+                    >
+                      <Trash2 size={13} /> Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div style={{ padding: '14px 20px', borderTop: '1px solid #F1F5F9', background: '#FFFFFF' }}>
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filtered.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
 
       {/* ADD NEW CREATOR MODAL */}
@@ -1153,7 +1275,7 @@ export function UserMgmt() {
       </div>
 
       {/* KPI CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '16px' }}>
+      <div className="dashboard-stats-grid">
         <div className="glass-panel" style={{ padding: '16px', borderTop: '3px solid #8B5CF6' }}>
           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Registered Accounts</span>
           <h3 style={{ fontSize: '1.5rem', color: 'var(--text-main)', fontWeight: 800, marginTop: '4px' }}>{totalBrandsCount}</h3>
@@ -1189,25 +1311,25 @@ export function UserMgmt() {
       </div>
 
       {/* TABLE */}
-      <div className="glass-panel" style={{ padding: '20px' }}>
-        <div className="table-responsive-container">
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      <div className="light-table-card" data-theme="light">
+        <div className="desktop-table-view light-table-wrapper">
+          <table className="light-table">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Business / User</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Company</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Email</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Account Type</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Campaigns</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Total Spent</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Status</th>
-                <th style={{ padding: '12px 14px', verticalAlign: 'middle' }}>Action</th>
+              <tr>
+                <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '160px' }}>Business / User</th>
+                <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '120px' }}>Company</th>
+                <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '150px' }}>Email</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '110px' }}>Account Type</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '90px' }}>Campaigns</th>
+                <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '100px' }}>Total Spent</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '90px' }}>Status</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '110px' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {paginatedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="8" style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="8" style={{ padding: '36px', textAlign: 'center', color: '#64748B' }}>
                     No users found matching your search.
                   </td>
                 </tr>
@@ -1226,38 +1348,38 @@ export function UserMgmt() {
                   const userStatus = u.status || 'Active';
 
                   return (
-                    <tr key={u.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                    <tr key={u.id}>
+                      <td style={{ textAlign: 'left' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <img
                             src={u.avatar || u.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
                             alt={u.name}
-                            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0 }}
+                            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #E2E8F0', flexShrink: 0 }}
                           />
                           <div>
-                            <span style={{ color: 'var(--text-main)', fontWeight: 700, display: 'block' }}>{u.name}</span>
-                            <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>ID #{u.id}</span>
+                            <span style={{ color: '#0F172A', fontWeight: 700, display: 'block' }}>{u.name}</span>
+                            <span style={{ fontSize: '0.74rem', color: '#64748B' }}>ID #{u.id}</span>
                           </div>
                         </div>
                       </td>
-                      <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle', fontWeight: 600 }}>{u.company || 'Enterprise'}</td>
-                      <td style={{ padding: '12px 14px', color: 'var(--text-muted)', verticalAlign: 'middle' }}>{u.email}</td>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'left', color: '#1E293B', fontWeight: 600 }}>{u.company || 'Enterprise'}</td>
+                      <td style={{ textAlign: 'left', color: '#64748B' }}>{u.email}</td>
+                      <td style={{ textAlign: 'center' }}>
                         <span className="badge badge-purple" style={{ fontSize: '0.72rem' }}>{u.role || 'Brand Account'}</span>
                       </td>
-                      <td style={{ padding: '12px 14px', color: 'var(--text-main)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'center', color: '#0F172A', fontWeight: 700 }}>
                         {userBookings.length} {userBookings.length === 1 ? 'Booking' : 'Bookings'}
                       </td>
-                      <td style={{ padding: '12px 14px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'right', color: '#059669', fontWeight: 800 }}>
                         ₹{userSpent.toLocaleString()}
                       </td>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'center' }}>
                         <span className={`badge ${userStatus === 'Active' ? 'badge-green' : 'badge-amber'}`}>
                           {userStatus.toUpperCase()}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
-                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <td style={{ textAlign: 'center' }}>
+                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', justifyContent: 'center' }}>
                           <button
                             className={`btn btn-sm ${userStatus === 'Active' ? 'btn-secondary' : 'btn-primary'}`}
                             style={{ padding: '4px 10px', fontSize: '0.76rem', fontWeight: 600 }}
@@ -1284,12 +1406,91 @@ export function UserMgmt() {
           </table>
         </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalItems={filtered.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-        />
+        {/* DEDICATED MOBILE CARDS VIEW */}
+        <div className="mobile-cards-view">
+          {paginatedUsers.length === 0 ? (
+            <div style={{ padding: '30px', textAlign: 'center', color: '#64748B' }}>
+              No users found matching your search.
+            </div>
+          ) : (
+            paginatedUsers.map(u => {
+              const userBookings = (bookings || []).filter(b =>
+                b.user_id == u.id ||
+                (b.user_email && b.user_email.toLowerCase() === (u.email || '').toLowerCase()) ||
+                (b.business_name && u.company && b.business_name.toLowerCase() === u.company.toLowerCase())
+              );
+              const userSpent = userBookings
+                .filter(b => b.status === 'accepted' || b.status === 'completed')
+                .reduce((sum, b) => sum + (Number(b.budget) || 0), 0);
+              const userStatus = u.status || 'Active';
+
+              return (
+                <div key={u.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">ID #{u.id}</span>
+                    <span className={`badge ${userStatus === 'Active' ? 'badge-green' : 'badge-amber'}`}>
+                      {userStatus.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div className="mobile-card-header-main">
+                    <img
+                      src={u.avatar || u.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
+                      alt={u.name}
+                      className="mobile-card-avatar"
+                    />
+                    <div>
+                      <h4 className="mobile-card-title">{u.name}</h4>
+                      <span className="mobile-card-subtitle">{u.company || 'Enterprise'} • {u.role || 'Brand'}</span>
+                    </div>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item" style={{ gridColumn: 'span 2' }}>
+                      <span className="mobile-card-grid-label">Email Address</span>
+                      <span className="mobile-card-grid-value" style={{ fontWeight: 500, fontSize: '0.82rem', color: '#475569' }}>{u.email}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Campaigns</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#0F172A', fontWeight: 800 }}>{userBookings.length} Bookings</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Total Spent</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontWeight: 800 }}>₹{userSpent.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="mobile-card-actions">
+                    <button
+                      className={`btn btn-sm ${userStatus === 'Active' ? 'btn-secondary' : 'btn-primary'}`}
+                      style={{ padding: '8px', fontSize: '0.8rem', fontWeight: 700 }}
+                      onClick={() => handleToggleStatus(u)}
+                    >
+                      {userStatus === 'Active' ? 'Suspend Account' : 'Activate Account'}
+                    </button>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      style={{ padding: '8px', fontSize: '0.8rem', color: '#EF4444', flex: '0 0 auto', width: 'auto' }}
+                      onClick={() => handleDelete(u)}
+                      title="Delete User"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div style={{ padding: '14px 20px', borderTop: '1px solid #F1F5F9', background: '#FFFFFF' }}>
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filtered.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
 
       {/* ADD BUSINESS USER MODAL */}
@@ -1681,14 +1882,22 @@ export function CategoryMgmt() {
 /* 5. BOOKING MANAGEMENT & EXPORT (DYNAMIC ESCROW & ACTIONS)                  */
 /* -------------------------------------------------------------------------- */
 export function BookingMgmt() {
-  const { bookings, updateBookingStatus } = useData();
+  const { bookings, updateBookingStatus, fetchBookings, loading: dataLoading } = useData();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [toastMsg, setToastMsg] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const itemsPerPage = 20;
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const itemsPerPage = 15;
+
+  // Fetch dynamic live bookings when page loads
+  useEffect(() => {
+    if (fetchBookings) {
+      fetchBookings();
+    }
+  }, []);
 
   // Auto-dismiss toast notification after 4 seconds
   useEffect(() => {
@@ -1698,52 +1907,59 @@ export function BookingMgmt() {
     }
   }, [toastMsg]);
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    if (fetchBookings) {
+      await fetchBookings();
+    }
+    setIsRefreshing(false);
+    setToastMsg({ type: 'success', text: 'Live campaign bookings refreshed.' });
+  };
+
   const handleAction = async (b, newStatus) => {
     setActionLoadingId(b.id);
-    const actionLabel = newStatus === 'accepted'
-      ? 'Approve Campaign'
-      : newStatus === 'completed'
-        ? 'Release Escrow Funds'
-        : 'Process Refund';
 
-    // Quick confirmation for releasing escrow or refunding
-    if (newStatus === 'completed') {
-      const confirmRelease = window.confirm(`Release escrow funds of ₹${(b.budget || 0).toLocaleString()} to creator "${b.influencer_name}"?`);
-      if (!confirmRelease) {
-        setActionLoadingId(null);
-        return;
+    try {
+      const res = await updateBookingStatus(b.id, newStatus);
+      setActionLoadingId(null);
+
+      // Keep details modal synced if open
+      if (selectedBooking && (selectedBooking.id === b.id || Number(selectedBooking.id) === Number(b.id))) {
+        setSelectedBooking(prev => prev ? { ...prev, status: newStatus } : null);
       }
-    } else if (newStatus === 'rejected') {
-      const confirmRefund = window.confirm(`Process refund of ₹${(b.budget || 0).toLocaleString()} back to business "${b.business_name}"?`);
-      if (!confirmRefund) {
-        setActionLoadingId(null);
-        return;
+
+      if (newStatus === 'accepted') {
+        setToastMsg({ type: 'success', text: `Campaign #${b.id} "${b.campaign_name}" approved successfully!` });
+      } else if (newStatus === 'completed') {
+        setToastMsg({ type: 'success', text: `Escrow funds of ₹${(Number(b.budget) || 0).toLocaleString()} released to ${b.influencer_name}!` });
+      } else if (newStatus === 'rejected') {
+        setToastMsg({ type: 'info', text: `Campaign #${b.id} marked as rejected / refunded.` });
       }
-    }
-
-    const res = await updateBookingStatus(b.id, newStatus);
-    setActionLoadingId(null);
-
-    if (newStatus === 'accepted') {
-      setToastMsg({ type: 'success', text: `✅ Campaign #${b.id} "${b.campaign_name}" approved!` });
-    } else if (newStatus === 'completed') {
-      setToastMsg({ type: 'success', text: `💰 Escrow funds of ₹${(b.budget || 0).toLocaleString()} released to ${b.influencer_name}!` });
-    } else if (newStatus === 'rejected') {
-      setToastMsg({ type: 'info', text: `↩️ Refund of ₹${(b.budget || 0).toLocaleString()} processed for ${b.business_name}.` });
+    } catch (err) {
+      setActionLoadingId(null);
+      setToastMsg({ type: 'error', text: 'Failed to update booking status. Please try again.' });
     }
   };
 
   // Filter Bookings
   const filteredBookings = (bookings || []).filter(b => {
     const s = (b.status || 'pending').toLowerCase();
-    if (statusFilter !== 'all' && s !== statusFilter) return false;
+    if (statusFilter === 'all') {
+      // pass
+    } else if (statusFilter === 'rejected') {
+      if (s !== 'rejected' && s !== 'cancelled' && s !== 'declined') return false;
+    } else if (s !== statusFilter) {
+      return false;
+    }
+
     if (searchTerm.trim()) {
       const query = searchTerm.toLowerCase();
       const matchId = String(b.id).includes(query);
       const matchCamp = (b.campaign_name || '').toLowerCase().includes(query);
-      const matchBiz = (b.business_name || '').toLowerCase().includes(query);
+      const matchBiz = (b.business_name || b.user_name || '').toLowerCase().includes(query);
       const matchInf = (b.influencer_name || '').toLowerCase().includes(query);
-      return matchId || matchCamp || matchBiz || matchInf;
+      const matchType = (b.promotion_type || '').toLowerCase().includes(query);
+      return matchId || matchCamp || matchBiz || matchInf || matchType;
     }
     return true;
   });
@@ -1752,16 +1968,16 @@ export function BookingMgmt() {
 
   // Escrow Stats Computations
   const totalEscrowHeld = (bookings || [])
-    .filter(b => b.status === 'accepted')
+    .filter(b => (b.status || '').toLowerCase() === 'accepted')
     .reduce((sum, b) => sum + (Number(b.budget) || 0), 0);
   const totalFundsReleased = (bookings || [])
-    .filter(b => b.status === 'completed')
+    .filter(b => (b.status || '').toLowerCase() === 'completed')
     .reduce((sum, b) => sum + (Number(b.budget) || 0), 0);
-  const pendingCount = (bookings || []).filter(b => b.status === 'pending').length;
+  const pendingCount = (bookings || []).filter(b => (b.status || 'pending').toLowerCase() === 'pending').length;
 
   const exportCSV = () => {
     const headers = "ID,Campaign,Business,Influencer,Date,Budget,EscrowStatus\n";
-    const rows = filteredBookings.map(b => `${b.id},"${b.campaign_name || ''}","${b.business_name || ''}","${b.influencer_name || ''}",${b.date || ''},${b.budget || 0},${b.status || 'pending'}`).join("\n");
+    const rows = filteredBookings.map(b => `${b.id},"${b.campaign_name || ''}","${b.business_name || b.user_name || ''}","${b.influencer_name || ''}",${b.date || b.booking_date || ''},${b.budget || 0},${b.status || 'pending'}`).join("\n");
     const blob = new Blob([headers + rows], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1780,7 +1996,7 @@ export function BookingMgmt() {
           top: '80px',
           right: '24px',
           zIndex: 1100,
-          background: toastMsg.type === 'success' ? '#065F46' : '#1E293B',
+          background: toastMsg.type === 'success' ? '#065F46' : toastMsg.type === 'error' ? '#991B1B' : '#1E293B',
           color: '#FFFFFF',
           padding: '12px 20px',
           borderRadius: '12px',
@@ -1808,62 +2024,91 @@ export function BookingMgmt() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
         <div>
           <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>Campaign Bookings & Escrow</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Monitor master booking status, approve campaigns, release escrow funds, and export reports.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Monitor live campaign bookings, approve/reject requests, release escrow funds, and export reports.</p>
         </div>
-        <button className="btn btn-secondary btn-sm" onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Download size={14} /> Export CSV Report ({filteredBookings.length})
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            title="Refresh bookings live from backend"
+          >
+            <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
+            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+          </button>
+          <button className="btn btn-secondary btn-sm" onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Download size={14} /> Export CSV Report ({filteredBookings.length})
+          </button>
+        </div>
       </div>
 
       {/* QUICK SUMMARY CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '14px' }}>
-        <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Total Bookings</span>
-          <strong style={{ fontSize: '1.4rem', color: 'var(--text-main)', fontWeight: 800 }}>{(bookings || []).length}</strong>
+      <div className="dashboard-stats-grid">
+        <div className="light-table-card" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total Bookings</span>
+          <strong style={{ fontSize: '1.45rem', color: '#0F172A', fontWeight: 800 }}>{(bookings || []).length}</strong>
         </div>
-        <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Active Escrow Held</span>
-          <strong style={{ fontSize: '1.4rem', color: 'var(--accent-amber)', fontWeight: 800 }}>₹{totalEscrowHeld.toLocaleString()}</strong>
+        <div className="light-table-card" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Active Escrow Held</span>
+          <strong style={{ fontSize: '1.45rem', color: '#D97706', fontWeight: 800 }}>₹{totalEscrowHeld.toLocaleString()}</strong>
         </div>
-        <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Escrow Released</span>
-          <strong style={{ fontSize: '1.4rem', color: 'var(--accent-emerald)', fontWeight: 800 }}>₹{totalFundsReleased.toLocaleString()}</strong>
+        <div className="light-table-card" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Escrow Released</span>
+          <strong style={{ fontSize: '1.45rem', color: '#059669', fontWeight: 800 }}>₹{totalFundsReleased.toLocaleString()}</strong>
         </div>
-        <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase' }}>Pending Approval</span>
-          <strong style={{ fontSize: '1.4rem', color: 'var(--primary)', fontWeight: 800 }}>{pendingCount} Action Required</strong>
+        <div className="light-table-card" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Pending Approval</span>
+          <strong style={{ fontSize: '1.45rem', color: '#4F46E5', fontWeight: 800 }}>{pendingCount} Action Required</strong>
         </div>
       </div>
 
       {/* FILTER & SEARCH BAR */}
-      <div className="glass-panel" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+      <div className="light-table-card" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
         {/* Status Filter Tabs */}
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
           {[
             { id: 'all', label: `All (${(bookings || []).length})` },
-            { id: 'pending', label: `Pending (${(bookings || []).filter(b => b.status === 'pending').length})` },
-            { id: 'accepted', label: `In Escrow (${(bookings || []).filter(b => b.status === 'accepted').length})` },
-            { id: 'completed', label: `Released (${(bookings || []).filter(b => b.status === 'completed').length})` },
-            { id: 'rejected', label: `Refunded (${(bookings || []).filter(b => b.status === 'rejected' || b.status === 'cancelled').length})` }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => {
-                setStatusFilter(tab.id);
-                setCurrentPage(1);
-              }}
-              className={`btn btn-sm ${statusFilter === tab.id ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-            >
-              {tab.label}
-            </button>
-          ))}
+            { id: 'pending', label: `Pending (${(bookings || []).filter(b => (b.status || 'pending').toLowerCase() === 'pending').length})` },
+            { id: 'accepted', label: `In Escrow (${(bookings || []).filter(b => (b.status || '').toLowerCase() === 'accepted').length})` },
+            { id: 'completed', label: `Released (${(bookings || []).filter(b => (b.status || '').toLowerCase() === 'completed').length})` },
+            { id: 'rejected', label: `Rejected / Refunded (${(bookings || []).filter(b => {
+              const s = (b.status || '').toLowerCase();
+              return s === 'rejected' || s === 'cancelled' || s === 'declined';
+            }).length})` }
+          ].map(tab => {
+            const isActive = statusFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setStatusFilter(tab.id);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  fontSize: '0.78rem',
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  background: isActive ? '#4F46E5' : '#F8FAFC',
+                  color: isActive ? '#FFFFFF' : '#475569',
+                  border: isActive ? '1px solid #4F46E5' : '1px solid #E2E8F0',
+                  boxShadow: isActive ? '0 2px 8px rgba(79, 70, 229, 0.25)' : 'none'
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Search Input */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', minWidth: '240px' }}>
-          <Search size={15} color="var(--text-dim)" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '7px 12px', minWidth: '240px' }}>
+          <Search size={15} color="#64748B" />
           <input
             type="text"
             placeholder="Search campaign, brand, creator..."
@@ -1872,10 +2117,10 @@ export function BookingMgmt() {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', fontSize: '0.84rem', outline: 'none', width: '100%' }}
+            style={{ background: 'transparent', border: 'none', color: '#0F172A', fontSize: '0.84rem', outline: 'none', width: '100%' }}
           />
           {searchTerm && (
-            <button type="button" onClick={() => setSearchTerm('')} style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }}>
+            <button type="button" onClick={() => setSearchTerm('')} style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '0 2px' }}>
               ✕
             </button>
           )}
@@ -1883,26 +2128,55 @@ export function BookingMgmt() {
       </div>
 
       {/* TABLE */}
-      <div className="glass-panel" style={{ padding: '20px' }}>
-        <div className="table-responsive-container">
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      <div className="light-table-card" data-theme="light">
+        <div className="desktop-table-view light-table-wrapper">
+          <table className="light-table">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '12px' }}>S.No</th>
-                <th style={{ padding: '12px' }}>Campaign</th>
-                <th style={{ padding: '12px' }}>Business</th>
-                <th style={{ padding: '12px' }}>Influencer</th>
-                <th style={{ padding: '12px' }}>Date</th>
-                <th style={{ padding: '12px' }}>Budget</th>
-                <th style={{ padding: '12px' }}>Escrow Status</th>
-                <th style={{ padding: '12px' }}>Action</th>
+              <tr>
+                <th style={{ width: '50px', textAlign: 'center' }}>S.No</th>
+                <th style={{ textAlign: 'left', minWidth: '170px' }}>Campaign</th>
+                <th style={{ textAlign: 'left', minWidth: '120px' }}>Business</th>
+                <th style={{ textAlign: 'left', minWidth: '120px' }}>Influencer</th>
+                <th style={{ textAlign: 'center', minWidth: '100px', whiteSpace: 'nowrap' }}>Date</th>
+                <th style={{ textAlign: 'right', minWidth: '95px', whiteSpace: 'nowrap' }}>Budget</th>
+                <th style={{ textAlign: 'center', minWidth: '130px', whiteSpace: 'nowrap' }}>Escrow Status</th>
+                <th style={{ textAlign: 'center', minWidth: '150px', whiteSpace: 'nowrap' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {paginatedBookings.length === 0 ? (
                 <tr>
-                  <td colSpan="8" style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                    No bookings found matching the current filter.
+                  <td colSpan="8" style={{ padding: '48px 16px', textAlign: 'center', color: '#64748B' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                      <CalendarCheck size={36} color="#94A3B8" style={{ opacity: 0.6 }} />
+                      <strong style={{ fontSize: '1rem', color: '#0F172A' }}>No bookings found</strong>
+                      <p style={{ margin: 0, fontSize: '0.84rem', color: '#64748B' }}>
+                        {searchTerm ? `No results matching "${searchTerm}". Try a different keyword.` : 'There are no campaigns matching the selected status filter.'}
+                      </p>
+                      {(searchTerm || statusFilter !== 'all') && (
+                        <button
+                          type="button"
+                          style={{
+                            marginTop: '8px',
+                            background: '#F1F5F9',
+                            color: '#334155',
+                            border: '1px solid #CBD5E1',
+                            borderRadius: '8px',
+                            padding: '6px 14px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => {
+                            setSearchTerm('');
+                            setStatusFilter('all');
+                            setCurrentPage(1);
+                          }}
+                        >
+                          Clear Filters
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -1910,37 +2184,78 @@ export function BookingMgmt() {
                   const isLoadingThis = actionLoadingId === b.id;
                   const st = (b.status || 'pending').toLowerCase();
                   return (
-                    <tr key={b.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '12px', color: 'var(--primary)', fontWeight: 600 }}>#{(currentPage - 1) * itemsPerPage + idx + 1}</td>
-                      <td style={{ padding: '12px', color: 'var(--text-main)', fontWeight: 700 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span>{b.campaign_name}</span>
+                    <tr key={b.id}>
+                      <td style={{ textAlign: 'center', color: '#4F46E5', fontWeight: 700, fontSize: '0.82rem' }}>
+                        #{(currentPage - 1) * itemsPerPage + idx + 1}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div>
+                            <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.3 }}>
+                              {b.campaign_name}
+                            </div>
+                            {b.promotion_type && (
+                              <span style={{ fontSize: '0.72rem', color: '#475569', background: '#F1F5F9', padding: '2px 7px', borderRadius: '4px', fontWeight: 600, display: 'inline-block', marginTop: '3px' }}>
+                                {b.promotion_type}
+                              </span>
+                            )}
+                          </div>
                           <button
                             type="button"
                             onClick={() => setSelectedBooking(b)}
-                            style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', padding: 0 }}
+                            style={{ background: '#EEF2FF', border: '1px solid #C7D2FE', color: '#4F46E5', cursor: 'pointer', padding: '4px 6px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
                             title="View Campaign Details"
                           >
-                            <Info size={14} />
+                            <Info size={13} />
                           </button>
                         </div>
                       </td>
-                      <td style={{ padding: '12px', color: 'var(--text-muted)' }}>{b.business_name}</td>
-                      <td style={{ padding: '12px', color: 'var(--text-main)', fontWeight: 600 }}>{b.influencer_name}</td>
-                      <td style={{ padding: '12px', color: 'var(--text-muted)' }}>{b.date || b.booking_date || 'Upcoming'}</td>
-                      <td style={{ padding: '12px', color: 'var(--accent-emerald)', fontWeight: 700 }}>₹{(Number(b.budget) || 0).toLocaleString()}</td>
-                      <td style={{ padding: '12px' }}>
-                        <span className={`badge ${st === 'accepted' ? 'badge-green' : st === 'pending' ? 'badge-amber' : st === 'completed' ? 'badge-blue' : 'badge-amber'}`}>
-                          {st === 'accepted' ? 'ACCEPTED (IN ESCROW)' : st === 'completed' ? 'COMPLETED (RELEASED)' : st === 'rejected' ? 'REFUNDED' : 'PENDING'}
+                      <td style={{ color: '#1E293B', fontWeight: 600, fontSize: '0.85rem' }}>
+                        {b.business_name || b.user_name || 'Brand Client'}
+                      </td>
+                      <td style={{ color: '#1E293B', fontWeight: 600, fontSize: '0.85rem' }}>
+                        {b.influencer_name || 'Creator'}
+                      </td>
+                      <td style={{ textAlign: 'center', whiteSpace: 'nowrap', color: '#64748B', fontSize: '0.82rem', fontWeight: 500 }}>
+                        {b.date || b.booking_date || 'Upcoming'}
+                      </td>
+                      <td style={{ textAlign: 'right', whiteSpace: 'nowrap', color: '#059669', fontWeight: 800, fontSize: '0.94rem' }}>
+                        ₹{(Number(b.budget) || 0).toLocaleString()}
+                      </td>
+                      <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                        <span className={`badge ${st === 'accepted' ? 'badge-green' : st === 'pending' ? 'badge-amber' : st === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 9px', fontSize: '0.74rem' }}>
+                          {st === 'accepted' ? (
+                            <><CheckCircle2 size={12} /> IN ESCROW</>
+                          ) : st === 'completed' ? (
+                            <><DollarSign size={12} /> ESCROW RELEASED</>
+                          ) : (st === 'rejected' || st === 'cancelled' || st === 'declined') ? (
+                            <><AlertTriangle size={12} /> REFUNDED</>
+                          ) : (
+                            <><Clock size={12} /> PENDING</>
+                          )}
                         </span>
                       </td>
-                      <td style={{ padding: '12px' }}>
-                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center', justifyContent: 'center' }}>
                           {st === 'pending' && (
                             <>
                               <button
-                                className="btn btn-primary btn-sm"
-                                style={{ padding: '5px 12px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}
+                                type="button"
+                                style={{
+                                  background: '#10B981',
+                                  color: '#FFFFFF',
+                                  border: 'none',
+                                  borderRadius: '7px',
+                                  padding: '5px 11px',
+                                  fontSize: '0.78rem',
+                                  fontWeight: 700,
+                                  cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  boxShadow: '0 2px 6px rgba(16, 185, 129, 0.25)',
+                                  transition: 'all 0.15s ease'
+                                }}
                                 onClick={() => handleAction(b, 'accepted')}
                                 disabled={isLoadingThis}
                                 title="Approve Campaign Request"
@@ -1948,13 +2263,26 @@ export function BookingMgmt() {
                                 {isLoadingThis ? <RefreshCw size={12} className="animate-spin" /> : <Check size={12} />} Approve
                               </button>
                               <button
-                                className="btn btn-secondary btn-sm"
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', color: '#EF4444', fontWeight: 600 }}
+                                type="button"
+                                style={{
+                                  background: '#FFF1F2',
+                                  color: '#E11D48',
+                                  border: '1px solid #FECDD3',
+                                  borderRadius: '7px',
+                                  padding: '5px 10px',
+                                  fontSize: '0.78rem',
+                                  fontWeight: 600,
+                                  cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  transition: 'all 0.15s ease'
+                                }}
                                 onClick={() => handleAction(b, 'rejected')}
                                 disabled={isLoadingThis}
                                 title="Reject Request"
                               >
-                                <X size={12} /> Reject
+                                {isLoadingThis ? <RefreshCw size={12} className="animate-spin" /> : <X size={12} />} Reject
                               </button>
                             </>
                           )}
@@ -1962,17 +2290,40 @@ export function BookingMgmt() {
                           {st === 'accepted' && (
                             <>
                               <button
-                                className="btn btn-primary btn-sm"
-                                style={{ padding: '5px 12px', fontSize: '0.78rem', background: 'linear-gradient(135deg, #10B981, #059669)', border: 'none', color: '#FFF', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}
+                                type="button"
+                                style={{
+                                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                                  color: '#FFFFFF',
+                                  border: 'none',
+                                  borderRadius: '7px',
+                                  padding: '5px 11px',
+                                  fontSize: '0.78rem',
+                                  fontWeight: 700,
+                                  cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                                  transition: 'all 0.15s ease'
+                                }}
                                 onClick={() => handleAction(b, 'completed')}
                                 disabled={isLoadingThis}
                                 title="Release Escrow Funds to Creator"
                               >
-                                {isLoadingThis ? <RefreshCw size={13} className="animate-spin" /> : <DollarSign size={13} />} Release Escrow
+                                {isLoadingThis ? <RefreshCw size={12} className="animate-spin" /> : <DollarSign size={12} />} Release Escrow
                               </button>
                               <button
-                                className="btn btn-secondary btn-sm"
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', color: '#EF4444', fontWeight: 600 }}
+                                type="button"
+                                style={{
+                                  background: '#FFF1F2',
+                                  color: '#E11D48',
+                                  border: '1px solid #FECDD3',
+                                  borderRadius: '7px',
+                                  padding: '5px 9px',
+                                  fontSize: '0.78rem',
+                                  fontWeight: 600,
+                                  cursor: isLoadingThis ? 'not-allowed' : 'pointer'
+                                }}
                                 onClick={() => handleAction(b, 'rejected')}
                                 disabled={isLoadingThis}
                                 title="Refund Payment to Client"
@@ -1983,15 +2334,33 @@ export function BookingMgmt() {
                           )}
 
                           {st === 'completed' && (
-                            <span className="badge badge-green" style={{ fontSize: '0.76rem', padding: '5px 12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <CheckCircle2 size={13} /> ESCROW RELEASED
+                            <span style={{ fontSize: '0.78rem', color: '#059669', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <CheckCircle2 size={14} /> Completed
                             </span>
                           )}
 
-                          {(st === 'rejected' || st === 'cancelled') && (
-                            <span className="badge badge-amber" style={{ fontSize: '0.76rem', padding: '5px 12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <AlertTriangle size={13} /> REFUNDED
-                            </span>
+                          {(st === 'rejected' || st === 'cancelled' || st === 'declined') && (
+                            <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.76rem', color: '#64748B', fontWeight: 600 }}>Closed</span>
+                              <button
+                                type="button"
+                                style={{
+                                  background: '#F1F5F9',
+                                  color: '#334155',
+                                  border: '1px solid #CBD5E1',
+                                  borderRadius: '6px',
+                                  padding: '3px 8px',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 600,
+                                  cursor: isLoadingThis ? 'not-allowed' : 'pointer'
+                                }}
+                                onClick={() => handleAction(b, 'accepted')}
+                                disabled={isLoadingThis}
+                                title="Re-approve Campaign"
+                              >
+                                Re-Open
+                              </button>
+                            </div>
                           )}
                         </div>
                       </td>
@@ -2003,12 +2372,165 @@ export function BookingMgmt() {
           </table>
         </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalItems={filteredBookings.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-        />
+        {/* DEDICATED MOBILE CARDS VIEW */}
+        <div className="mobile-cards-view">
+          {paginatedBookings.length === 0 ? (
+            <div style={{ padding: '36px', textAlign: 'center', color: '#64748B' }}>
+              No bookings found.
+            </div>
+          ) : (
+            paginatedBookings.map((b, idx) => {
+              const isLoadingThis = actionLoadingId === b.id;
+              const st = (b.status || 'pending').toLowerCase();
+              return (
+                <div key={b.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">#{(currentPage - 1) * itemsPerPage + idx + 1}</span>
+                    <span className={`badge ${st === 'accepted' ? 'badge-green' : st === 'pending' ? 'badge-amber' : st === 'completed' ? 'badge-blue' : 'badge-red'}`} style={{ fontSize: '0.74rem', padding: '3px 8px' }}>
+                      {st === 'accepted' ? 'IN ESCROW' : st === 'completed' ? 'RELEASED' : (st === 'rejected' || st === 'cancelled' || st === 'declined') ? 'REFUNDED' : 'PENDING'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <h4 className="mobile-card-title">{b.campaign_name}</h4>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedBooking(b)}
+                        style={{ background: '#EEF2FF', border: '1px solid #C7D2FE', color: '#4F46E5', cursor: 'pointer', padding: '4px 8px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.74rem', fontWeight: 700, flexShrink: 0 }}
+                      >
+                        <Info size={13} /> Details
+                      </button>
+                    </div>
+                    <span className="mobile-card-subtitle">
+                      Brand: <strong style={{ color: '#0F172A' }}>{b.business_name || b.user_name || 'Brand Client'}</strong> • Creator: <strong style={{ color: '#0F172A' }}>{b.influencer_name}</strong>
+                    </span>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Deliverable</span>
+                      <span className="mobile-card-grid-value">{b.promotion_type || 'Standard'}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Date</span>
+                      <span className="mobile-card-grid-value">{b.date || b.booking_date || 'Upcoming'}</span>
+                    </div>
+                    <div className="mobile-card-grid-item" style={{ gridColumn: 'span 2' }}>
+                      <span className="mobile-card-grid-label">Total Campaign Budget</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontSize: '1.05rem', fontWeight: 800 }}>
+                        ₹{(Number(b.budget) || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {st === 'pending' && (
+                    <div className="mobile-card-actions">
+                      <button
+                        type="button"
+                        style={{
+                          background: '#10B981',
+                          color: '#FFFFFF',
+                          border: 'none',
+                          borderRadius: '7px',
+                          padding: '9px 12px',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px'
+                        }}
+                        onClick={() => handleAction(b, 'accepted')}
+                        disabled={isLoadingThis}
+                      >
+                        {isLoadingThis ? <RefreshCw size={13} className="animate-spin" /> : <Check size={13} />} Approve
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          background: '#FFF1F2',
+                          color: '#E11D48',
+                          border: '1px solid #FECDD3',
+                          borderRadius: '7px',
+                          padding: '9px 12px',
+                          fontSize: '0.82rem',
+                          fontWeight: 600,
+                          cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px'
+                        }}
+                        onClick={() => handleAction(b, 'rejected')}
+                        disabled={isLoadingThis}
+                      >
+                        {isLoadingThis ? <RefreshCw size={13} className="animate-spin" /> : <X size={13} />} Reject
+                      </button>
+                    </div>
+                  )}
+
+                  {st === 'accepted' && (
+                    <div className="mobile-card-actions">
+                      <button
+                        type="button"
+                        style={{
+                          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                          color: '#FFFFFF',
+                          border: 'none',
+                          borderRadius: '7px',
+                          padding: '9px 12px',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px'
+                        }}
+                        onClick={() => handleAction(b, 'completed')}
+                        disabled={isLoadingThis}
+                      >
+                        {isLoadingThis ? <RefreshCw size={13} className="animate-spin" /> : <DollarSign size={13} />} Release Escrow
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          background: '#FFF1F2',
+                          color: '#E11D48',
+                          border: '1px solid #FECDD3',
+                          borderRadius: '7px',
+                          padding: '9px 12px',
+                          fontSize: '0.82rem',
+                          fontWeight: 600,
+                          cursor: isLoadingThis ? 'not-allowed' : 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px'
+                        }}
+                        onClick={() => handleAction(b, 'rejected')}
+                        disabled={isLoadingThis}
+                      >
+                        Refund
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div style={{ padding: '14px 20px', borderTop: '1px solid #F1F5F9', background: '#FFFFFF' }}>
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredBookings.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
 
       {/* CAMPAIGN DETAILS MODAL */}
@@ -2016,7 +2538,7 @@ export function BookingMgmt() {
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.7)',
+          background: 'rgba(15, 23, 42, 0.65)',
           backdropFilter: 'blur(6px)',
           display: 'flex',
           alignItems: 'center',
@@ -2024,18 +2546,18 @@ export function BookingMgmt() {
           zIndex: 1200,
           padding: '20px'
         }}>
-          <div className="glass-panel animate-fade-in" style={{ maxWidth: '600px', width: '100%', padding: '24px', borderRadius: '18px', background: 'var(--bg-card)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+          <div className="light-table-card animate-fade-in" style={{ maxWidth: '600px', width: '100%', padding: '24px', borderRadius: '18px', background: '#FFFFFF', border: '1px solid #E2E8F0', boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.25)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span className="badge badge-purple">#{selectedBooking.id}</span>
-                <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+                <h3 style={{ fontSize: '1.2rem', color: '#0F172A', fontWeight: 800, margin: 0 }}>
                   {selectedBooking.campaign_name}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedBooking(null)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '1.3rem', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#64748B', fontSize: '1.3rem', cursor: 'pointer', padding: '0 4px' }}
               >
                 ✕
               </button>
@@ -2043,63 +2565,142 @@ export function BookingMgmt() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '18px' }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Business / Client</span>
-                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedBooking.business_name}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block' }}>Business / Client</span>
+                <strong style={{ color: '#0F172A', fontSize: '0.94rem' }}>{selectedBooking.business_name || selectedBooking.user_name || 'Brand Client'}</strong>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Influencer Creator</span>
-                <strong style={{ color: 'var(--primary)', fontSize: '0.94rem' }}>{selectedBooking.influencer_name}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block' }}>Influencer Creator</span>
+                <strong style={{ color: '#4F46E5', fontSize: '0.94rem' }}>{selectedBooking.influencer_name || 'Creator'}</strong>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Deliverable Type</span>
-                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedBooking.promotion_type || 'Instagram Reel'}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block' }}>Deliverable Type</span>
+                <strong style={{ color: '#0F172A', fontSize: '0.94rem' }}>{selectedBooking.promotion_type || 'Instagram Reel'}</strong>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Campaign Date</span>
-                <strong style={{ color: 'var(--text-main)', fontSize: '0.94rem' }}>{selectedBooking.date || selectedBooking.booking_date || 'Upcoming'}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block' }}>Campaign Date</span>
+                <strong style={{ color: '#0F172A', fontSize: '0.94rem' }}>{selectedBooking.date || selectedBooking.booking_date || 'Upcoming'}</strong>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Offered Budget</span>
-                <strong style={{ color: 'var(--accent-emerald)', fontSize: '1.1rem' }}>₹{(Number(selectedBooking.budget) || 0).toLocaleString()}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block' }}>Offered Budget</span>
+                <strong style={{ color: '#059669', fontSize: '1.1rem' }}>₹{(Number(selectedBooking.budget) || 0).toLocaleString()}</strong>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Escrow Status</span>
-                <strong style={{ color: 'var(--accent-amber)', fontSize: '0.94rem', textTransform: 'uppercase' }}>{selectedBooking.status}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block' }}>Escrow Status</span>
+                <strong style={{ color: '#D97706', fontSize: '0.94rem', textTransform: 'uppercase' }}>{selectedBooking.status}</strong>
               </div>
             </div>
 
             {selectedBooking.description && (
-              <div style={{ background: 'var(--bg-input)', padding: '12px', borderRadius: '10px', marginBottom: '16px', fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-                <strong style={{ color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>Campaign Brief:</strong>
+              <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '12px', borderRadius: '10px', marginBottom: '16px', fontSize: '0.86rem', color: '#334155' }}>
+                <strong style={{ color: '#0F172A', display: 'block', marginBottom: '4px' }}>Campaign Brief:</strong>
                 {selectedBooking.description}
               </div>
             )}
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               {selectedBooking.status === 'pending' && (
-                <button
-                  className="btn btn-primary btn-sm"
-                  onClick={() => {
-                    handleAction(selectedBooking, 'accepted');
-                    setSelectedBooking(null);
-                  }}
-                >
-                  <Check size={14} /> Approve Campaign
-                </button>
+                <>
+                  <button
+                    type="button"
+                    style={{
+                      background: '#10B981',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '7px 14px',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
+                    }}
+                    onClick={() => {
+                      handleAction(selectedBooking, 'accepted');
+                    }}
+                  >
+                    <Check size={14} /> Approve Campaign
+                  </button>
+                  <button
+                    type="button"
+                    style={{
+                      background: '#FFF1F2',
+                      color: '#E11D48',
+                      border: '1px solid #FECDD3',
+                      borderRadius: '8px',
+                      padding: '7px 12px',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    onClick={() => {
+                      handleAction(selectedBooking, 'rejected');
+                    }}
+                  >
+                    <X size={14} /> Reject Request
+                  </button>
+                </>
               )}
               {selectedBooking.status === 'accepted' && (
-                <button
-                  className="btn btn-primary btn-sm"
-                  style={{ background: 'linear-gradient(135deg, #10B981, #059669)', border: 'none' }}
-                  onClick={() => {
-                    handleAction(selectedBooking, 'completed');
-                    setSelectedBooking(null);
-                  }}
-                >
-                  <DollarSign size={14} /> Release Escrow Funds
-                </button>
+                <>
+                  <button
+                    type="button"
+                    style={{
+                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '7px 14px',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
+                    }}
+                    onClick={() => {
+                      handleAction(selectedBooking, 'completed');
+                    }}
+                  >
+                    <DollarSign size={14} /> Release Escrow Funds
+                  </button>
+                  <button
+                    type="button"
+                    style={{
+                      background: '#FFF1F2',
+                      color: '#E11D48',
+                      border: '1px solid #FECDD3',
+                      borderRadius: '8px',
+                      padding: '7px 12px',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                      handleAction(selectedBooking, 'rejected');
+                    }}
+                  >
+                    Refund
+                  </button>
+                </>
               )}
-              <button className="btn btn-secondary btn-sm" onClick={() => setSelectedBooking(null)}>
+              <button
+                type="button"
+                style={{
+                  background: '#F1F5F9',
+                  color: '#334155',
+                  border: '1px solid #CBD5E1',
+                  borderRadius: '8px',
+                  padding: '7px 14px',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+                onClick={() => setSelectedBooking(null)}
+              >
                 Close
               </button>
             </div>
@@ -2154,24 +2755,24 @@ export function AdminSettingsPage() {
 
   // Form State initialized with current siteSettings
   const [formData, setFormData] = useState({
-    site_name: siteSettings?.site_name || 'InfluencerConnect',
-    site_tagline: siteSettings?.site_tagline || "India's #1 Verified Creator Marketplace",
-    logo_url: siteSettings?.logo_url || '',
+    site_name: siteSettings?.site_name || 'Collabefy',
+    site_tagline: siteSettings?.site_tagline || "Connect • Collaborate • Grow",
+    logo_url: siteSettings?.logo_url || '/collabefy-logo.png',
     commission_fee: siteSettings?.commission_fee !== undefined ? String(siteSettings.commission_fee) : '10',
     hero_badge: siteSettings?.hero_badge || "⚡ India's #1 Verified Creator Marketplace",
     hero_title: siteSettings?.hero_title || 'Connect & Book Top Influencers for Your Brand Campaigns',
     hero_subtitle: siteSettings?.hero_subtitle || 'Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.',
-    hero_image_url: siteSettings?.hero_image_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80',
-    about_story_image: siteSettings?.about_story_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80',
-    contact_email: siteSettings?.contact_email || 'support@influencerconnect.com',
+    hero_image_url: siteSettings?.hero_image_url || '/images/collabefy-hero.jpg',
+    about_story_image: siteSettings?.about_story_image || '/images/collabefy-about-story.jpg',
+    contact_email: siteSettings?.contact_email || 'support@collabefy.com',
     contact_phone: siteSettings?.contact_phone || '+91 98765 43210',
     contact_address: siteSettings?.contact_address || 'Tech Park Tower B, Suite 402, Bangalore, India',
     office_hours: siteSettings?.office_hours || 'Mon - Sat: 9:00 AM - 7:00 PM IST',
     footer_about: siteSettings?.footer_about || 'The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.',
     cta_title: siteSettings?.cta_title || 'Are You a Creator or Influencer?',
     cta_subtitle: siteSettings?.cta_subtitle || 'Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.',
-    terms_content: siteSettings?.terms_content || 'Welcome to InfluencerConnect. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.',
-    privacy_content: siteSettings?.privacy_content || 'Your privacy is paramount. InfluencerConnect ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
+    terms_content: siteSettings?.terms_content || 'Welcome to Collabefy. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.',
+    privacy_content: siteSettings?.privacy_content || 'Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
   });
 
   const [uploadingField, setUploadingField] = useState(null);
@@ -2249,24 +2850,24 @@ export function AdminSettingsPage() {
   const resetToDefaults = () => {
     if (window.confirm('Reset all website branding, images, and text assets to platform default values?')) {
       const defaults = {
-        site_name: 'InfluencerConnect',
-        site_tagline: "India's #1 Verified Creator Marketplace",
-        logo_url: '',
+        site_name: 'Collabefy',
+        site_tagline: "Connect • Collaborate • Grow",
+        logo_url: '/collabefy-logo.png',
         commission_fee: '10',
         hero_badge: "⚡ India's #1 Verified Creator Marketplace",
         hero_title: 'Connect & Book Top Influencers for Your Brand Campaigns',
         hero_subtitle: 'Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.',
-        hero_image_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80',
-        about_story_image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80',
-        contact_email: 'support@influencerconnect.com',
+        hero_image_url: '/images/collabefy-hero.jpg',
+        about_story_image: '/images/collabefy-about-story.jpg',
+        contact_email: 'support@collabefy.com',
         contact_phone: '+91 98765 43210',
         contact_address: 'Tech Park Tower B, Suite 402, Bangalore, India',
         office_hours: 'Mon - Sat: 9:00 AM - 7:00 PM IST',
         footer_about: 'The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.',
         cta_title: 'Are You a Creator or Influencer?',
         cta_subtitle: 'Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.',
-        terms_content: 'Welcome to InfluencerConnect. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.',
-        privacy_content: 'Your privacy is paramount. InfluencerConnect ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
+        terms_content: 'Welcome to Collabefy. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.',
+        privacy_content: 'Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
       };
       setFormData(defaults);
       updateSiteSettings({ ...defaults, commission_fee: 10 });
@@ -2354,7 +2955,7 @@ export function AdminSettingsPage() {
                   maxLength={80}
                   value={formData.site_name}
                   onChange={(e) => handleChange('site_name', e.target.value)}
-                  placeholder="e.g. InfluencerConnect"
+                  placeholder="e.g. Collabefy"
                 />
                 <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px', display: 'block' }}>Appears in header, footer, and page title bars.</span>
               </div>
@@ -2407,16 +3008,12 @@ export function AdminSettingsPage() {
                 <div style={{ padding: '16px', background: 'var(--bg-input)', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)' }}>Header Logo Preview:</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {formData.logo_url ? (
-                      <img src={formData.logo_url} alt="Logo Preview" style={{ height: '40px', maxWidth: '140px', objectFit: 'contain', borderRadius: '8px' }} />
-                    ) : (
-                      <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent-pink))', width: '38px', height: '38px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Sparkles size={20} color="#FFF" />
-                      </div>
-                    )}
-                    <h3 className="gradient-text" style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>
-                      {formData.site_name || 'InfluencerConnect'}
-                    </h3>
+                    <img
+                      src={formData.logo_url || '/collabefy-logo.png'}
+                      alt="Logo Preview"
+                      style={{ height: '48px', maxWidth: '170px', objectFit: 'contain', borderRadius: '8px' }}
+                      onError={(e) => { e.currentTarget.src = '/collabefy-logo.png'; }}
+                    />
                   </div>
                   {formData.logo_url && (
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleChange('logo_url', '')} style={{ alignSelf: 'flex-start', fontSize: '0.75rem', padding: '3px 8px' }}>
@@ -2524,7 +3121,7 @@ export function AdminSettingsPage() {
                       src={formData.hero_image_url}
                       alt="Hero Showcase Preview"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900'; }}
+                      onError={(e) => { e.currentTarget.src = '/images/collabefy-hero.jpg'; }}
                     />
                     <div style={{ position: 'absolute', bottom: '6px', left: '8px', background: 'rgba(0,0,0,0.75)', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', color: '#FFF', fontWeight: 600 }}>
                       ⚡ Live Hero Showcase Preview
@@ -2569,7 +3166,7 @@ export function AdminSettingsPage() {
                       src={formData.about_story_image}
                       alt="About Story Preview"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800'; }}
+                      onError={(e) => { e.currentTarget.src = '/images/collabefy-about-story.jpg'; }}
                     />
                     <div style={{ position: 'absolute', bottom: '6px', left: '8px', background: 'rgba(0,0,0,0.75)', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', color: '#FFF', fontWeight: 600 }}>
                       ✨ Live /about Photo Preview
@@ -2599,7 +3196,7 @@ export function AdminSettingsPage() {
                   required
                   value={formData.contact_email}
                   onChange={(e) => handleChange('contact_email', e.target.value)}
-                  placeholder="support@influencerconnect.com"
+                  placeholder="support@collabefy.com"
                 />
               </div>
 
@@ -3205,46 +3802,59 @@ export function AdminReportsPage() {
       </div>
 
       {/* AUDIT TRANSACTION LEDGER TABLE */}
-      <div className="glass-panel" style={{ padding: '22px' }}>
+      <div className="light-table-card" data-theme="light" style={{ padding: '22px' }}>
         
         {/* Table Filter Toolbar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
           <div>
-            <h2 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
+            <h2 style={{ fontSize: '1.25rem', color: '#0F172A', fontWeight: 800, margin: 0 }}>
               Audited Financial Transaction Ledger
             </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.84rem', margin: '2px 0 0 0' }}>
+            <p style={{ color: '#64748B', fontSize: '0.84rem', margin: '2px 0 0 0' }}>
               Full transaction log with deal amounts, platform commission deductions, and escrow settlements.
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
             {/* Status Filter */}
-            <div style={{ display: 'flex', gap: '4px' }}>
+            <div style={{ display: 'flex', gap: '5px' }}>
               {[
                 { id: 'all', label: 'All Statuses' },
                 { id: 'accepted', label: 'In Escrow' },
                 { id: 'completed', label: 'Disbursed' },
                 { id: 'rejected', label: 'Refunded' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    setStatusFilter(tab.id);
-                    setCurrentPage(1);
-                  }}
-                  className={`btn btn-sm ${statusFilter === tab.id ? 'btn-primary' : 'btn-secondary'}`}
-                  style={{ fontSize: '0.76rem', padding: '5px 10px' }}
-                >
-                  {tab.label}
-                </button>
-              ))}
+              ].map(tab => {
+                const isActive = statusFilter === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => {
+                      setStatusFilter(tab.id);
+                      setCurrentPage(1);
+                    }}
+                    style={{
+                      fontSize: '0.76rem',
+                      padding: '5px 11px',
+                      borderRadius: '7px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: isActive ? '#4F46E5' : '#F8FAFC',
+                      color: isActive ? '#FFFFFF' : '#475569',
+                      border: isActive ? '1px solid #4F46E5' : '1px solid #E2E8F0',
+                      boxShadow: isActive ? '0 2px 6px rgba(79, 70, 229, 0.25)' : 'none',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Search Input */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '5px 10px', minWidth: '220px' }}>
-              <Search size={14} color="var(--text-dim)" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '6px 12px', minWidth: '220px' }}>
+              <Search size={14} color="#64748B" />
               <input 
                 type="text" 
                 placeholder="Search transaction..." 
@@ -3253,42 +3863,42 @@ export function AdminReportsPage() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', fontSize: '0.82rem', outline: 'none', width: '100%' }}
+                style={{ background: 'transparent', border: 'none', color: '#0F172A', fontSize: '0.82rem', outline: 'none', width: '100%' }}
               />
               {searchTerm && (
-                <button type="button" onClick={() => setSearchTerm('')} style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }}>✕</button>
+                <button type="button" onClick={() => setSearchTerm('')} style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer' }}>✕</button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Responsive Table */}
-        <div className="table-responsive-container">
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.86rem' }}>
+        {/* DESKTOP TABLE VIEW */}
+        <div className="desktop-table-view light-table-wrapper">
+          <table className="light-table">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle', width: '60px' }}>S.No</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle', minWidth: '180px' }}>Campaign & Brand</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Creator</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Budget</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Fee ({metrics.commission_rate_percent}%)</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Net Payout</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Date</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle' }}>Status</th>
-                <th style={{ padding: '14px 16px', verticalAlign: 'middle', textAlign: 'right' }}>Audit Action</th>
+              <tr>
+                <th style={{ padding: '13px 14px', textAlign: 'center', width: '55px' }}>S.No</th>
+                <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '170px' }}>Campaign & Brand</th>
+                <th style={{ padding: '13px 14px', textAlign: 'left', minWidth: '130px' }}>Creator</th>
+                <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '95px' }}>Budget</th>
+                <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '95px' }}>Fee ({metrics.commission_rate_percent}%)</th>
+                <th style={{ padding: '13px 14px', textAlign: 'right', minWidth: '95px' }}>Net Payout</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '95px', whiteSpace: 'nowrap' }}>Date</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '105px' }}>Status</th>
+                <th style={{ padding: '13px 14px', textAlign: 'center', minWidth: '110px' }}>Audit Action</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: '#64748B' }}>
                     <RefreshCw size={20} className="animate-spin" style={{ margin: '0 auto 8px auto', display: 'block' }} />
                     Loading financial records from API...
                   </td>
                 </tr>
               ) : paginatedLedger.length === 0 ? (
                 <tr>
-                  <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: '#64748B' }}>
                     No financial transaction records found matching the filter criteria.
                   </td>
                 </tr>
@@ -3296,49 +3906,60 @@ export function AdminReportsPage() {
                 paginatedLedger.map((item, idx) => {
                   const serialNumber = (currentPage - 1) * itemsPerPage + idx + 1;
                   return (
-                    <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
-                        <strong style={{ color: 'var(--primary)', fontSize: '0.88rem' }}>#{serialNumber}</strong>
+                    <tr key={item.id}>
+                      <td style={{ textAlign: 'center' }}>
+                        <strong style={{ color: '#4F46E5', fontSize: '0.84rem' }}>#{serialNumber}</strong>
                       </td>
-                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'left' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>{item.campaign_name}</strong>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{item.business_name}</span>
+                          <strong style={{ color: '#0F172A', fontSize: '0.88rem' }}>{item.campaign_name}</strong>
+                          <span style={{ fontSize: '0.78rem', color: '#64748B' }}>{item.business_name}</span>
                         </div>
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--primary)', fontWeight: 600, verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'left', color: '#1E293B', fontWeight: 600 }}>
                         {item.influencer_name}
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--text-main)', fontWeight: 800, verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'right', color: '#0F172A', fontWeight: 800 }}>
                         ₹{item.budget.toLocaleString()}
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--accent-emerald)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'right', color: '#059669', fontWeight: 700 }}>
                         +₹{item.platform_fee.toLocaleString()}
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--accent-amber)', fontWeight: 700, verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'right', color: '#D97706', fontWeight: 700 }}>
                         ₹{item.creator_net.toLocaleString()}
                       </td>
-                      <td style={{ padding: '13px 16px', color: 'var(--text-muted)', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+                      <td style={{ textAlign: 'center', color: '#64748B', whiteSpace: 'nowrap' }}>
                         {item.date}
                       </td>
-                      <td style={{ padding: '13px 16px', verticalAlign: 'middle' }}>
+                      <td style={{ textAlign: 'center' }}>
                         <span className={`badge ${
                           item.status === 'completed' ? 'badge-green' : 
-                          item.status === 'accepted' ? 'badge-purple' : 
+                          item.status === 'accepted' ? 'badge-blue' : 
                           item.status === 'rejected' ? 'badge-danger' : 'badge-amber'
                         }`} style={{ fontSize: '0.74rem', padding: '4px 8px' }}>
                           {item.settlement_status.toUpperCase()}
                         </span>
                       </td>
-                      <td style={{ padding: '13px 16px', verticalAlign: 'middle', textAlign: 'right' }}>
+                      <td style={{ textAlign: 'center' }}>
                         <button 
                           type="button" 
-                          className="btn btn-primary btn-sm" 
                           onClick={() => {
                             setSelectedAuditTx({ ...item, serialNumber });
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
-                          style={{ padding: '5px 12px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 700 }}
+                          style={{
+                            background: '#EEF2FF',
+                            color: '#4F46E5',
+                            border: '1px solid #C7D2FE',
+                            borderRadius: '7px',
+                            padding: '5px 12px',
+                            fontSize: '0.76rem',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
                         >
                           <Eye size={13} /> View Audit
                         </button>
@@ -3351,12 +3972,93 @@ export function AdminReportsPage() {
           </table>
         </div>
 
-        <Pagination 
-          currentPage={currentPage}
-          totalItems={ledger.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-        />
+        {/* DEDICATED MOBILE CARDS VIEW */}
+        <div className="mobile-cards-view">
+          {paginatedLedger.length === 0 ? (
+            <div style={{ padding: '36px', textAlign: 'center', color: '#64748B' }}>
+              No financial transaction records found.
+            </div>
+          ) : (
+            paginatedLedger.map((item, idx) => {
+              const serialNumber = (currentPage - 1) * itemsPerPage + idx + 1;
+              return (
+                <div key={item.id} className="mobile-data-card">
+                  <div className="mobile-card-top-bar">
+                    <span className="mobile-card-id">#{serialNumber}</span>
+                    <span className={`badge ${
+                      item.status === 'completed' ? 'badge-green' : 
+                      item.status === 'accepted' ? 'badge-blue' : 
+                      item.status === 'rejected' ? 'badge-danger' : 'badge-amber'
+                    }`} style={{ fontSize: '0.74rem', padding: '3px 8px' }}>
+                      {item.settlement_status.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="mobile-card-title">{item.campaign_name}</h4>
+                    <span className="mobile-card-subtitle">
+                      Brand: <strong style={{ color: '#0F172A' }}>{item.business_name}</strong> • Creator: <strong style={{ color: '#0F172A' }}>{item.influencer_name}</strong>
+                    </span>
+                  </div>
+
+                  <div className="mobile-card-grid">
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Gross Deal</span>
+                      <span className="mobile-card-grid-value" style={{ fontWeight: 800 }}>₹{item.budget.toLocaleString()}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Platform Fee</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#059669', fontWeight: 800 }}>+₹{item.platform_fee.toLocaleString()}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Creator Payout</span>
+                      <span className="mobile-card-grid-value" style={{ color: '#D97706', fontWeight: 800 }}>₹{item.creator_net.toLocaleString()}</span>
+                    </div>
+                    <div className="mobile-card-grid-item">
+                      <span className="mobile-card-grid-label">Settlement Date</span>
+                      <span className="mobile-card-grid-value">{item.date}</span>
+                    </div>
+                  </div>
+
+                  <div className="mobile-card-actions">
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        setSelectedAuditTx({ ...item, serialNumber });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      style={{
+                        background: '#EEF2FF',
+                        color: '#4F46E5',
+                        border: '1px solid #C7D2FE',
+                        borderRadius: '8px',
+                        padding: '9px 12px',
+                        fontSize: '0.84rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <Eye size={14} /> View Audit Details
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid #F1F5F9' }}>
+          <Pagination 
+            currentPage={currentPage}
+            totalItems={ledger.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
 
     </div>

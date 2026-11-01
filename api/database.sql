@@ -1,9 +1,5 @@
--- Influencer Connect Database Schema & Seed Data (10 Dummy Influencers Full Dataset)
+-- Influencer Connect / Collabefy Database Schema & Seed Data
 SET FOREIGN_KEY_CHECKS = 0;
-
-DROP DATABASE IF EXISTS influencer_connect;
-CREATE DATABASE influencer_connect CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE influencer_connect;
 
 -- 1. Users Table
 CREATE TABLE users (

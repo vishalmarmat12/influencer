@@ -10,12 +10,13 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('influencer_connect_theme') || 'dark';
+    const saved = localStorage.getItem('influencer_connect_theme_v2');
+    return saved === 'dark' ? 'dark' : 'light';
   });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('influencer_connect_theme', theme);
+    localStorage.setItem('influencer_connect_theme_v2', theme);
   }, [theme]);
 
   const toggleTheme = () => {
@@ -46,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   const updateUser = (updatedFields) => {
     setUser(prev => {
       const newUser = prev ? { ...prev, ...updatedFields } : updatedFields;
-      if (newUser && (newUser.role === 'influencer' || newUser.id)) {
+      if (newUser && newUser.role === 'influencer') {
         api.updateInfluencerProfile({
           id: newUser.id || 1,
           influencer_id: newUser.id || 1,

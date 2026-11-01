@@ -58,10 +58,10 @@ if (!empty($uriSegments) && $uriSegments[0] === 'api') array_shift($uriSegments)
 $endpoint = $uriSegments[0] ?? '';
 $subEndpoint = $uriSegments[1] ?? '';
 
-$requestMethod = $_SERVER['REQUEST_METHOD'];
-$rawInput = file_get_contents('php://input');
-$jsonBody = json_decode($rawInput, true);
-$body = is_array($jsonBody) ? array_merge($_POST, $jsonBody) : $_POST;
+$requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+$rawInput = !empty($GLOBALS['MOCK_RAW_INPUT']) ? $GLOBALS['MOCK_RAW_INPUT'] : file_get_contents('php://input');
+$jsonBody = !empty($rawInput) ? json_decode($rawInput, true) : null;
+$body = is_array($jsonBody) ? array_merge($_GET, $_POST, $jsonBody) : array_merge($_GET, $_POST);
 
 // API Response Helper
 function jsonResponse($data, $statusCode = 200) {
@@ -324,10 +324,10 @@ switch ($endpoint) {
 
     case 'settings':
         $defaultSettings = [
-            'site_name' => 'InfluencerConnect',
-            'site_tagline' => "India's #1 Verified Creator Marketplace",
-            'logo_url' => '',
-            'contact_email' => 'support@influencerconnect.com',
+            'site_name' => 'Collabefy',
+            'site_tagline' => "Connect • Collaborate • Grow",
+            'logo_url' => '/collabefy-logo.png',
+            'contact_email' => 'support@collabefy.com',
             'contact_phone' => '+91 98765 43210',
             'contact_address' => 'Tech Park Tower B, Suite 402, Bangalore, India',
             'office_hours' => 'Mon - Sat: 9:00 AM - 7:00 PM IST',
@@ -335,13 +335,13 @@ switch ($endpoint) {
             'hero_badge' => "⚡ India's #1 Verified Creator Marketplace",
             'hero_title' => 'Connect & Book Top Influencers for Your Brand Campaigns',
             'hero_subtitle' => 'Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.',
-            'hero_image_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80',
-            'about_story_image' => 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80',
+            'hero_image_url' => '/images/collabefy-hero.jpg',
+            'about_story_image' => '/images/collabefy-about-story.jpg',
             'cta_title' => 'Are You a Creator or Influencer?',
             'cta_subtitle' => 'Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.',
             'footer_about' => 'The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.',
-            'terms_content' => 'Welcome to InfluencerConnect. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.',
-            'privacy_content' => 'Your privacy is paramount. InfluencerConnect ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
+            'terms_content' => 'Welcome to Collabefy. By accessing or using our platform, you agree to comply with our terms and guidelines for brands and creators.',
+            'privacy_content' => 'Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs.'
         ];
 
         if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
@@ -872,8 +872,8 @@ switch ($endpoint) {
             jsonResponse(['status' => 'success', 'data' => $availList]);
         } 
         else if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
-            $fromDate = trim($body['from_date'] ?? '');
-            $toDate = trim($body['to_date'] ?? '');
+            $fromDate = trim($body['from_date'] ?? ($body['date'] ?? ''));
+            $toDate = trim($body['to_date'] ?? ($body['date'] ?? ''));
             $rawStatus = strtolower(trim($body['status'] ?? 'available'));
             $status = 'available';
             if (str_contains($rawStatus, 'busy') || str_contains($rawStatus, 'not') || $rawStatus === 'busy') {
@@ -1616,13 +1616,31 @@ switch ($endpoint) {
                     $newId = $db->lastInsertId();
                     jsonResponse(['status' => 'success', 'message' => 'Booking submitted', 'data' => array_merge(['id' => (int)$newId, 'status' => 'pending'], $body)]);
                 } else if ($requestMethod === 'PUT') {
-                    $bkId = intval($body['id'] ?? 0);
+                    $bkId = intval($body['id'] ?? $_GET['id'] ?? 0);
                     $newStatus = strtolower(trim($body['status'] ?? 'accepted'));
-                    if ($newStatus === 'declined') $newStatus = 'rejected';
+                    if ($newStatus === 'declined' || $newStatus === 'refunded') $newStatus = 'rejected';
+                    if ($newStatus === 'approved') $newStatus = 'accepted';
 
                     if (!$bkId) {
                         jsonResponse(['status' => 'error', 'message' => 'Invalid booking ID.'], 400);
                     }
+
+                    // Ensure missing columns exist in bookings table
+                    try {
+                        $cols = $db->query("SHOW COLUMNS FROM bookings")->fetchAll(PDO::FETCH_COLUMN);
+                        if (!in_array('influencer_name', $cols)) {
+                            $db->exec("ALTER TABLE bookings ADD COLUMN influencer_name VARCHAR(255) NULL");
+                        }
+                        if (!in_array('accepted_at', $cols)) {
+                            $db->exec("ALTER TABLE bookings ADD COLUMN accepted_at DATETIME NULL");
+                        }
+                        if (!in_array('completed_at', $cols)) {
+                            $db->exec("ALTER TABLE bookings ADD COLUMN completed_at DATETIME NULL");
+                        }
+                        if (!in_array('declined_at', $cols)) {
+                            $db->exec("ALTER TABLE bookings ADD COLUMN declined_at DATETIME NULL");
+                        }
+                    } catch (Exception $colEx) {}
 
                     // Prepare timestamp update
                     $timestampSql = "";
@@ -1637,46 +1655,63 @@ switch ($endpoint) {
                     // Update MySQL if record exists or insert if missing
                     $updatedBk = null;
                     try {
-                        $stmt = $db->prepare("UPDATE bookings SET status = :status {$timestampSql} WHERE id = :id");
-                        $stmt->execute(['status' => $newStatus, 'id' => $bkId]);
+                        $chkStmt = $db->prepare("SELECT id FROM bookings WHERE id = :id LIMIT 1");
+                        $chkStmt->execute(['id' => $bkId]);
+                        $existsInDb = (bool)$chkStmt->fetch();
 
-                        if ($stmt->rowCount() === 0) {
+                        if (!$existsInDb) {
                             // If row didn't exist in MySQL, find in JSON store and insert into MySQL
                             $store = getStore();
                             foreach ($store['bookings'] ?? [] as $sb) {
                                 if (($sb['id'] ?? 0) == $bkId) {
-                                    $insStmt = $db->prepare("INSERT INTO bookings (id, user_id, influencer_id, campaign_name, business_name, influencer_name, promotion_type, description, booking_date, budget, status, accepted_at) VALUES (:id, :uid, :iid, :cname, :bname, :iname, :ptype, :desc, :bdate, :budget, :st, NOW()) ON DUPLICATE KEY UPDATE status = :st2");
-                                    $insStmt->execute([
-                                        'id' => $bkId,
-                                        'uid' => $sb['user_id'] ?? 2,
-                                        'iid' => $sb['influencer_id'] ?? 1,
-                                        'cname' => $sb['campaign_name'] ?? 'Campaign',
-                                        'bname' => $sb['business_name'] ?? 'Business',
-                                        'iname' => $sb['influencer_name'] ?? 'Creator',
-                                        'ptype' => $sb['promotion_type'] ?? 'Instagram Reel',
-                                        'desc' => $sb['description'] ?? '',
-                                        'bdate' => $sb['date'] ?? ($sb['booking_date'] ?? date('Y-m-d')),
-                                        'budget' => floatval($sb['budget'] ?? 0),
-                                        'st' => $newStatus,
-                                        'st2' => $newStatus
-                                    ]);
+                                    try {
+                                        $insStmt = $db->prepare("INSERT INTO bookings (id, user_id, influencer_id, campaign_name, business_name, promotion_type, description, booking_date, budget, status) VALUES (:id, :uid, :iid, :cname, :bname, :ptype, :desc, :bdate, :budget, :st) ON DUPLICATE KEY UPDATE status = :st2");
+                                        $insStmt->execute([
+                                            'id' => $bkId,
+                                            'uid' => $sb['user_id'] ?? 2,
+                                            'iid' => $sb['influencer_id'] ?? 1,
+                                            'cname' => $sb['campaign_name'] ?? 'Campaign',
+                                            'bname' => $sb['business_name'] ?? 'Business',
+                                            'ptype' => $sb['promotion_type'] ?? 'Instagram Reel',
+                                            'desc' => $sb['description'] ?? '',
+                                            'bdate' => $sb['date'] ?? ($sb['booking_date'] ?? date('Y-m-d')),
+                                            'budget' => floatval($sb['budget'] ?? 0),
+                                            'st' => $newStatus,
+                                            'st2' => $newStatus
+                                        ]);
+                                        $existsInDb = true;
+                                    } catch (Exception $insEx) {}
                                     break;
                                 }
                             }
                         }
 
+                        if ($existsInDb) {
+                            try {
+                                $stmt = $db->prepare("UPDATE bookings SET status = :status {$timestampSql} WHERE id = :id");
+                                $stmt->execute(['status' => $newStatus, 'id' => $bkId]);
+                            } catch (Exception $uEx) {
+                                $stmt = $db->prepare("UPDATE bookings SET status = :status WHERE id = :id");
+                                $stmt->execute(['status' => $newStatus, 'id' => $bkId]);
+                            }
+                        }
+
                         // Fetch fresh updated booking record from MySQL
-                        $freshStmt = $db->prepare("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS influencer_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id WHERE b.id = :id LIMIT 1");
+                        $freshStmt = $db->prepare("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS creator_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id WHERE b.id = :id LIMIT 1");
                         $freshStmt->execute(['id' => $bkId]);
                         $updatedBk = $freshStmt->fetch();
                         if ($updatedBk) {
                             $updatedBk['budget'] = floatval($updatedBk['budget']);
-                            $updatedBk['date'] = $updatedBk['booking_date'];
+                            $updatedBk['date'] = $updatedBk['booking_date'] ?? date('Y-m-d');
+                            if (empty($updatedBk['influencer_name']) && !empty($updatedBk['creator_name'])) {
+                                $updatedBk['influencer_name'] = $updatedBk['creator_name'];
+                            }
                         }
                     } catch (Exception $e) {}
 
                     // Also sync into data_store.json
                     $store = getStore();
+                    $foundInStore = false;
                     if (isset($store['bookings']) && is_array($store['bookings'])) {
                         foreach ($store['bookings'] as &$b) {
                             if (($b['id'] ?? 0) == $bkId) {
@@ -1685,15 +1720,19 @@ switch ($endpoint) {
                                 if ($newStatus === 'completed') $b['completed_at'] = date('Y-m-d H:i:s');
                                 if ($newStatus === 'rejected') $b['declined_at'] = date('Y-m-d H:i:s');
                                 if (!$updatedBk) $updatedBk = $b;
+                                $foundInStore = true;
                                 break;
                             }
+                        }
+                        if (!$foundInStore && $updatedBk) {
+                            $store['bookings'][] = $updatedBk;
                         }
                         saveStore($store);
                     }
 
                     jsonResponse([
                         'status' => 'success', 
-                        'message' => 'Booking status updated to ' . strtoupper($newStatus),
+                        'message' => 'Booking status updated to ' . strtoupper($newStatus), 
                         'data' => $updatedBk ?: ['id' => $bkId, 'status' => $newStatus]
                     ]);
                 } else if ($requestMethod === 'DELETE') {
@@ -1717,22 +1756,25 @@ switch ($endpoint) {
                 } else {
                     // Filter bookings based on authenticated user identity & role
                     if ($role === 'influencer' || $influencerId > 0) {
-                        $stmt = $db->prepare("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS influencer_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id WHERE (b.influencer_id = :iid OR p.user_id = :uid OR b.influencer_id = :uid2) ORDER BY b.id DESC");
+                        $stmt = $db->prepare("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS creator_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id WHERE (b.influencer_id = :iid OR p.user_id = :uid OR b.influencer_id = :uid2) ORDER BY b.id DESC");
                         $stmt->execute(['iid' => $influencerId, 'uid' => $userId, 'uid2' => $userId]);
                         $bks = $stmt->fetchAll();
                     } else if ($role === 'user' && $userId > 0) {
-                        $stmt = $db->prepare("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS influencer_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id WHERE b.user_id = :uid ORDER BY b.id DESC");
+                        $stmt = $db->prepare("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS creator_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id WHERE b.user_id = :uid ORDER BY b.id DESC");
                         $stmt->execute(['uid' => $userId]);
                         $bks = $stmt->fetchAll();
                     } else {
                         // Admin or global catalog fetch: return all bookings
-                        $stmt = $db->query("SELECT b.*, u.name AS user_name, u.email AS user_email, COALESCE(p.name, b.influencer_name) AS influencer_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id ORDER BY b.id DESC");
+                        $stmt = $db->query("SELECT b.*, u.name AS user_name, u.email AS user_email, p.name AS creator_name FROM bookings b LEFT JOIN users u ON b.user_id = u.id LEFT JOIN influencer_profiles p ON b.influencer_id = p.id ORDER BY b.id DESC");
                         $bks = $stmt->fetchAll();
                     }
 
                     foreach ($bks as &$b) {
                         $b['budget'] = floatval($b['budget']);
                         $b['date'] = $b['booking_date'] ?? ($b['date'] ?? date('Y-m-d'));
+                        if (empty($b['influencer_name']) && !empty($b['creator_name'])) {
+                            $b['influencer_name'] = $b['creator_name'];
+                        }
                     }
                     jsonResponse(['status' => 'success', 'data' => $bks]);
                 }
@@ -1769,8 +1811,11 @@ switch ($endpoint) {
             saveStore($store);
             jsonResponse(['status' => 'success', 'data' => $newBk]);
         } else if ($requestMethod === 'PUT') {
-            $bkId = intval($body['id'] ?? 0);
+            $bkId = intval($body['id'] ?? $_GET['id'] ?? 0);
             $newStatus = strtolower(trim($body['status'] ?? 'accepted'));
+            if ($newStatus === 'declined' || $newStatus === 'refunded') $newStatus = 'rejected';
+            if ($newStatus === 'approved') $newStatus = 'accepted';
+
             $updatedItem = null;
             if (isset($store['bookings']) && is_array($store['bookings'])) {
                 foreach ($store['bookings'] as &$b) {

@@ -6,7 +6,7 @@ import {
   Send, Sparkles, CheckCircle2, FileText, ArrowRight, Target, Compass, 
   DollarSign, MessageSquare, TrendingUp, BarChart3, Users, Briefcase, Award,
   Search, Star, Camera, Heart, Utensils, Cpu, Dumbbell, Gamepad2, BookOpen, Globe,
-  UserPlus, SlidersHorizontal, CalendarCheck, MessageCircle, Rocket, Shield, Lock, Clock, ChevronDown
+  UserPlus, SlidersHorizontal, CalendarCheck, MessageCircle, Rocket, Shield, Lock, Clock, ChevronDown, X
 } from 'lucide-react';
 
 export function CategoriesPage() {
@@ -25,17 +25,31 @@ export function CategoriesPage() {
   };
 
   const nicheImages = [
-    'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600', // Fashion
-    'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600', // Beauty
-    'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600', // Fitness
-    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600', // Food
-    'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600', // Travel
-    'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=600', // Lifestyle
-    'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=600', // Tech
-    'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600', // Gaming
-    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600', // Education
-    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600', // Automobile
+    '/images/collabefy-fashion.jpg', // Fashion
+    '/images/collabefy-beauty.jpg',  // Beauty
+    '/images/collabefy-fitness.jpg', // Fitness
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80', // Food: Delicious culinary gourmet food dishes
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80', // Travel: Breathtaking tropical destination & beach
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80', // Lifestyle: Cozy coffee, daily life & aesthetic vlogging
+    'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80', // Tech: High-tech hardware, AI & modern technology
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80', // Gaming: RGB streaming & gaming battlestation
+    'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80', // Education: Library study books & learning
+    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80', // Automobile: Luxury sports car
   ];
+
+  const categoryImageMap = {
+    'fashion': '/images/collabefy-fashion.jpg',
+    'beauty': '/images/collabefy-beauty.jpg',
+    'fitness': '/images/collabefy-fitness.jpg',
+    'food': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80',
+    'tech': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+    'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+    'travel': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
+    'gaming': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80',
+    'education': 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80',
+    'lifestyle': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80',
+    'automobile': 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80',
+  };
 
   const filteredCategories = categories.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -66,36 +80,70 @@ export function CategoriesPage() {
             Discover {totalCreators} verified creators categorized across top industries for high-converting, targeted brand marketing outreach.
           </p>
 
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hero-search-glass" style={{ maxWidth: '640px', margin: '0 auto 28px' }}>
-            <div className="hero-search-input-group" style={{ flex: 1 }}>
-              <Search size={18} color="var(--text-dim)" style={{ flexShrink: 0 }} />
-              <input 
-                type="text" 
-                placeholder="Search category name or niche..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-main)', fontSize: '0.92rem', outline: 'none', padding: '12px 0' }}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary hero-search-btn">
-              <Search size={15} /> Search
+          {/* Sleek Inline Search Bar */}
+          <form onSubmit={handleSearch} className="category-search-bar">
+            <Search size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
+            <input 
+              type="text" 
+              placeholder="Search category or niche..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button 
+                type="button" 
+                onClick={() => setSearchTerm('')} 
+                className="category-search-clear-btn"
+                aria-label="Clear search"
+              >
+                <X size={15} />
+              </button>
+            )}
+            <button type="submit" className="btn btn-primary search-submit-btn">
+              <Search size={14} /> <span>Search</span>
             </button>
           </form>
 
-          {/* Quick Filter Stats Pills */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <div className="glass-panel" style={{ padding: '8px 16px', borderRadius: '30px', fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <FolderTree size={15} color="var(--primary)" /> {categories.length} Verified Categories
+          {/* Quick Filter Stats Grid (2x2 on Mobile, 4-in-a-row on Desktop) */}
+          <div className="category-hero-stats-grid">
+            <div className="category-hero-stat-card">
+              <div className="category-stat-icon-box" style={{ background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>
+                <FolderTree size={17} />
+              </div>
+              <div className="category-stat-text">
+                <div className="category-stat-value">{categories.length}</div>
+                <div className="category-stat-label">Categories</div>
+              </div>
             </div>
-            <div className="glass-panel" style={{ padding: '8px 16px', borderRadius: '30px', fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Users size={15} color="var(--accent-pink)" /> {totalCreators} Top Creators
+
+            <div className="category-hero-stat-card">
+              <div className="category-stat-icon-box" style={{ background: 'rgba(219, 39, 119, 0.1)', color: 'var(--accent-pink)' }}>
+                <Users size={17} />
+              </div>
+              <div className="category-stat-text">
+                <div className="category-stat-value">{totalCreators}+</div>
+                <div className="category-stat-label">Top Creators</div>
+              </div>
             </div>
-            <div className="glass-panel" style={{ padding: '8px 16px', borderRadius: '30px', fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Star size={15} fill="var(--accent-amber)" color="var(--accent-amber)" /> {avgSatisfaction}★ Avg Satisfaction
+
+            <div className="category-hero-stat-card">
+              <div className="category-stat-icon-box" style={{ background: 'rgba(217, 119, 6, 0.1)', color: 'var(--accent-amber)' }}>
+                <Star size={17} fill="var(--accent-amber)" />
+              </div>
+              <div className="category-stat-text">
+                <div className="category-stat-value">{avgSatisfaction}★</div>
+                <div className="category-stat-label">Avg Rating</div>
+              </div>
             </div>
-            <div className="glass-panel" style={{ padding: '8px 16px', borderRadius: '30px', fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <DollarSign size={15} color="var(--accent-emerald)" /> ₹0 Middleman Fees
+
+            <div className="category-hero-stat-card">
+              <div className="category-stat-icon-box" style={{ background: 'rgba(5, 150, 105, 0.1)', color: 'var(--accent-emerald)' }}>
+                <DollarSign size={17} />
+              </div>
+              <div className="category-stat-text">
+                <div className="category-stat-value">₹0</div>
+                <div className="category-stat-label">Direct Connect</div>
+              </div>
             </div>
           </div>
         </div>
@@ -120,7 +168,18 @@ export function CategoriesPage() {
                 style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none', borderRadius: '16px' }}
               >
                 <div style={{ height: '140px', position: 'relative' }}>
-                  <img src={nicheImages[idx % nicheImages.length]} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {(() => {
+                    const catKey = (cat.name || '').toLowerCase().trim();
+                    const catImg = categoryImageMap[catKey] || nicheImages[idx % nicheImages.length];
+                    return (
+                      <img 
+                        src={catImg} 
+                        alt={cat.name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        onError={(e) => { e.currentTarget.src = nicheImages[idx % nicheImages.length]; }}
+                      />
+                    );
+                  })()}
                   <span className="badge badge-purple" style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(15,23,42,0.85)', color: '#FFF' }}>
                     {count} {count === 1 ? 'Creator' : 'Creators'}
                   </span>
@@ -153,11 +212,11 @@ export function CategoriesPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           {/* Card 1: Beauty & Skincare */}
-          <div className="glass-panel two-col-responsive" style={{ padding: 'clamp(18px, 3vw, 28px)', display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '24px', alignItems: 'center' }}>
-            <div style={{ height: 'clamp(180px, 30vw, 240px)', borderRadius: '14px', overflow: 'hidden' }}>
-              <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800" alt="Beauty & Skincare" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div className="glass-panel responsive-feature-card">
+            <div className="responsive-feature-media">
+              <img src="/images/collabefy-beauty.jpg" alt="Beauty & Skincare" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800'; }} />
             </div>
-            <div>
+            <div className="responsive-feature-content">
               <span className="badge badge-pink" style={{ marginBottom: '10px' }}>HOT TRENDING</span>
               <h3 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.7rem)', color: 'var(--text-main)', fontWeight: 800, marginBottom: '8px' }}>Beauty & Skincare</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: '1.6', marginBottom: '16px' }}>
@@ -177,13 +236,16 @@ export function CategoriesPage() {
                 </div>
               </div>
 
-              <Link to="/explore?category=Beauty" className="btn btn-primary btn-sm">Browse Beauty Creators <ArrowRight size={14} /></Link>
+              <Link to="/explore?category=Beauty" className="btn btn-primary btn-sm" style={{ alignSelf: 'flex-start' }}>Browse Beauty Creators <ArrowRight size={14} /></Link>
             </div>
           </div>
 
           {/* Card 2: Fashion & Style */}
-          <div className="glass-panel two-col-responsive" style={{ padding: 'clamp(18px, 3vw, 28px)', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px', alignItems: 'center' }}>
-            <div>
+          <div className="glass-panel responsive-feature-card reverse-on-desktop">
+            <div className="responsive-feature-media">
+              <img src="/images/collabefy-fashion.jpg" alt="Fashion & Style" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800'; }} />
+            </div>
+            <div className="responsive-feature-content">
               <span className="badge badge-purple" style={{ marginBottom: '10px' }}>HIGH REACH</span>
               <h3 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.7rem)', color: 'var(--text-main)', fontWeight: 800, marginBottom: '8px' }}>Fashion & Style</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: '1.6', marginBottom: '16px' }}>
@@ -203,19 +265,16 @@ export function CategoriesPage() {
                 </div>
               </div>
 
-              <Link to="/explore?category=Fashion" className="btn btn-primary btn-sm">Browse Fashion Creators <ArrowRight size={14} /></Link>
-            </div>
-            <div style={{ height: 'clamp(180px, 30vw, 240px)', borderRadius: '14px', overflow: 'hidden' }}>
-              <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800" alt="Fashion & Style" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <Link to="/explore?category=Fashion" className="btn btn-primary btn-sm" style={{ alignSelf: 'flex-start' }}>Browse Fashion Creators <ArrowRight size={14} /></Link>
             </div>
           </div>
 
           {/* Card 3: Fitness & Wellness */}
-          <div className="glass-panel two-col-responsive" style={{ padding: 'clamp(18px, 3vw, 28px)', display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '24px', alignItems: 'center' }}>
-            <div style={{ height: 'clamp(180px, 30vw, 240px)', borderRadius: '14px', overflow: 'hidden' }}>
-              <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800" alt="Fitness & Wellness" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div className="glass-panel responsive-feature-card">
+            <div className="responsive-feature-media">
+              <img src="/images/collabefy-fitness.jpg" alt="Fitness & Wellness" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800'; }} />
             </div>
-            <div>
+            <div className="responsive-feature-content">
               <span className="badge badge-green" style={{ marginBottom: '10px' }}>FAST GROWING</span>
               <h3 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.7rem)', color: 'var(--text-main)', fontWeight: 800, marginBottom: '8px' }}>Fitness & Wellness</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: '1.6', marginBottom: '16px' }}>
@@ -235,7 +294,7 @@ export function CategoriesPage() {
                 </div>
               </div>
 
-              <Link to="/explore?category=Fitness" className="btn btn-primary btn-sm">Browse Fitness Creators <ArrowRight size={14} /></Link>
+              <Link to="/explore?category=Fitness" className="btn btn-primary btn-sm" style={{ alignSelf: 'flex-start' }}>Browse Fitness Creators <ArrowRight size={14} /></Link>
             </div>
           </div>
 
@@ -243,38 +302,46 @@ export function CategoriesPage() {
       </section>
 
       {/* 4. INFLUENCER DISTRIBUTION BY CATEGORY */}
-      <section className="glass-panel" style={{ padding: '36px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      <section className="glass-panel" style={{ padding: 'clamp(20px, 4vw, 36px)', borderRadius: '20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <span className="badge badge-purple" style={{ marginBottom: '8px' }}>PLATFORM INSIGHTS</span>
-          <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', color: 'var(--text-main)', fontWeight: 800 }}>Influencer Distribution by Category</h2>
-          <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: '0.95rem' }}>Live breakdown of registered verified creators across all niches</p>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.2rem)', color: 'var(--text-main)', fontWeight: 800 }}>Influencer Distribution by Category</h2>
+          <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: 'clamp(0.85rem, 1.5vw, 0.95rem)' }}>Live breakdown of registered verified creators across all niches</p>
         </div>
 
-        <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="category-distribution-grid">
           {categories.map((cat, idx) => {
             const count = influencers.filter(i => (i.category || '').toLowerCase() === cat.name.toLowerCase() || i.categoryId === cat.id).length;
-            const pct = totalCreators > 0 ? Math.max(10, Math.round((count / totalCreators) * 100)) : 10;
+            const actualPct = totalCreators > 0 ? Math.round((count / totalCreators) * 100) : 0;
+            const barWidth = count > 0 ? Math.max(8, actualPct) : 0;
             const colors = ['#8B5CF6', '#EC4899', '#6366F1', '#10B981', '#F59E0B', '#3B82F6', '#A855F7', '#EF4444', '#14B8A6', '#F97316'];
             const color = colors[idx % colors.length];
 
             return (
-              <div key={cat.id || idx} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '160px', fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)', textAlign: 'right' }}>
-                  {cat.name}
+              <div key={cat.id || idx} className="distribution-row-card">
+                <div className="distribution-row-header">
+                  <div className="distribution-name-group">
+                    <span className="distribution-indicator-dot" style={{ background: color, boxShadow: `0 0 8px ${color}66` }} />
+                    <span className="distribution-name-text">{cat.name}</span>
+                  </div>
+                  <div className="distribution-stat-group">
+                    <span className="distribution-count-text">
+                      <strong>{count}</strong> {count === 1 ? 'creator' : 'creators'}
+                    </span>
+                    <span className="distribution-pct-badge" style={{ color: color, background: `${color}18` }}>
+                      {actualPct}%
+                    </span>
+                  </div>
                 </div>
-                <div style={{ flex: 1, height: '24px', background: 'var(--bg-input)', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
+
+                <div className="distribution-bar-track">
                   <div 
+                    className="distribution-bar-fill" 
                     style={{ 
-                      width: `${pct}%`, 
-                      height: '100%', 
-                      background: color, 
-                      borderRadius: '12px',
-                      transition: 'width 0.6s ease'
+                      width: `${barWidth}%`, 
+                      background: `linear-gradient(90deg, ${color}, ${color}dd)` 
                     }} 
                   />
-                </div>
-                <div style={{ width: '100px', fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                  {count} {count === 1 ? 'Creator' : 'Creators'}
                 </div>
               </div>
             );
@@ -329,7 +396,7 @@ export function HowItWorksPage() {
       title: 'Create Your Free Account',
       desc: 'Register as a Business or Creator in less than 2 minutes with zero platform registration fees.',
       bullets: ['Instant email registration & login', 'Set up business details or creator portfolio', 'List deliverable rate cards & location'],
-      img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=700',
+      img: '/images/collabefy-step1.jpg',
       badge: 'GET STARTED'
     },
     {
@@ -337,7 +404,7 @@ export function HowItWorksPage() {
       title: 'Discover & Filter Creators',
       desc: 'Search 10,000+ verified creators by content category, city location, follower reach, and budget.',
       bullets: ['Advanced filter by reach & target budget', 'Compare transparent deliverable rate cards', 'Audit verified follower engagement stats'],
-      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700',
+      img: '/images/collabefy-step2.jpg',
       badge: 'EXPLORE NICHES'
     },
     {
@@ -345,7 +412,7 @@ export function HowItWorksPage() {
       title: 'Send Collaboration Request',
       desc: 'Submit appointment details, target schedule dates, and offered budget directly to the creator.',
       bullets: ['Specify deliverables (Reels, Posts, Stories)', 'Set proposed campaign schedule date', 'Instant notification sent to creator'],
-      img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700',
+      img: '/images/collabefy-step3.jpg',
       badge: 'BOOK APPOINTMENT'
     },
     {
@@ -353,7 +420,7 @@ export function HowItWorksPage() {
       title: 'Direct 1-on-1 Chat & Negotiation',
       desc: 'Communicate directly with creators in your real-time chat workspace to finalize script and content guidelines.',
       bullets: ['Real-time 1-on-1 chat workspace', 'Share moodboards & campaign briefs', 'Approve final creative direction'],
-      img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=700',
+      img: '/images/collabefy-step4.jpg',
       badge: 'DIRECT DMs'
     },
     {
@@ -361,14 +428,14 @@ export function HowItWorksPage() {
       title: 'Launch & Track Results',
       desc: 'Execute campaign, review performance analytics, and publish verified client star ratings.',
       bullets: ['Publish branded content live across socials', '100% direct payment outside platform with ₹0 fees', 'Submit verified client review & star rating'],
-      img: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=700',
+      img: '/images/collabefy-step5.jpg',
       badge: 'CAMPAIGN SUCCESS'
     }
   ];
 
   const faqs = [
-    { q: 'Is Influencer Connect completely free to use?', a: 'Yes! Businesses and social media creators can register, list rate cards, and book campaign appointments with 0% platform commission fees.' },
-    { q: 'How do payments work between brands and creators?', a: 'Businesses and creators negotiate payment directly outside the platform via bank transfer, UPI, or PayPal. Influencer Connect charges 0% transaction fees.' },
+    { q: 'Is Collabefy completely free to use?', a: 'Yes! Businesses and social media creators can register, list rate cards, and book campaign appointments with 0% platform commission fees.' },
+    { q: 'How do payments work between brands and creators?', a: 'Businesses and creators negotiate payment directly outside the platform via bank transfer, UPI, or PayPal. Collabefy charges 0% transaction fees.' },
     { q: 'How are creator profiles verified?', a: 'Our team audits linked social profiles (Instagram, YouTube, Twitter) for follower authenticity, engagement rates, and content quality before granting verified status.' },
     { q: 'Can I book multiple deliverables in one campaign?', a: 'Yes! You can combine Instagram Reels, Feed Posts, Stories, and YouTube Reviews in a single campaign booking request.' },
     { q: 'What happens if a creator is unavailable?', a: 'Creators manage an active availability calendar. If a requested date is unavailable, you can message the creator directly to adjust schedule dates.' }
@@ -416,25 +483,15 @@ export function HowItWorksPage() {
           return (
             <div 
               key={idx} 
-              className="glass-panel two-col-responsive"
-              style={{
-                padding: 'clamp(20px, 3.5vw, 36px)',
-                display: 'grid',
-                gridTemplateColumns: isEven ? '1.2fr 1fr' : '1fr 1.2fr',
-                gap: 'clamp(20px, 3vw, 40px)',
-                alignItems: 'center',
-                borderRadius: '20px'
-              }}
+              className={`glass-panel responsive-feature-card ${!isEven ? 'reverse-on-desktop' : ''}`}
             >
-              {/* Photo on Left for Even Steps */}
-              {isEven && (
-                <div style={{ height: 'clamp(200px, 30vw, 300px)', borderRadius: '16px', overflow: 'hidden' }}>
-                  <img src={item.img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              )}
+              {/* Media ALWAYS first in HTML (renders on TOP in mobile) */}
+              <div className="responsive-feature-media">
+                <img src={item.img} alt={item.title} />
+              </div>
 
-              {/* Text Content */}
-              <div>
+              {/* Text Content ALWAYS second in HTML (renders on BOTTOM in mobile) */}
+              <div className="responsive-feature-content">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                   <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--accent-purple))', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.95rem' }}>
                     {item.step}
@@ -453,13 +510,6 @@ export function HowItWorksPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Photo on Right for Odd Steps */}
-              {!isEven && (
-                <div style={{ height: 'clamp(200px, 30vw, 300px)', borderRadius: '16px', overflow: 'hidden' }}>
-                  <img src={item.img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              )}
             </div>
           );
         })}
@@ -656,20 +706,19 @@ export function AboutUsPage() {
       </section>
 
       {/* 2. COMPANY STORY */}
-      <section className="glass-panel two-col-responsive" style={{ padding: 'clamp(20px, 4vw, 40px)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(20px, 3vw, 40px)', alignItems: 'center' }}>
-        <div style={{ height: 'clamp(200px, 30vw, 340px)', borderRadius: '16px', overflow: 'hidden' }}>
+      <section className="glass-panel responsive-feature-card">
+        <div className="responsive-feature-media">
           <img 
-            src={siteSettings?.about_story_image || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800"} 
+            src={siteSettings?.about_story_image || "/images/collabefy-about-story.jpg"} 
             alt="Our Story Team" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800'; }}
+            onError={(e) => { e.currentTarget.src = '/images/collabefy-about-story.jpg'; }}
           />
         </div>
-        <div>
+        <div className="responsive-feature-content">
           <span className="badge badge-purple" style={{ marginBottom: '12px' }}>OUR STORY</span>
           <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', color: 'var(--text-main)', fontWeight: 800, marginBottom: '14px' }}>Building a Future of Authentic Partnerships</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.65', marginBottom: '18px' }}>
-            {siteSettings?.site_name || 'InfluencerConnect'} was created to eliminate the manual frustration of cold DMs, unverified follower stats, and opaque middleman fees. We built an open ecosystem where brands of any size can search, filter, and connect directly with verified creators.
+            {siteSettings?.site_name || 'Collabefy'} was created to eliminate the manual frustration of cold DMs, unverified follower stats, and opaque middleman fees. We built an open ecosystem where brands of any size can search, filter, and connect directly with verified creators.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.88rem', color: 'var(--text-main)', fontWeight: 600 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="var(--accent-emerald)" style={{ flexShrink: 0 }} /> Direct 1-on-1 brand & creator messaging</span>
@@ -899,7 +948,7 @@ export function ContactPage() {
             <Mail color="var(--primary)" size={20} style={{ flexShrink: 0 }} />
             <div>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>Email Us</span>
-              <strong>{siteSettings?.contact_email || 'support@influencerconnect.com'}</strong>
+              <strong>{siteSettings?.contact_email || 'support@collabefy.com'}</strong>
             </div>
           </div>
 

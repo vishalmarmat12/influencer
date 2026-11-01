@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { Sparkles, Mail, Phone, MapPin } from 'lucide-react';
 import { InstagramIcon, YoutubeIcon, TwitterIcon, LinkedinIcon } from './SocialIcons';
 
 export default function Footer() {
+  const { theme } = useAuth();
   const { siteSettings } = useData();
 
   return (
@@ -13,17 +15,31 @@ export default function Footer() {
         
         {/* Brand Column */}
         <div style={{ minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            {siteSettings?.logo_url ? (
-              <img src={siteSettings.logo_url} alt="Logo" style={{ width: '36px', height: '36px', borderRadius: '10px', objectFit: 'contain', flexShrink: 0 }} />
-            ) : (
-              <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent-pink))', padding: '6px', borderRadius: '10px', flexShrink: 0 }}>
-                <Sparkles size={20} color="#FFF" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <img
+              src="/collabefy-icon.png"
+              alt="Collabefy"
+              style={{
+                height: '46px',
+                width: 'auto',
+                flexShrink: 0,
+                objectFit: 'contain'
+              }}
+              onError={(e) => { e.currentTarget.src = '/collabefy-logo.png'; }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: '1.45rem', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+                <span style={{ color: 'var(--text-main)' }}>Collab</span>
+                <span style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C026D3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>efy</span>
               </div>
-            )}
-            <h3 className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-              {siteSettings?.site_name || 'InfluencerConnect'}
-            </h3>
+              <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.05em', marginTop: '3px', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span>Connect</span>
+                <span style={{ color: 'var(--accent-pink)', fontSize: '0.9rem', lineHeight: 1 }}>•</span>
+                <span>Collaborate</span>
+                <span style={{ color: 'var(--accent-pink)', fontSize: '0.9rem', lineHeight: 1 }}>•</span>
+                <span>Grow</span>
+              </div>
+            </div>
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: '1.6', marginBottom: '18px' }}>
             {siteSettings?.footer_about || 'The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.'}
@@ -64,7 +80,7 @@ export default function Footer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.86rem', color: 'var(--text-muted)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', wordBreak: 'break-word' }}>
               <Mail size={16} color="var(--primary)" style={{ flexShrink: 0 }} /> 
-              {siteSettings?.contact_email || 'support@influencerconnect.com'}
+              {siteSettings?.contact_email || 'support@collabefy.com'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Phone size={16} color="var(--primary)" style={{ flexShrink: 0 }} /> 
@@ -80,7 +96,7 @@ export default function Footer() {
       </div>
 
       <div style={{ maxWidth: '1200px', margin: '32px auto 0 auto', paddingTop: '18px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-        <div>© 2026 {siteSettings?.site_name || 'InfluencerConnect'} Platform. All rights reserved. Completely Free & Direct Negotiations.</div>
+        <div>© 2026 {siteSettings?.site_name || 'Collabefy'} Platform. All rights reserved. Completely Free & Direct Negotiations.</div>
         <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
           <Link to="/terms" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms of Service</Link>
           <Link to="/privacy" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Privacy Policy</Link>

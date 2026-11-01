@@ -1,13 +1,23 @@
-// API Service Client for PHP REST API Backend (XAMPP & Mysql Integrated)
+// API Service Client for PHP REST API Backend (XAMPP, MySQL & Live Hostinger Cloud)
 const getApiBaseUrl = () => {
-  // If running via Vite dev server or standalone, point to XAMPP endpoint
   if (typeof window !== 'undefined') {
     const origin = window.location.origin;
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    const pathname = window.location.pathname;
+
+    // 1. Vite dev server running locally on port 5173 or 3000 -> target XAMPP backend
+    if (origin.includes(':5173') || origin.includes(':3000')) {
       return 'http://localhost/influencer/api';
     }
+
+    // 2. Local XAMPP subfolder path (http://localhost/influencer/...)
+    if (pathname.startsWith('/influencer')) {
+      return `${origin}/influencer/api`;
+    }
+
+    // 3. Live production domain root (Hostinger, cPanel, Cloud VPS)
+    return `${origin}/api`;
   }
-  return '/influencer/api';
+  return '/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();

@@ -68,13 +68,13 @@ export default function Home() {
             {/* Top Feature Pill */}
             <div className="hero-feature-pill">
               <span className="hero-pulse-dot" />
-              <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-main)', letterSpacing: '0.02em' }}>
+              <span>
                 {siteSettings?.hero_badge || "⚡ India's #1 Verified Creator Marketplace"}
               </span>
             </div>
 
             {/* Hero Main Heading */}
-            <h1 className="hero-main-title" style={{ margin: '0 0 16px 0', maxWidth: '100%' }}>
+            <h1 className="hero-main-title">
               {siteSettings?.hero_title ? (
                 siteSettings.hero_title
               ) : (
@@ -82,12 +82,12 @@ export default function Home() {
               )}
             </h1>
 
-            <p className="hero-subtitle" style={{ margin: '0 0 28px 0', maxWidth: '100%' }}>
+            <p className="hero-subtitle">
               {siteSettings?.hero_subtitle || "Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking."}
             </p>
 
             {/* HERO SEARCH BOX */}
-            <form onSubmit={handleSearch} className="hero-search-glass" style={{ width: '100%', margin: '0 0 18px 0' }}>
+            <form onSubmit={handleSearch} className="hero-search-glass">
               <div className="hero-search-input-group">
                 <Search size={18} color="var(--text-dim)" style={{ flexShrink: 0 }} />
                 <input
@@ -95,33 +95,33 @@ export default function Home() {
                   placeholder="Search creator name, niche, handle, or city..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ width: '100%', border: 'none', background: 'transparent', padding: '12px 0', color: 'var(--text-main)', fontSize: '0.94rem', outline: 'none' }}
                 />
               </div>
 
-              <div className="hero-search-select-group">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  style={{ width: '100%', border: 'none', background: 'transparent', color: 'var(--text-main)', fontSize: '0.92rem', padding: '12px 0', outline: 'none', cursor: 'pointer' }}
-                >
-                  <option value="">All Categories</option>
-                  {categories.map((c) => (
-                    <option key={c.id || c.name} value={c.name} style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="hero-search-actions-row">
+                <div className="hero-search-select-group">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((c) => (
+                      <option key={c.id || c.name} value={c.name} style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <button type="submit" className="btn btn-primary hero-search-btn">
-                <Search size={16} /> Explore
-              </button>
+                <button type="submit" className="btn btn-primary hero-search-btn">
+                  <Search size={16} /> Explore
+                </button>
+              </div>
             </form>
 
             {/* Quick Trending Chips */}
-            <div className="hero-quick-chips" style={{ margin: '0 0 28px 0', justifyContent: 'flex-start' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div className="hero-quick-chips">
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0, whiteSpace: 'nowrap' }}>
                 <TrendingUp size={14} color="var(--primary)" /> Trending:
               </span>
               {popularChips.map((chip) => (
@@ -137,17 +137,17 @@ export default function Home() {
             </div>
 
             {/* Dual Action CTA Buttons */}
-            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '32px' }}>
-              <Link to="/explore" className="btn btn-primary" style={{ padding: '12px 26px', fontSize: '0.95rem', fontWeight: 700 }}>
+            <div className="hero-cta-group">
+              <Link to="/explore" className="btn btn-primary hero-cta-btn-primary">
                 Browse All Creators ({totalCreators}) <ArrowRight size={16} />
               </Link>
-              <Link to="/register" className="btn btn-secondary" style={{ padding: '12px 26px', fontSize: '0.95rem', fontWeight: 700 }}>
+              <Link to="/register" className="btn btn-secondary hero-cta-btn-secondary">
                 <Zap size={16} color="var(--accent-amber)" /> Join as Creator
               </Link>
             </div>
 
             {/* QUICK STATS COUNTERS - AUTHENTIC DYNAMIC VALUES */}
-            <div className="hero-stats-row" style={{ width: '100%', margin: 0 }}>
+            <div className="hero-stats-row">
               <div className="hero-stat-card">
                 <h3 className="hero-stat-num" style={{ color: 'var(--primary)' }}>{verifiedCount}+</h3>
                 <span className="hero-stat-label">Verified Creators</span>
@@ -174,9 +174,10 @@ export default function Home() {
 
               {/* Creator Main Showcase Image */}
               <img
-                src={siteSettings?.hero_image_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&auto=format&fit=crop&q=80"}
+                src={siteSettings?.hero_image_url || "/images/collabefy-hero.jpg"}
                 alt="Top Influencer Campaign"
                 className="hero-showcase-img"
+                onError={(e) => { e.currentTarget.src = '/images/collabefy-hero.jpg'; }}
               />
 
               {/* Top Floating Glass Card */}
@@ -292,20 +293,22 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="influencer-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div className="influencer-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                   <Link
                     to={`/influencer/${inf.id}`}
+                    onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}
                     className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '0.82rem', padding: '8px 10px', textAlign: 'center', justifyContent: 'center' }}
+                    style={{ fontSize: '0.78rem', fontWeight: 700, padding: '7px 4px', textAlign: 'center', justifyContent: 'center', borderRadius: '8px', width: '100%' }}
                   >
-                    Profile
+                    View
                   </Link>
                   <Link
                     to={`/book-influencer/${inf.id}`}
+                    onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}
                     className="btn btn-primary btn-sm"
-                    style={{ fontSize: '0.82rem', padding: '8px 10px', textAlign: 'center', justifyContent: 'center' }}
+                    style={{ fontSize: '0.78rem', fontWeight: 700, padding: '7px 4px', textAlign: 'center', justifyContent: 'center', borderRadius: '8px', width: '100%' }}
                   >
-                    Book Now
+                    Book
                   </Link>
                 </div>
               </div>
@@ -329,7 +332,7 @@ export default function Home() {
           <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: 'clamp(0.85rem, 1.5vw, 0.95rem)' }}>Find creators with targeted audience resonance for your product category</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 190px), 1fr))', gap: '16px' }}>
+        <div className="home-category-tiles-grid">
           {categories.slice(0, 8).map(cat => {
             const catCount = (influencers || []).filter(i => (i.category || '').toLowerCase() === (cat.name || '').toLowerCase() || i.categoryId === cat.id).length;
             const getIconEmoji = (ic) => {
