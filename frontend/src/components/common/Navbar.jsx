@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
@@ -15,6 +15,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
   const [showNotifs, setShowNotifs] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const userDropdownRef = useRef(null);
 
   const unreadNotifs = (notifications || []).filter(n => !n.read).length;
   const userRole = user?.role || activeRole;
@@ -26,13 +27,34 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
     return '/';
   };
 
-  // Close mobile nav on route change
-  React.useEffect(() => {
+  // Close dropdowns and mobile nav on route change
+  useEffect(() => {
     setMobileNavOpen(false);
+    setShowUserDropdown(false);
+    setShowNotifs(false);
   }, [location.pathname]);
 
+  // Click anywhere outside on screen to close user profile dropdown
+  useEffect(() => {
+    if (!showUserDropdown) return;
+
+    const handleClickOutside = (event) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showUserDropdown]);
+
   // Lock body scroll when mobile nav drawer is open
-  React.useEffect(() => {
+  useEffect(() => {
     if (mobileNavOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -211,7 +233,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
 
             {/* Creator Profile Dropdown */}
             {user && (
-              <div style={{ position: 'relative' }}>
+              <div ref={userDropdownRef} style={{ position: 'relative' }}>
                 <button
                   className="btn btn-secondary"
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
@@ -225,40 +247,46 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
                 </button>
 
                 {showUserDropdown && (
-                  <div className="glass-panel animate-fade-in" style={{ position: 'absolute', right: 0, top: '48px', width: '220px', maxWidth: 'calc(100vw - 24px)', padding: '10px', zIndex: 100, boxSizing: 'border-box', boxShadow: '0 10px 40px rgba(0,0,0,0.25)' }}>
-                    <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-color)', marginBottom: '6px' }}>
-                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>{user.name}</div>
-                      <div style={{ fontSize: '0.74rem', color: 'var(--primary)', fontWeight: 700, marginTop: '2px' }}>Creator Account</div>
+                  <>
+                    <div 
+                      onClick={() => setShowUserDropdown(false)} 
+                      style={{ position: 'fixed', inset: 0, zIndex: 1100 }} 
+                    />
+                    <div className="glass-panel animate-fade-in" style={{ position: 'absolute', right: 0, top: '48px', width: '220px', maxWidth: 'calc(100vw - 24px)', padding: '10px', zIndex: 1150, boxSizing: 'border-box', boxShadow: '0 10px 40px rgba(0,0,0,0.25)' }}>
+                      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-color)', marginBottom: '6px' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>{user.name}</div>
+                        <div style={{ fontSize: '0.74rem', color: 'var(--primary)', fontWeight: 700, marginTop: '2px' }}>Creator Account</div>
+                      </div>
+
+                      <Link
+                        to="/creator"
+                        onClick={() => setShowUserDropdown(false)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
+                      >
+                        <LayoutDashboard size={16} color="var(--primary)" /> Creator Dashboard
+                      </Link>
+
+                      <Link
+                        to="/creator/profile"
+                        onClick={() => setShowUserDropdown(false)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
+                      >
+                        <User size={16} color="var(--accent-pink)" /> Edit Profile
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          const wasAdmin = userRole === 'admin';
+                          logout();
+                          navigate(wasAdmin ? '/admin/login' : '/login');
+                          setShowUserDropdown(false);
+                        }}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600, marginTop: '4px', borderTop: '1px solid var(--border-color)' }}
+                      >
+                        <LogOut size={16} /> Sign Out Account
+                      </button>
                     </div>
-
-                    <Link
-                      to="/creator"
-                      onClick={() => setShowUserDropdown(false)}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
-                    >
-                      <LayoutDashboard size={16} color="var(--primary)" /> Creator Dashboard
-                    </Link>
-
-                    <Link
-                      to="/creator/profile"
-                      onClick={() => setShowUserDropdown(false)}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
-                    >
-                      <User size={16} color="var(--accent-pink)" /> Edit Profile
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        const wasAdmin = userRole === 'admin';
-                        logout();
-                        navigate(wasAdmin ? '/admin/login' : '/login');
-                        setShowUserDropdown(false);
-                      }}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600, marginTop: '4px', borderTop: '1px solid var(--border-color)' }}
-                    >
-                      <LogOut size={16} /> Sign Out Account
-                    </button>
-                  </div>
+                  </>
                 )}
               </div>
             )}
@@ -548,7 +576,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
 
             {/* User Profile / Auth Actions */}
             {user ? (
-              <div style={{ position: 'relative' }}>
+              <div ref={userDropdownRef} style={{ position: 'relative' }}>
                 <button
                   className="btn btn-secondary"
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
@@ -562,40 +590,46 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
                 </button>
 
                 {showUserDropdown && (
-                  <div className="glass-panel animate-fade-in" style={{ position: 'absolute', right: 0, top: '48px', width: '220px', maxWidth: 'calc(100vw - 24px)', padding: '10px', zIndex: 100, boxSizing: 'border-box', boxShadow: '0 10px 40px rgba(0,0,0,0.25)' }}>
-                    <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-color)', marginBottom: '6px' }}>
-                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>{user.name}</div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                  <>
+                    <div 
+                      onClick={() => setShowUserDropdown(false)} 
+                      style={{ position: 'fixed', inset: 0, zIndex: 1100 }} 
+                    />
+                    <div className="glass-panel animate-fade-in" style={{ position: 'absolute', right: 0, top: '48px', width: '220px', maxWidth: 'calc(100vw - 24px)', padding: '10px', zIndex: 1150, boxSizing: 'border-box', boxShadow: '0 10px 40px rgba(0,0,0,0.25)' }}>
+                      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-color)', marginBottom: '6px' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>{user.name}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                      </div>
+
+                      <Link
+                        to={getDashboardPath()}
+                        onClick={() => setShowUserDropdown(false)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
+                      >
+                        <LayoutDashboard size={16} color="var(--primary)" /> Go to Dashboard
+                      </Link>
+
+                      <Link
+                        to="/user/profile"
+                        onClick={() => setShowUserDropdown(false)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
+                      >
+                        <User size={16} color="var(--accent-pink)" /> Edit Profile
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          const wasAdmin = userRole === 'admin';
+                          logout();
+                          navigate(wasAdmin ? '/admin/login' : '/login');
+                          setShowUserDropdown(false);
+                        }}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600, marginTop: '4px', borderTop: '1px solid var(--border-color)' }}
+                      >
+                        <LogOut size={16} /> Sign Out Account
+                      </button>
                     </div>
-
-                    <Link
-                      to={getDashboardPath()}
-                      onClick={() => setShowUserDropdown(false)}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
-                    >
-                      <LayoutDashboard size={16} color="var(--primary)" /> Go to Dashboard
-                    </Link>
-
-                    <Link
-                      to="/user/profile"
-                      onClick={() => setShowUserDropdown(false)}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600 }}
-                    >
-                      <User size={16} color="var(--accent-pink)" /> Edit Profile
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        const wasAdmin = userRole === 'admin';
-                        logout();
-                        navigate(wasAdmin ? '/admin/login' : '/login');
-                        setShowUserDropdown(false);
-                      }}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px', fontSize: '0.88rem', fontWeight: 600, marginTop: '4px', borderTop: '1px solid var(--border-color)' }}
-                    >
-                      <LogOut size={16} /> Sign Out Account
-                    </button>
-                  </div>
+                  </>
                 )}
               </div>
             ) : (
