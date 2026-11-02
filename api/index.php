@@ -730,8 +730,10 @@ switch ($endpoint) {
                         $pStmt->execute(['id' => $inf['id']]);
                         $inf['portfolio'] = array_column($pStmt->fetchAll(), 'url');
 
+                        $instaUrl = !empty($inf['instagram_url']) ? $inf['instagram_url'] : ('https://www.instagram.com/' . str_replace('@', '', $inf['username'] ?? 'creator'));
+                        $inf['instagram_url'] = $instaUrl;
                         $inf['socials'] = [
-                            'instagram' => ['followers' => round($inf['followers']/1000) . 'K', 'url' => 'https://instagram.com']
+                            'instagram' => ['followers' => round($inf['followers']/1000) . 'K', 'url' => $instaUrl]
                         ];
                     }
 
@@ -906,6 +908,12 @@ switch ($endpoint) {
                     $pStmt = $db->prepare("SELECT url FROM portfolio_items WHERE influencer_id = :id");
                     $pStmt->execute(['id' => $found['id']]);
                     $found['portfolio'] = array_column($pStmt->fetchAll(), 'url');
+
+                    $instaUrl = !empty($found['instagram_url']) ? $found['instagram_url'] : ('https://www.instagram.com/' . str_replace('@', '', $found['username'] ?? 'creator'));
+                    $found['instagram_url'] = $instaUrl;
+                    $found['socials'] = [
+                        'instagram' => ['followers' => round($found['followers']/1000) . 'K', 'url' => $instaUrl]
+                    ];
 
                     jsonResponse(['status' => 'success', 'data' => $found]);
                 }

@@ -41,6 +41,7 @@ CREATE TABLE influencer_profiles (
     languages VARCHAR(255),
     avatar VARCHAR(255),
     cover_image VARCHAR(255),
+    instagram_url VARCHAR(500) NULL,
     category VARCHAR(100),
     content_style VARCHAR(100),
     followers INT DEFAULT 0,
@@ -195,9 +196,31 @@ INSERT INTO categories (id, name, slug, icon, description) VALUES
 (9, 'Lifestyle', 'lifestyle', 'Heart', 'Daily life, personal vlogs, and inspiration'),
 (10, 'Automobile', 'automobile', 'Car', 'Cars, bikes, and automotive reviews');
 
--- Users Seed (Admin Only for Production)
+-- Users Seed (1 Admin, 1 Brand User, 1 Creator User)
 INSERT INTO users (id, name, email, password, role, phone, avatar, status) VALUES
-(1, 'System Admin', 'admin@influencer.com', '$2y$10$f/b0LHWhpY76iI30L80pC.5SgObZUsKxjfGCBCgxFoTDNmXl0X9jm', 'admin', '+1 555-0001', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'active');
+(1, 'System Admin', 'admin@influencer.com', '$2y$10$f/b0LHWhpY76iI30L80pC.5SgObZUsKxjfGCBCgxFoTDNmXl0X9jm', 'admin', '+1 555-0001', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'active'),
+(2, 'Rohan Sharma', 'user@demo.com', '$2y$12$KV5LROxRt9XJ/urE0gTLt.tTvMbgkrii8CPcMqGk7ooGqduX0Wm7.', 'user', '+91 9876543210', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 'active'),
+(3, 'Aanya Verma', 'creator@demo.com', '$2y$12$0NNNiS3nLXTWPWNSCUhbCeOvbO0Ia.22XHBSRUuWNyivrFHDtvL/K', 'influencer', '+91 9898989898', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', 'active');
+
+-- 1 Influencer Profile Seed
+INSERT INTO influencer_profiles (id, user_id, name, username, bio, gender, experience_years, city, state, country, languages, avatar, cover_image, instagram_url, category, content_style, followers, starting_price, verified, views_count, rating) VALUES
+(1, 3, 'Aanya Verma', '@aanya_styles', 'Fashion & Lifestyle Content Creator. Passionate about sustainable chic trends, high-fashion styling, and aesthetic streetwear.', 'Female', 4, 'Mumbai', 'Maharashtra', 'India', 'English, Hindi', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300', 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800', 'https://www.instagram.com/aanya_styles', 'Fashion', 'Chic Streetwear & Editorial', 450000, 8000.00, 1, 14500, 4.90);
+
+-- Social Links Seed
+INSERT INTO social_links (influencer_id, platform, username, profile_url, followers_count, engagement_rate) VALUES
+(1, 'Instagram', '@aanya_styles', 'https://www.instagram.com/aanya_styles', 450000, 4.85),
+(1, 'YouTube', 'AanyaVlogs', 'https://youtube.com', 180000, 5.20);
+
+-- Services & Charges Seed
+INSERT INTO services_charges (influencer_id, service_type, price, description) VALUES
+(1, 'Instagram Reel', 25000, '30-60 second branded reel with link tag and custom hashtags'),
+(1, 'Instagram Story', 8000, '24-hour story post with direct swipe-up link'),
+(1, 'Instagram Post', 18000, 'Feed carousel post with dedicated styling showcase');
+
+-- Portfolio Seed
+INSERT INTO portfolio_items (influencer_id, media_type, title, url) VALUES
+(1, 'image', 'Winter Editorial Lookbook', 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500'),
+(1, 'image', 'Streetwear Summer Capsule', 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500');
 
 -- Site Settings Seed
 INSERT INTO site_settings (id, site_name, contact_email, contact_phone, address) VALUES

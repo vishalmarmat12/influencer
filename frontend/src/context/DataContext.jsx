@@ -20,14 +20,56 @@ const AUTHENTIC_CATEGORIES = [
   { id: 10, name: 'Automobile', slug: 'automobile', icon: 'Car', description: 'Cars, bikes, and automotive reviews', status: 'active' }
 ];
 
-const AUTHENTIC_INFLUENCERS = [];
+const AUTHENTIC_INFLUENCERS = [
+  {
+    id: 1,
+    encrypted_id: 'enc_0754545208020904',
+    user_id: 3,
+    encrypted_user_id: 'enc_0754545208020906',
+    name: 'Aanya Verma',
+    username: '@aanya_styles',
+    bio: 'Fashion & Lifestyle Content Creator. Passionate about sustainable chic trends, high-fashion styling, and aesthetic streetwear.',
+    gender: 'Female',
+    experience_years: 4,
+    city: 'Mumbai',
+    state: 'Maharashtra',
+    country: 'India',
+    languages: 'English, Hindi',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300',
+    cover_image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+    instagram_url: 'https://www.instagram.com/aanya_styles',
+    category: 'Fashion',
+    content_style: 'Chic Streetwear & Editorial',
+    followers: 450000,
+    starting_price: 8000,
+    verified: true,
+    views_count: 14500,
+    rating: 4.90,
+    reviews_count: 18,
+    services: [
+      { id: 1, type: 'Instagram Reel', price: 25000, description: '30-60 second branded reel with link tag and custom hashtags' },
+      { id: 2, type: 'Instagram Story', price: 8000, description: '24-hour story post with direct swipe-up link' },
+      { id: 3, type: 'Instagram Post', price: 18000, description: 'Feed carousel post with dedicated styling showcase' }
+    ],
+    portfolio: [
+      'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500',
+      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500'
+    ],
+    socials: {
+      instagram: { handle: '@aanya_styles', url: 'https://www.instagram.com/aanya_styles', followers: '450K' },
+      youtube: { handle: 'AanyaVlogs', url: 'https://youtube.com', subscribers: '180K' }
+    }
+  }
+];
 
 const AUTHENTIC_BOOKINGS = [];
 
 const AUTHENTIC_REVIEWS = [];
 
 const AUTHENTIC_USERS = [
-  { id: 1, name: 'System Admin', company: 'Collabefy HQ', email: 'admin@influencer.com', role: 'Administrator', phone: '+91 98765 00001', status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', created_at: '2026-01-01' }
+  { id: 1, encrypted_id: 'enc_0754545208020904', name: 'System Admin', company: 'Collabefy HQ', email: 'admin@influencer.com', role: 'Administrator', phone: '+91 98765 00001', status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', created_at: '2026-01-01' },
+  { id: 2, encrypted_id: 'enc_0754545208020907', name: 'Rohan Sharma', company: 'TechGear India', email: 'user@demo.com', role: 'Brand Account', phone: '+91 98765 43210', status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', created_at: '2026-02-10' },
+  { id: 3, encrypted_id: 'enc_0754545208020906', name: 'Aanya Verma', company: 'Aanya Styles Studio', email: 'creator@demo.com', role: 'influencer', phone: '+91 98989 89898', status: 'Active', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', created_at: '2026-02-15' }
 ];
 
 export const DEFAULT_SITE_SETTINGS = {
@@ -53,14 +95,14 @@ export const DEFAULT_SITE_SETTINGS = {
 
 // One-time cleanup for existing users whose browsers cached old mock/dummy records
 try {
-  if (typeof window !== 'undefined' && localStorage.getItem('collabefy_dummy_data_purged_v1') !== 'true') {
+  if (typeof window !== 'undefined' && localStorage.getItem('collabefy_dummy_data_purged_v2') !== 'true') {
     localStorage.removeItem('influencer_connect_influencers');
     localStorage.removeItem('influencer_connect_users');
     localStorage.removeItem('influencer_connect_bookings');
     localStorage.removeItem('influencer_connect_messages');
     localStorage.removeItem('influencer_connect_reviews');
     localStorage.removeItem('influencer_connect_availability');
-    localStorage.setItem('collabefy_dummy_data_purged_v1', 'true');
+    localStorage.setItem('collabefy_dummy_data_purged_v2', 'true');
   }
 } catch (e) {}
 

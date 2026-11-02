@@ -54,3 +54,4 @@ export function decryptId(encryptedVal, prefix = 'enc_') {
   const num = parseInt(res, 10);
   return isNaN(num) ? 0 : num;
 }
+

@@ -76,11 +76,19 @@ export const AuthProvider = ({ children }) => {
       console.warn('API Auth fallback active', err);
     }
 
-    // Fallback Admin authentication if backend is offline
+    // Fallback authentication if backend is offline
     if (email.toLowerCase() === 'admin@influencer.com' || roleHint === 'admin') {
       const adminUser = { id: 1, encrypted_id: encryptId(1), name: 'System Admin', email: 'admin@influencer.com', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' };
       setUser(adminUser);
       return { success: true, user: adminUser };
+    } else if (email.toLowerCase() === 'creator@demo.com' || roleHint === 'influencer') {
+      const creatorUser = { id: 3, encrypted_id: encryptId(3), name: 'Aanya Verma', email: 'creator@demo.com', role: 'influencer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' };
+      setUser(creatorUser);
+      return { success: true, user: creatorUser };
+    } else if (email.toLowerCase() === 'user@demo.com' || roleHint === 'user') {
+      const brandUser = { id: 2, encrypted_id: encryptId(2), name: 'Rohan Sharma', email: 'user@demo.com', role: 'user', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' };
+      setUser(brandUser);
+      return { success: true, user: brandUser };
     }
     return { success: false, message: 'Invalid credentials or user account not found.' };
   };

@@ -147,6 +147,14 @@ export default function InfluencerDetail() {
     youtube: { subscribers: inf.followers ? `${Math.round((inf.followers * 0.35) / 1000)}K` : '70K' }
   };
 
+  const rawInsta = inf.instagram_url || inf.instagram || inf.socials?.instagram?.url || inf.socials?.instagram?.profile_url;
+  let instagramUrl = '';
+  if (rawInsta) {
+    instagramUrl = rawInsta.startsWith('http') ? rawInsta : `https://instagram.com/${rawInsta.replace('@', '')}`;
+  } else if (inf.username) {
+    instagramUrl = `https://instagram.com/${inf.username.replace('@', '')}`;
+  }
+
   const handleChatClick = async () => {
     if (!user) {
       navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
@@ -201,7 +209,29 @@ export default function InfluencerDetail() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+          {instagramUrl && (
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary btn-sm"
+              style={{
+                background: 'linear-gradient(135deg, rgba(225, 48, 108, 0.14), rgba(247, 119, 55, 0.14))',
+                borderColor: 'rgba(225, 48, 108, 0.45)',
+                color: '#E1306C',
+                fontWeight: 700,
+                padding: '8px 14px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                textDecoration: 'none'
+              }}
+              title="Open Instagram Profile in new tab"
+            >
+              <InstagramIcon size={16} /> <span>Instagram</span> <ExternalLink size={13} style={{ opacity: 0.8 }} />
+            </a>
+          )}
           <button
             className="btn btn-secondary btn-sm"
             onClick={() => inf.id && toggleFavorite(inf.id)}
@@ -217,7 +247,7 @@ export default function InfluencerDetail() {
           >
             <MessageSquare size={16} /> <span className="hide-on-mobile">{chatLoading ? 'Starting...' : 'Chat Direct'}</span>
           </button>
-          <Link to={`/book-influencer/${inf.id}`} className="btn btn-primary btn-sm" style={{ padding: '8px 16px' }}>
+          <Link to={`/book-influencer/${inf.encrypted_id || encryptId(inf.id)}`} className="btn btn-primary btn-sm" style={{ padding: '8px 16px' }}>
             Book Appointment
           </Link>
         </div>
@@ -650,11 +680,38 @@ export default function InfluencerDetail() {
             <h4 style={{ color: 'var(--text-main)', marginBottom: '16px', fontWeight: 800 }}>Social Accounts</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {socials.instagram && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-pink)' }}>
-                    <InstagramIcon size={18} /> Instagram
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '14px', background: 'var(--bg-input)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#E1306C', fontWeight: 700 }}>
+                      <InstagramIcon size={18} /> Instagram
+                    </div>
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>{socials.instagram.followers || `${followersCount}K`}</strong>
                   </div>
-                  <strong style={{ color: 'var(--text-main)' }}>{socials.instagram.followers || `${followersCount}K`}</strong>
+                  {instagramUrl && (
+                    <a
+                      href={instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                      style={{
+                        width: '100%',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #E1306C, #F77737)',
+                        color: '#FFF',
+                        fontWeight: 700,
+                        padding: '9px 12px',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        textDecoration: 'none',
+                        boxShadow: '0 4px 14px rgba(225, 48, 108, 0.3)'
+                      }}
+                    >
+                      <InstagramIcon size={15} /> Visit Instagram Profile <ExternalLink size={14} />
+                    </a>
+                  )}
                 </div>
               )}
               {socials.youtube && (

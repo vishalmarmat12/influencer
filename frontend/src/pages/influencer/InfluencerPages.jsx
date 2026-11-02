@@ -1171,36 +1171,43 @@ export function InfluencerProfileEdit() {
 /* -------------------------------------------------------------------------- */
 export function InfluencerSocialsPage() {
   const { user, updateUser } = useAuth();
-  const [instagram, setInstagram] = useState(user?.socials?.instagram?.handle || '@creator_official');
-  const [youtube, setYoutube] = useState(user?.socials?.youtube?.channel || 'CreatorVlogs');
+  const [instagram, setInstagram] = useState(user?.instagram_url || user?.socials?.instagram?.url || user?.socials?.instagram?.handle || 'https://www.instagram.com/aanya_styles');
+  const [youtube, setYoutube] = useState(user?.socials?.youtube?.channel || 'AanyaVlogs');
   const [saved, setSaved] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const instaLink = instagram.startsWith('http') ? instagram : `https://instagram.com/${instagram.replace('@', '')}`;
+    const instaHandle = instagram.startsWith('http') ? '@' + instagram.split('/').filter(Boolean).pop() : (instagram.startsWith('@') ? instagram : `@${instagram}`);
     updateUser({
+      instagram_url: instaLink,
       socials: {
-        instagram: { handle: instagram, followers: user?.socials?.instagram?.followers || '180K' },
-        youtube: { channel: youtube, subscribers: user?.socials?.youtube?.subscribers || '70K' }
+        instagram: { handle: instaHandle, url: instaLink, followers: user?.socials?.instagram?.followers || '450K' },
+        youtube: { channel: youtube, subscribers: user?.socials?.youtube?.subscribers || '180K' }
       }
     });
     setSaved(true);
+    setTimeout(() => setSaved(false), 3500);
   };
 
   return (
     <div className="animate-fade-in glass-panel" style={{ padding: 'clamp(16px, 3.5vw, 28px)', maxWidth: '750px' }}>
       <h2 style={{ color: 'var(--text-main)', fontSize: '1.6rem', fontWeight: 800, marginBottom: '8px' }}>Social Media Profiles</h2>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '24px' }}>Connect and update your official social handles for brand audits</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '24px' }}>Connect and update your official Instagram URL so brands can visit your real page</p>
 
       {saved && (
         <div style={{ padding: '12px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', borderRadius: '8px', marginBottom: '20px', fontWeight: 600 }}>
-          ✓ Social handles updated successfully!
+          ✓ Social handles and Instagram URL updated successfully!
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
         <div className="form-group" style={{ marginBottom: '16px' }}>
-          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><InstagramIcon size={16} /> Instagram Handle</label>
-          <input type="text" className="form-input" value={instagram} onChange={(e) => setInstagram(e.target.value)} />
+          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><InstagramIcon size={16} /> Instagram Profile URL / Handle</label>
+          <input type="text" className="form-input" placeholder="https://www.instagram.com/your_handle or @your_handle" value={instagram} onChange={(e) => setInstagram(e.target.value)} required />
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
+            Visitors will be redirected directly to this Instagram URL when clicking the Instagram button on your profile.
+          </span>
         </div>
         <div className="form-group" style={{ marginBottom: '20px' }}>
           <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><YoutubeIcon size={16} /> YouTube Channel Name</label>
