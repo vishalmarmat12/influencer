@@ -101,6 +101,7 @@ export const api = {
   deleteBooking: (id, params = {}) => fetchApi(`bookings?id=${id}&${new URLSearchParams(params).toString()}`, { method: 'DELETE' }),
 
   // Conversations & Messages
+  sendHeartbeat: (userId) => fetchApi('heartbeat', { method: 'POST', body: { user_id: userId } }),
   getConversations: (userId) => fetchApi(`conversations?user_id=${userId}`),
   findOrCreateConversation: (targetUserId, userId) => fetchApi('conversations/find-or-create', { 
     method: 'POST', 

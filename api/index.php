@@ -1859,6 +1859,18 @@ switch ($endpoint) {
         }
         break;
 
+    case 'heartbeat':
+        $hbUserId = intval($_GET['user_id'] ?? $body['user_id'] ?? $body['sender_id'] ?? 0);
+        if ($hbUserId > 0) {
+            $store = getStore();
+            if (!isset($store['online_heartbeats'])) $store['online_heartbeats'] = [];
+            $store['online_heartbeats'][$hbUserId] = time();
+            saveStore($store);
+            jsonResponse(['status' => 'success', 'user_id' => $hbUserId, 'timestamp' => time()]);
+        }
+        jsonResponse(['status' => 'error', 'message' => 'User ID required for heartbeat.'], 400);
+        break;
+
     case 'conversations':
         // Ensure conversations & messages table exist if DB connected
         if ($db) {
@@ -2023,6 +2035,12 @@ switch ($endpoint) {
 
             // Query Store
             $store = getStore();
+            if (!isset($store['online_heartbeats'])) $store['online_heartbeats'] = [];
+            if ($userId > 0) {
+                $store['online_heartbeats'][$userId] = time();
+                saveStore($store);
+            }
+
             if (empty($userConvs)) {
                 foreach ($store['conversations'] ?? [] as $c) {
                     if (($c['participant_one_id'] ?? 0) == $userId || ($c['participant_two_id'] ?? 0) == $userId) {
@@ -2135,6 +2153,18 @@ switch ($endpoint) {
                     } catch (Exception $e) {}
                 }
 
+                // Check if partner is live / active right now (heartbeat within last 180 seconds)
+                $partnerHeartbeat = $store['online_heartbeats'][$partnerId] ?? 0;
+                $isPartnerOnline = ($partnerHeartbeat > 0 && (time() - $partnerHeartbeat) < 180);
+
+                // If partner sent a recent message within 2 minutes, also consider live
+                if (!$isPartnerOnline && !empty($c['last_message_time'])) {
+                    $lastMsgTs = strtotime($c['last_message_time']);
+                    if ($lastMsgTs && (time() - $lastMsgTs) < 120) {
+                        $isPartnerOnline = true;
+                    }
+                }
+
                 $formatted[] = [
                     'id' => intval($c['id']),
                     'conversation_id' => intval($c['id']),
@@ -2145,6 +2175,8 @@ switch ($endpoint) {
                     'partner_avatar' => $partnerInfo['avatar'],
                     'partner_role' => $partnerInfo['role'],
                     'partner_category' => $partnerInfo['category'],
+                    'is_online' => $isPartnerOnline,
+                    'active_status' => $isPartnerOnline ? 'Active now' : '',
                     'last_message' => $c['last_message'] ?? 'Conversation started',
                     'last_message_time' => $c['last_message_time'] ?? $c['created_at'] ?? date('Y-m-d H:i:s'),
                     'unread_count' => $unreadCount
@@ -2342,7 +2374,57 @@ switch ($endpoint) {
                 }
             }
 
-            jsonResponse(['status' => 'success', 'data' => $msgs]);
+            // Update heartbeat for current user
+            $store = getStore();
+            if (!isset($store['online_heartbeats'])) $store['online_heartbeats'] = [];
+            if ($userId > 0) {
+                $store['online_heartbeats'][$userId] = time();
+                saveStore($store);
+            }
+
+            // Check live active status of conversation partner
+            $partnerId = 0;
+            $isPartnerOnline = false;
+            if ($convId > 0) {
+                $targetConv = null;
+                if ($db) {
+                    try {
+                        $cStmt = $db->prepare("SELECT participant_one_id, participant_two_id, last_message_time FROM conversations WHERE id = :cid LIMIT 1");
+                        $cStmt->execute(['cid' => $convId]);
+                        $targetConv = $cStmt->fetch();
+                    } catch (Exception $e) {}
+                }
+                if (!$targetConv && isset($store['conversations'])) {
+                    foreach ($store['conversations'] as $sc) {
+                        if (($sc['id'] ?? 0) == $convId) {
+                            $targetConv = $sc;
+                            break;
+                        }
+                    }
+                }
+                if ($targetConv) {
+                    $p1 = intval($targetConv['participant_one_id'] ?? 0);
+                    $p2 = intval($targetConv['participant_two_id'] ?? 0);
+                    $partnerId = ($p1 == $userId) ? $p2 : $p1;
+                    $partnerHb = $store['online_heartbeats'][$partnerId] ?? 0;
+                    $isPartnerOnline = ($partnerHb > 0 && (time() - $partnerHb) < 180);
+
+                    if (!$isPartnerOnline && !empty($targetConv['last_message_time'])) {
+                        $lastMsgTs = strtotime($targetConv['last_message_time']);
+                        if ($lastMsgTs && (time() - $lastMsgTs) < 120) {
+                            $isPartnerOnline = true;
+                        }
+                    }
+                }
+            }
+
+            jsonResponse([
+                'status' => 'success', 
+                'data' => $msgs,
+                'partner_id' => $partnerId,
+                'partner_is_online' => $isPartnerOnline,
+                'partner_active_status' => $isPartnerOnline ? 'Active now' : ''
+            ]);
         }
         break;
 
