@@ -1415,7 +1415,6 @@ canvas {
   flex-direction: column;
   gap: 8px;
   background: var(--bg-card);
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -1577,17 +1576,132 @@ canvas {
   transform: scale(1.06);
 }
 
+/* ========================================================================== */
+/* FULL-SCREEN CHAT WORKSPACE (100% Edge-to-Edge & Bug Free)                  */
+/* ========================================================================== */
+.panel-main-content.chat-mode {
+  padding: 0 !important;
+  height: calc(100vh - 68px) !important;
+  max-height: calc(100vh - 68px) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.chat-fullscreen-page-wrapper {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-fullscreen-page-wrapper .ig-chat-container {
+  height: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-left: 1px solid var(--border-color);
+  width: 100% !important;
+  flex: 1;
+}
+
+/* Dedicated Native Fullscreen Mode (When clicking Maximize icon) */
+.ig-chat-container.ig-chat-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100dvh !important;
+  min-height: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 999999 !important;
+  background: var(--bg-card) !important;
+}
+
+/* Floating Jump to Latest Messages Button */
+.ig-scroll-bottom-floating-btn {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  z-index: 25;
+  background: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 24px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ig-scroll-bottom-floating-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.55);
+}
+
+.ig-header-icon-btn.active-fullscreen {
+  background: rgba(124, 58, 237, 0.15) !important;
+  color: var(--primary) !important;
+}
+
+@media (max-width: 1024px) {
+  .panel-main-content.chat-mode {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    height: calc(100dvh - 68px) !important;
+    max-height: calc(100dvh - 68px) !important;
+  }
+
+  .chat-fullscreen-page-wrapper .ig-chat-container {
+    border-left: none !important;
+  }
+}
+
 /* Mobile full-screen layout */
 @media (max-width: 768px) {
+  .panel-main-content.chat-mode {
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    height: calc(100dvh - 68px) !important;
+    max-height: calc(100dvh - 68px) !important;
+  }
+
+  /* When chatting on mobile, hide the bottom nav for 100% full-screen Instagram DM experience */
+  body.chat-open-mobile .mobile-bottom-nav {
+    display: none !important;
+  }
+
   .ig-chat-container {
     display: flex !important;
     flex-direction: column !important;
-    height: calc(100dvh - 120px) !important;
+    height: calc(100dvh - 68px) !important;
     max-height: none !important;
-    min-height: 480px !important;
-    border-radius: 16px !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
     border-left: none !important;
     border-right: none !important;
+  }
+
+  .chat-fullscreen-page-wrapper .ig-chat-container {
+    height: calc(100dvh - 68px) !important;
+    border-radius: 0 !important;
+    border: none !important;
   }
 
   .ig-bubble-incoming,
@@ -1597,10 +1711,19 @@ canvas {
 }
 
 @media (max-width: 480px) {
+  .panel-main-content.chat-mode {
+    height: calc(100dvh - 60px) !important;
+    max-height: calc(100dvh - 60px) !important;
+  }
+
   .ig-chat-container {
-    height: calc(100dvh - 75px) !important;
+    height: calc(100dvh - 60px) !important;
     border-radius: 0 !important;
     border: none !important;
+  }
+
+  .chat-fullscreen-page-wrapper .ig-chat-container {
+    height: calc(100dvh - 60px) !important;
   }
 
   .ig-header {

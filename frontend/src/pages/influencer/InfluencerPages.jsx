@@ -2605,24 +2605,8 @@ export function InfluencerAnalyticsPage() {
 /* 9. MESSAGES WORKSPACE                                                      */
 /* -------------------------------------------------------------------------- */
 export function InfluencerMessagesWorkspace() {
-  const { messages } = useData();
-  const { user } = useAuth();
-
-  const userMessages = messages ? messages.filter(m => m.sender_id == user?.id || m.receiver_id == user?.id) : [];
-
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div className="chat-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-        <div>
-          <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>Creator Messages</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Chat directly with brand clients and negotiate campaign briefs</p>
-        </div>
-        {userMessages.length > 0 && (
-          <div style={{ background: 'var(--primary)', color: '#FFF', padding: '6px 14px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <MessageSquare size={14} /> {userMessages.length} Messages
-          </div>
-        )}
-      </div>
+    <div className="chat-fullscreen-page-wrapper animate-fade-in">
       <ChatBox />
     </div>
   );

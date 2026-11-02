@@ -932,11 +932,7 @@ export function UserProfileEdit() {
 /* -------------------------------------------------------------------------- */
 export function UserMessagesWorkspace() {
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '1350px', margin: '0 auto', width: '100%' }}>
-      <div className="chat-page-header">
-        <h1 style={{ fontSize: '1.8rem', color: 'var(--text-main)', fontWeight: 800 }}>Direct Creator Messages</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Negotiate campaign deliverables, chat in real-time, and manage active creator threads.</p>
-      </div>
+    <div className="chat-fullscreen-page-wrapper animate-fade-in">
       <ChatBox activeBookingId={101} />
     </div>
   );

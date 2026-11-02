@@ -6,7 +6,7 @@ import apiService from '../../api/apiService';
 import { 
   Send, MessageSquare, ArrowLeft, RefreshCw, Sparkles, User, AlertCircle, 
   Search, CheckCheck, Phone, Video, Info, Mic, Image as ImageIcon, Smile, 
-  Heart, X, ExternalLink, ShieldCheck, Star, Play, Check
+  Heart, X, ExternalLink, ShieldCheck, Star, Play, Check, Maximize2, Minimize2, ChevronDown
 } from 'lucide-react';
 
 export default function ChatBox() {
@@ -17,6 +17,7 @@ export default function ChatBox() {
   const messagesContainerRef = useRef(null);
   const prevMsgCountRef = useRef(0);
   const fileInputRef = useRef(null);
+  const isUserScrolledUpRef = useRef(false);
 
   const urlConvId = searchParams.get('conversationId') || searchParams.get('conversation');
 
@@ -40,6 +41,10 @@ export default function ChatBox() {
   const [showPostModal, setShowPostModal] = useState(false);
   // Voice note simulation state
   const [isRecording, setIsRecording] = useState(false);
+  // True fullscreen view toggle state
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  // Scroll to bottom button visibility
+  const [showScrollBottomBtn, setShowScrollBottomBtn] = useState(false);
 
   // Helper to show brief toast notification
   const showToast = (text) => {
@@ -143,9 +148,69 @@ export default function ChatBox() {
     };
   };
 
-  // Scroll to bottom of message thread
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Fullscreen toggle handler
+  const toggleFullscreen = () => {
+    setIsFullscreen(prev => !prev);
+  };
+
+  // Keyboard shortcut: Escape exits fullscreen mode
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
+
+  // Mobile full-screen body class management
+  useEffect(() => {
+    if (window.innerWidth <= 768 && showMobileChat && activeConvId) {
+      document.body.classList.add('chat-open-mobile');
+    } else {
+      document.body.classList.remove('chat-open-mobile');
+    }
+    return () => {
+      document.body.classList.remove('chat-open-mobile');
+    };
+  }, [showMobileChat, activeConvId]);
+
+  // Scroll to bottom of message thread (using container scroll directly - NEVER scrolls window)
+  const scrollToBottom = (instant = false) => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    if (instant) {
+      container.scrollTop = container.scrollHeight;
+    } else {
+      try {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: 'smooth'
+        });
+      } catch (e) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+  };
+
+  // Detect when user scrolls up so auto-scroll NEVER interrupts reading older messages
+  const handleMessagesScroll = (e) => {
+    const el = e.currentTarget;
+    if (!el) return;
+    
+    // If messages do not overflow the viewport, user is not scrolled up
+    if (el.scrollHeight <= el.clientHeight + 10) {
+      isUserScrolledUpRef.current = false;
+      setShowScrollBottomBtn(false);
+      return;
+    }
+
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    // If user is more than 75px away from bottom, mark user as scrolled up!
+    const isUp = distanceFromBottom > 75;
+    isUserScrolledUpRef.current = isUp;
+    setShowScrollBottomBtn(isUp);
   };
 
   // 1. Fetch Conversations List
@@ -227,13 +292,17 @@ export default function ChatBox() {
           }));
         }
 
-        const container = messagesContainerRef.current;
-        const isNearBottom = container 
-          ? (container.scrollHeight - container.scrollTop - container.clientHeight < 120)
-          : true;
-
-        if (forceScroll || newCount > oldCount || isNearBottom) {
-          setTimeout(scrollToBottom, 50);
+        // Auto-scroll rules:
+        // 1. If forced (initial load of conversation / chat switch): scroll to bottom
+        // 2. If new messages arrived AND user is NOT scrolled up: scroll to bottom smoothly
+        // 3. If user is scrolled up reading past messages: DO NOT SCROLL (never interrupt user!)
+        // 4. If no new messages arrived (newCount === oldCount): DO NOT SCROLL (never poll-scroll!)
+        if (forceScroll) {
+          isUserScrolledUpRef.current = false;
+          setShowScrollBottomBtn(false);
+          setTimeout(() => scrollToBottom(true), 40);
+        } else if (newCount > oldCount && !isUserScrolledUpRef.current) {
+          setTimeout(() => scrollToBottom(false), 40);
         }
       }
     } catch (err) {
@@ -269,6 +338,9 @@ export default function ChatBox() {
     setActiveConvId(convId);
     setSearchParams({ conversationId: convId });
     setShowMobileChat(true);
+    isUserScrolledUpRef.current = false;
+    setShowScrollBottomBtn(false);
+    prevMsgCountRef.current = 0;
 
     // Immediately mark unread badge as cleared dynamically in local state
     setConversations(prev => prev.map(c => {
@@ -316,7 +388,9 @@ export default function ChatBox() {
       ...extraData
     };
     setMessagesList(prev => [...prev, optimisticMsg]);
-    setTimeout(scrollToBottom, 40);
+    isUserScrolledUpRef.current = false;
+    setShowScrollBottomBtn(false);
+    setTimeout(() => scrollToBottom(false), 40);
 
     // Update local conversation preview immediately
     setConversations(prev => prev.map(c => {
@@ -341,7 +415,9 @@ export default function ChatBox() {
 
       if (res && res.status === 'success' && res.data) {
         setMessagesList(prev => prev.map(m => m.id === tempId ? { ...res.data, ...extraData } : m));
-        setTimeout(scrollToBottom, 50);
+        isUserScrolledUpRef.current = false;
+        setShowScrollBottomBtn(false);
+        setTimeout(() => scrollToBottom(false), 50);
       }
     } catch (err) {
       setErrorMsg('Network error while sending message.');
@@ -443,7 +519,7 @@ export default function ChatBox() {
   }
 
   return (
-    <div className="ig-chat-container">
+    <div className={`ig-chat-container ${isFullscreen ? 'ig-chat-fullscreen' : ''} ${showMobileChat && activeConvId ? 'ig-chat-active-mobile' : ''}`}>
       
       {/* FLOATING TOAST ALERT */}
       {toastMsg && (
@@ -650,7 +726,7 @@ export default function ChatBox() {
               </div>
             </div>
 
-            {/* Right Action Icons (Phone, Video, Info) */}
+            {/* Right Action Icons (Phone, Video, Fullscreen, Info) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <button 
                 type="button" 
@@ -670,6 +746,14 @@ export default function ChatBox() {
               </button>
               <button 
                 type="button" 
+                className={`ig-header-icon-btn ${isFullscreen ? 'active-fullscreen' : ''}`}
+                onClick={toggleFullscreen}
+                title={isFullscreen ? "Exit Full Screen (Esc)" : "Full Screen View"}
+              >
+                {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
+              <button 
+                type="button" 
                 className="ig-header-icon-btn" 
                 onClick={() => setShowInfoDrawer(!showInfoDrawer)}
                 title="Creator Profile & Campaign Info"
@@ -680,7 +764,11 @@ export default function ChatBox() {
           </div>
 
           {/* 2. CHAT MESSAGES FEED (Instagram Style Stream) */}
-          <div ref={messagesContainerRef} className="ig-message-feed">
+          <div 
+            ref={messagesContainerRef} 
+            className="ig-message-feed"
+            onScroll={handleMessagesScroll}
+          >
             
             {/* Top Date Stamp */}
             <div className="ig-datestamp">
@@ -810,6 +898,21 @@ export default function ChatBox() {
               })
             )}
             <div ref={messagesEndRef} />
+            {showScrollBottomBtn && (
+              <button
+                type="button"
+                onClick={() => {
+                  isUserScrolledUpRef.current = false;
+                  setShowScrollBottomBtn(false);
+                  scrollToBottom(false);
+                }}
+                className="ig-scroll-bottom-floating-btn animate-fade-in"
+                title="Jump to latest message"
+              >
+                <ChevronDown size={14} />
+                <span>Latest messages</span>
+              </button>
+            )}
           </div>
 
           {/* 3. DYNAMIC QUICK CHIPS FOR CAMPAIGN NEGOTIATION */}

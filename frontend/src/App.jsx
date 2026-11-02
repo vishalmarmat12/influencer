@@ -68,6 +68,9 @@ function AppLayout() {
                        location.pathname.startsWith('/creator') || 
                        location.pathname.startsWith('/user');
 
+  const isChatPage = location.pathname === '/user/messages' || 
+                     location.pathname === '/creator/messages';
+
   // Creator Role always renders Creator Dashboard Layout (Creator Sidebar + Creator Header)
   const isCreatorRole = userRole === 'influencer';
 
@@ -84,9 +87,9 @@ function AppLayout() {
       />
       
       {(isPanelRoute || isCreatorRole) ? (
-        <div className="panel-layout">
+        <div className={`panel-layout ${isChatPage ? 'chat-mode-layout' : ''}`}>
           <Sidebar mobileOpen={mobileSidebarOpen} onCloseMobile={() => setMobileSidebarOpen(false)} />
-          <main className="panel-main-content">
+          <main className={`panel-main-content ${isChatPage ? 'chat-mode' : ''}`}>
             <Outlet />
           </main>
         </div>
