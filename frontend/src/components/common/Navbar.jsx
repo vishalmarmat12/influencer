@@ -72,10 +72,10 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
   if (userRole === 'influencer') {
     return (
       <header className="main-navbar-fixed" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, width: '100%', height: '68px', background: 'var(--bg-nav)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderBottom: '1px solid var(--border-color)', boxShadow: '0 4px 25px rgba(0, 0, 0, 0.08)', display: 'flex', alignItems: 'center' }}>
-        <div style={{ maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '0 clamp(12px, 2.5vw, 28px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+        <div className="navbar-inner-container" style={{ maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '0 clamp(12px, 2.5vw, 28px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
 
           {/* Creator Brand Title */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 12px)', minWidth: 0, flex: '1 1 auto' }}>
+          <div className="navbar-brand-col" style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 12px)', minWidth: 0, flex: '1 1 auto' }}>
             {onToggleMobileSidebar && (
               <button
                 type="button"
@@ -87,28 +87,23 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
                 <Menu size={19} />
               </button>
             )}
-            <Link to="/creator" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0 }}>
+            <Link to="/creator" className="navbar-brand-link">
               <img
                 src="/collabefy-icon.png"
                 alt="Collabefy"
-                style={{
-                  height: 'clamp(36px, 5vw, 44px)',
-                  width: 'auto',
-                  flexShrink: 0,
-                  objectFit: 'contain'
-                }}
+                className="navbar-brand-icon"
                 onError={(e) => { e.currentTarget.src = '/collabefy-logo.png'; }}
               />
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0, overflow: 'hidden' }}>
-                <div style={{ fontSize: 'clamp(1.2rem, 3.6vw, 1.42rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+              <div className="navbar-brand-text-wrap">
+                <div className="navbar-logo-text">
                   <span style={{ color: 'var(--text-main)' }}>Collab</span>
                   <span style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C026D3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>efy</span>
                 </div>
-                <div style={{ fontSize: 'clamp(0.64rem, 1.6vw, 0.72rem)', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.04em', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '1px' }}>
+                <div className="navbar-tagline-text">
                   <span>Connect</span>
-                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span className="navbar-tagline-dot">•</span>
                   <span>Collaborate</span>
-                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span className="navbar-tagline-dot">•</span>
                   <span>Grow</span>
                 </div>
               </div>
@@ -116,7 +111,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
           </div>
 
           {/* Creator Top Header Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.2vw, 12px)', flexShrink: 0 }}>
+          <div className="navbar-actions-col" style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.2vw, 12px)', flexShrink: 0 }}>
 
             {/* Theme Toggle */}
             <button
@@ -133,7 +128,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
             {user && (
               <div style={{ position: 'relative' }}>
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary navbar-icon-btn"
                   onClick={() => setShowNotifs(!showNotifs)}
                   style={{ width: '38px', height: '38px', padding: 0, borderRadius: '50%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   title="Notifications"
@@ -235,7 +230,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
             {user && (
               <div ref={userDropdownRef} style={{ position: 'relative' }}>
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary navbar-user-btn"
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
                   style={{ height: '38px', padding: '3px 10px 3px 3px', borderRadius: '24px', gap: '8px', display: 'flex', alignItems: 'center' }}
                 >
@@ -337,10 +332,10 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
       )}
 
       <header className="main-navbar-fixed" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, width: '100%', height: '68px', background: 'var(--bg-nav)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderBottom: '1px solid var(--border-color)', boxShadow: '0 4px 25px rgba(0, 0, 0, 0.08)', display: 'flex', alignItems: 'center' }}>
-        <div style={{ maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '0 clamp(12px, 2.5vw, 28px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+        <div className="navbar-inner-container" style={{ maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '0 clamp(12px, 2.5vw, 28px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
 
           {/* Left Section: Mobile Menu Button + Brand Logo Link */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 12px)', minWidth: 0, flex: '1 1 auto' }}>
+          <div className="navbar-brand-col" style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 12px)', minWidth: 0, flex: '1 1 auto' }}>
             {isPanelRoute && onToggleMobileSidebar && (
               <button
                 type="button"
@@ -367,29 +362,24 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
 
             <Link
               to={getDashboardPath()}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0 }}
+              className="navbar-brand-link"
             >
               <img
                 src="/collabefy-icon.png"
                 alt="Collabefy"
-                style={{
-                  height: 'clamp(36px, 5vw, 44px)',
-                  width: 'auto',
-                  flexShrink: 0,
-                  objectFit: 'contain'
-                }}
+                className="navbar-brand-icon"
                 onError={(e) => { e.currentTarget.src = '/collabefy-logo.png'; }}
               />
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0, overflow: 'hidden' }}>
-                <div style={{ fontSize: 'clamp(1.2rem, 3.6vw, 1.42rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+              <div className="navbar-brand-text-wrap">
+                <div className="navbar-logo-text">
                   <span style={{ color: 'var(--text-main)' }}>Collab</span>
                   <span style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C026D3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>efy</span>
                 </div>
-                <div style={{ fontSize: 'clamp(0.64rem, 1.6vw, 0.72rem)', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.04em', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '1px' }}>
+                <div className="navbar-tagline-text">
                   <span>Connect</span>
-                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span className="navbar-tagline-dot">•</span>
                   <span>Collaborate</span>
-                  <span style={{ color: 'var(--accent-pink)', fontSize: '0.8rem', lineHeight: 1 }}>•</span>
+                  <span className="navbar-tagline-dot">•</span>
                   <span>Grow</span>
                 </div>
               </div>
@@ -459,7 +449,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
           </nav>
 
           {/* Right Action Tools */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.2vw, 12px)', flexShrink: 0 }}>
+          <div className="navbar-actions-col" style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.2vw, 12px)', flexShrink: 0 }}>
 
             {/* THEME TOGGLE (DARK / LIGHT MODE) */}
             <button
@@ -476,7 +466,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
             {user && (
               <div style={{ position: 'relative' }}>
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary navbar-icon-btn"
                   onClick={() => setShowNotifs(!showNotifs)}
                   style={{ width: '38px', height: '38px', padding: 0, borderRadius: '50%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   title="Notifications"
@@ -578,7 +568,7 @@ export default function Navbar({ onToggleMobileSidebar, isPanelRoute }) {
             {user ? (
               <div ref={userDropdownRef} style={{ position: 'relative' }}>
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary navbar-user-btn"
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
                   style={{ height: '38px', padding: '3px 10px 3px 3px', borderRadius: '24px', gap: '8px', display: 'flex', alignItems: 'center' }}
                 >
