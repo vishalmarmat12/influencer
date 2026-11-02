@@ -8,8 +8,8 @@
             "role": "Administrator",
             "phone": "+91 98765 00001",
             "status": "Active",
-            "avatar": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=150",
-            "img": "https:\/\/images.unsplash.com\/photo-1534528741775-53994a69daeb?w=150",
+            "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+            "img": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
             "created_at": "2026-01-01"
         }
     ],
@@ -93,38 +93,6 @@
             "icon": "Car",
             "description": "Cars, bikes, and automotive reviews",
             "status": "active"
-        },
-        {
-            "id": 11,
-            "name": "Test Tech 562",
-            "slug": "test-tech-562",
-            "icon": "Cpu",
-            "status": "active",
-            "description": "Automated test category description for software and AI"
-        },
-        {
-            "id": 12,
-            "name": "Test Tech 744",
-            "slug": "test-tech-744",
-            "icon": "Cpu",
-            "status": "active",
-            "description": "Automated test category description for software and AI"
-        },
-        {
-            "id": 13,
-            "name": "Test Tech 253",
-            "slug": "test-tech-253",
-            "icon": "Cpu",
-            "status": "active",
-            "description": "Automated test category description for software and AI"
-        },
-        {
-            "id": 14,
-            "name": "Test Tech 573",
-            "slug": "test-tech-573",
-            "icon": "Cpu",
-            "status": "active",
-            "description": "Automated test category description for software and AI"
         }
     ],
     "influencers": [],
@@ -135,18 +103,18 @@
     "messages": [],
     "site_settings": {
         "site_name": "Collabefy",
-        "site_tagline": "Connect \u2022 Collaborate \u2022 Grow",
-        "logo_url": "\/collabefy-logo.png",
+        "site_tagline": "Connect • Collaborate • Grow",
+        "logo_url": "/collabefy-logo.png",
         "contact_email": "support@collabefy.com",
         "contact_phone": "+91 98765 43210",
         "contact_address": "Tech Park Tower B, Suite 402, Bangalore, India",
         "office_hours": "Mon - Sat: 9:00 AM - 7:00 PM IST",
         "commission_fee": 10,
-        "hero_badge": "\u26a1 India's #1 Verified Creator Marketplace",
+        "hero_badge": "⚡ India's #1 Verified Creator Marketplace",
         "hero_title": "Connect & Book Top Influencers for Your Brand Campaigns",
         "hero_subtitle": "Discover hand-vetted Instagram, YouTube, and multi-channel creators. Transparent fixed rate cards, verified audience analytics, and seamless instant booking.",
-        "hero_image_url": "\/images\/collabefy-hero.jpg",
-        "about_story_image": "\/images\/collabefy-about-story.jpg",
+        "hero_image_url": "/images/collabefy-hero.jpg",
+        "about_story_image": "/images/collabefy-about-story.jpg",
         "cta_title": "Are You a Creator or Influencer?",
         "cta_subtitle": "Monetize your audience with premium brand deals. Set your fixed rates, receive pre-paid bookings, and manage all your sponsorships in one place.",
         "footer_about": "The premier zero-commission marketplace connecting innovative brands directly with high-impact social media creators.",
@@ -154,6 +122,6 @@
         "privacy_content": "Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs."
     },
     "online_heartbeats": {
-        "1": 1793600453
+        "1": 1793600632
     }
 }

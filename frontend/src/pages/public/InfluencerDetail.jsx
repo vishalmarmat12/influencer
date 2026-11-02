@@ -64,7 +64,7 @@ export default function InfluencerDetail() {
   }, [targetInfId, matchedInf]);
 
   // If data has loaded and creator is not found, display a clean 404 state
-  if (!matchedInf && !loading && (influencers || []).length > 0) {
+  if (!matchedInf && !loading) {
     return (
       <div className="animate-fade-in glass-panel" style={{ maxWidth: '600px', margin: '60px auto', padding: '40px', textAlign: 'center' }}>
         <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
