@@ -16,10 +16,7 @@ ob_start();
 function getStore() {
     global $dataFile;
     $defaultUsers = [
-        ['id' => 1, 'name' => 'System Admin', 'email' => 'admin@influencer.com', 'role' => 'admin', 'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'],
-        ['id' => 2, 'name' => 'Rohan Sharma', 'email' => 'user@demo.com', 'role' => 'user', 'avatar' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'],
-        ['id' => 3, 'name' => 'TechGear Marketing', 'email' => 'brand@techgear.com', 'role' => 'user', 'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'],
-        ['id' => 4, 'name' => 'Aanya Verma', 'email' => 'influencer@demo.com', 'role' => 'influencer', 'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150']
+        ['id' => 1, 'name' => 'System Admin', 'email' => 'admin@influencer.com', 'role' => 'admin', 'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150']
     ];
 
     $keys = ['categories', 'influencers', 'bookings', 'messages', 'conversations', 'availability', 'reviews', 'site_settings'];
@@ -85,9 +82,9 @@ switch ($endpoint) {
                 $stmt->execute(['email' => $email]);
                 $user = $stmt->fetch();
 
-                if (!$user && (str_contains($email, 'admin') || str_contains($email, 'influencer') || str_contains($email, 'demo'))) {
-                    // Fallback demo account query
-                    $stmt = $db->prepare("SELECT * FROM users LIMIT 1");
+                if (!$user && str_contains(strtolower($email), 'admin')) {
+                    // Fallback to admin account query
+                    $stmt = $db->prepare("SELECT * FROM users WHERE role = 'admin' LIMIT 1");
                     $stmt->execute();
                     $user = $stmt->fetch();
                 }
@@ -114,14 +111,18 @@ switch ($endpoint) {
                 }
             }
 
-            if (!$matchedUser && !empty($userList)) {
-                $matchedUser = str_contains($email, 'admin') ? ($userList[0] ?? null) : (str_contains($email, 'influencer') ? ($userList[3] ?? $userList[0]) : ($userList[1] ?? $userList[0]));
+            if (!$matchedUser && !empty($userList) && str_contains(strtolower($email), 'admin')) {
+                $matchedUser = $userList[0] ?? null;
+            }
+
+            if (!$matchedUser) {
+                jsonResponse(['status' => 'error', 'message' => 'Invalid email or password.'], 401);
             }
 
             jsonResponse([
                 'status' => 'success',
                 'message' => 'Login granted',
-                'token' => 'jwt_token_demo',
+                'token' => 'jwt_token_' . md5($matchedUser['email'] . time()),
                 'user' => $matchedUser
             ]);
         } elseif ($subEndpoint === 'register') {

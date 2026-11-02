@@ -75,17 +75,13 @@ export const AuthProvider = ({ children }) => {
       console.warn('API Auth fallback active', err);
     }
 
-    // Role-Based Preset Account Auth Fallback
-    let authenticatedUser;
+    // Fallback Admin authentication if backend is offline
     if (email.toLowerCase() === 'admin@influencer.com' || roleHint === 'admin') {
-      authenticatedUser = { id: 1, name: 'System Admin', email: 'admin@influencer.com', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' };
-    } else if (email.toLowerCase() === 'influencer@demo.com' || roleHint === 'influencer') {
-      authenticatedUser = { id: 4, name: 'Aanya Verma', email: 'influencer@demo.com', role: 'influencer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' };
-    } else {
-      authenticatedUser = { id: 2, name: 'Rohan Sharma (TechGear Inc)', email: 'user@demo.com', role: 'user', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' };
+      const adminUser = { id: 1, name: 'System Admin', email: 'admin@influencer.com', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' };
+      setUser(adminUser);
+      return { success: true, user: adminUser };
     }
-    setUser(authenticatedUser);
-    return { success: true, user: authenticatedUser };
+    return { success: false, message: 'Invalid credentials or user account not found.' };
   };
 
   const register = async (userData) => {
