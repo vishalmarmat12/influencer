@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../api/apiService';
 import { useAuth } from './AuthContext';
+import { encryptId, decryptId } from '../utils/cipher';
+
+export { encryptId, decryptId };
 
 const DataContext = createContext(null);
 

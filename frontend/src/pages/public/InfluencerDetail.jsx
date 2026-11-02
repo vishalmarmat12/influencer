@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { InstagramIcon, YoutubeIcon } from '../../components/common/SocialIcons';
 import apiService from '../../api/apiService';
+import { decryptId } from '../../utils/cipher';
 
 export default function InfluencerDetail() {
   const { id } = useParams();
@@ -26,10 +27,14 @@ export default function InfluencerDetail() {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewMsg, setReviewMsg] = useState('');
 
-  const influencerId = Number(id) || 1;
+  const influencerId = decryptId(id) || Number(id) || 1;
 
-  // Find target influencer by matching id or user_id
-  const matchedInf = (influencers || []).find(i => Number(i.id) === influencerId || Number(i.user_id) === influencerId);
+  // Find target influencer by matching id, encrypted_id, or user_id
+  const matchedInf = (influencers || []).find(i => 
+    Number(i.id) === influencerId || 
+    Number(i.user_id) === influencerId || 
+    i.encrypted_id === id
+  );
   const foundInf = matchedInf || (influencers || [])[0] || {};
 
   // Strictly check if logged-in user IS this exact creator profile

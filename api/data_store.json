@@ -10,7 +10,8 @@
             "status": "Active",
             "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
             "img": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-            "created_at": "2026-01-01"
+            "created_at": "2026-01-01",
+            "encrypted_id": "enc_0754545208020904"
         }
     ],
     "categories": [
@@ -122,6 +123,6 @@
         "privacy_content": "Your privacy is paramount. Collabefy ensures secure handling of user accounts, transactions, verified analytics, and campaign briefs."
     },
     "online_heartbeats": {
-        "1": 1793600632
+        "1": 1793602274
     }
 }

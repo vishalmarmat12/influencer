@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../api/apiService';
+import { encryptId } from '../utils/cipher';
 
 const AuthContext = createContext(null);
 
@@ -77,7 +78,7 @@ export const AuthProvider = ({ children }) => {
 
     // Fallback Admin authentication if backend is offline
     if (email.toLowerCase() === 'admin@influencer.com' || roleHint === 'admin') {
-      const adminUser = { id: 1, name: 'System Admin', email: 'admin@influencer.com', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' };
+      const adminUser = { id: 1, encrypted_id: encryptId(1), name: 'System Admin', email: 'admin@influencer.com', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' };
       setUser(adminUser);
       return { success: true, user: adminUser };
     }

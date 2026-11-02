@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
+import { encryptId } from '../../utils/cipher';
 import {
   Search, TrendingUp, ShieldCheck, Star, Users, ArrowRight, Award, Zap, Heart, CheckCircle2, ChevronRight, Play, Sparkles, Filter, CheckCircle
 } from 'lucide-react';
@@ -295,7 +296,7 @@ export default function Home() {
 
                 <div className="influencer-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                   <Link
-                    to={`/influencer/${inf.id}`}
+                    to={`/influencer/${inf.encrypted_id || encryptId(inf.id)}`}
                     onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}
                     className="btn btn-secondary btn-sm"
                     style={{ fontSize: '0.78rem', fontWeight: 700, padding: '7px 4px', textAlign: 'center', justifyContent: 'center', borderRadius: '8px', width: '100%' }}
@@ -303,7 +304,7 @@ export default function Home() {
                     View
                   </Link>
                   <Link
-                    to={`/book-influencer/${inf.id}`}
+                    to={`/book-influencer/${inf.encrypted_id || encryptId(inf.id)}`}
                     onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}
                     className="btn btn-primary btn-sm"
                     style={{ fontSize: '0.78rem', fontWeight: 700, padding: '7px 4px', textAlign: 'center', justifyContent: 'center', borderRadius: '8px', width: '100%' }}

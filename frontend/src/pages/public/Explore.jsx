@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
+import { encryptId } from '../../utils/cipher';
 import {
   Search, Filter, Star, ShieldCheck, MapPin, SlidersHorizontal,
   Zap, Clock, ThumbsUp, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, X
@@ -526,7 +527,7 @@ export default function Explore() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
                           <Link
-                            to={`/influencer/${inf.id}`}
+                            to={`/influencer/${inf.encrypted_id || encryptId(inf.id)}`}
                             onClick={() => {
                               window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                             }}
@@ -544,7 +545,7 @@ export default function Explore() {
                             View
                           </Link>
                           <Link
-                            to={`/book-influencer/${inf.id}`}
+                            to={`/book-influencer/${inf.encrypted_id || encryptId(inf.id)}`}
                             onClick={() => {
                               window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                             }}

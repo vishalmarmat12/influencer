@@ -197,7 +197,7 @@ INSERT INTO categories (id, name, slug, icon, description) VALUES
 
 -- Users Seed (Admin Only for Production)
 INSERT INTO users (id, name, email, password, role, phone, avatar, status) VALUES
-(1, 'System Admin', 'admin@influencer.com', '$2y$10$wN1.e10t3x4N38bKqjHkDe4eR6G/U2tM2W/uHk9YkK5K6L7M8N9O0', 'admin', '+1 555-0001', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'active');
+(1, 'System Admin', 'admin@influencer.com', '$2y$10$f/b0LHWhpY76iI30L80pC.5SgObZUsKxjfGCBCgxFoTDNmXl0X9jm', 'admin', '+1 555-0001', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'active');
 
 -- Site Settings Seed
 INSERT INTO site_settings (id, site_name, contact_email, contact_phone, address) VALUES

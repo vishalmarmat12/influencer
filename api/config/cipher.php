@@ -1,12 +1,12 @@
 <?php
-// Secure Bidirectional ID Encryption & Decryption Module for InfluencerConnect
+// Secure Bidirectional ID Encryption & Decryption Engine for Collabefy
 
 if (!defined('ID_CIPHER_SECRET_HASH')) {
     define('ID_CIPHER_SECRET_HASH', '7ddb82959145e259228b8e5d5671244d83e826b47915af9fc4e223996a7c1fd7');
 }
 
 /**
- * Encrypt an integer/numeric ID into a secure URL-safe encrypted ID token (e.g. "enc_4654")
+ * Encrypt a numeric integer database ID into a secure, URL-safe encrypted token (e.g. "enc_0754545208020904")
  *
  * @param int|string $id
  * @param string $prefix
@@ -14,21 +14,21 @@ if (!defined('ID_CIPHER_SECRET_HASH')) {
  */
 function encryptId($id, $prefix = 'enc_') {
     if ($id === null || $id === '' || $id === false) return '';
-    $str = (string)$id;
+    $padded = sprintf('%08d', (int)$id);
     $key = ID_CIPHER_SECRET_HASH;
     $keyLen = strlen($key);
     $hex = '';
     
-    for ($i = 0; $i < strlen($str); $i++) {
-        $char = ord($str[$i]) ^ ord($key[$i % $keyLen]);
+    for ($i = 0; $i < strlen($padded); $i++) {
+        $char = ord($padded[$i]) ^ ord($key[$i % $keyLen]);
         $hex .= str_pad(dechex($char), 2, '0', STR_PAD_LEFT);
     }
     return $prefix . $hex;
 }
 
 /**
- * Decrypt an encrypted ID token back to original numeric integer ID
- * Gracefully accepts both encrypted ("enc_...") and numeric IDs (102, "102")
+ * Decrypt an encrypted ID token back to its original numeric integer database ID
+ * Gracefully accepts both encrypted ("enc_...") and numeric IDs (1, 102, "102")
  *
  * @param string|int $encryptedVal
  * @param string $prefix
@@ -62,5 +62,36 @@ function decryptId($encryptedVal, $prefix = 'enc_') {
         $res .= chr($char);
     }
     
-    return is_numeric($res) ? (int)$res : (is_numeric($encryptedVal) ? (int)$encryptedVal : 0);
+    $num = (int)$res;
+    return $num;
+}
+
+/**
+ * Attach encrypted IDs to an entity array or list of entities
+ *
+ * @param array $data
+ * @return array
+ */
+function attachEncryptedIds($data) {
+    if (!is_array($data)) return $data;
+
+    // If it is a list of rows
+    if (isset($data[0]) && is_array($data[0])) {
+        foreach ($data as &$item) {
+            $item = attachEncryptedIds($item);
+        }
+        return $data;
+    }
+
+    if (isset($data['id'])) {
+        $data['encrypted_id'] = encryptId($data['id']);
+    }
+    if (isset($data['user_id'])) {
+        $data['encrypted_user_id'] = encryptId($data['user_id']);
+    }
+    if (isset($data['influencer_id'])) {
+        $data['encrypted_influencer_id'] = encryptId($data['influencer_id']);
+    }
+
+    return $data;
 }

@@ -28,6 +28,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { InstagramIcon, YoutubeIcon } from '../../components/common/SocialIcons';
+import { decryptId } from '../../utils/cipher';
 
 export default function BookInfluencer() {
   const { id, influencerId } = useParams();
@@ -87,9 +88,10 @@ export default function BookInfluencer() {
       setLoadingInf(true);
       setLoadError('');
 
+      const rawTargetId = decryptId(targetId);
       // Check in DataContext first
       const existing = (influencers || []).find(
-        (inf) => String(inf.id) === String(targetId) || String(inf.user_id) === String(targetId)
+        (inf) => String(inf.id) === String(targetId) || String(inf.id) === String(rawTargetId) || String(inf.user_id) === String(rawTargetId) || inf.encrypted_id === targetId
       );
 
       if (existing) {

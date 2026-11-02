@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import ChatBox from '../../components/chat/ChatBox';
 import { computeBookingTimeSeries, generateSvgCurve, computeChannelDistribution } from '../../utils/chartUtils';
+import { encryptId } from '../../utils/cipher';
 
 /* -------------------------------------------------------------------------- */
 /* 1. USER / BRAND DASHBOARD OVERVIEW                                        */
@@ -709,7 +710,7 @@ export function UserFavorites() {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: 'auto' }}>
-                <Link to={`/influencer/${inf.id}`} className="btn btn-secondary btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }}>View Profile</Link>
+                <Link to={`/influencer/${inf.encrypted_id || encryptId(inf.id)}`} className="btn btn-secondary btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }}>View Profile</Link>
                 <button className="btn btn-danger btn-sm" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => toggleFavorite(inf.id)}>Remove</button>
               </div>
             </div>
